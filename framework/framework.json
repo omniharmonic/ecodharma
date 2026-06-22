@@ -1,0 +1,1165 @@
+{
+  "framework_version": "3.0.0",
+  "voice_ref": "ecodharma-voice@2.0.0",
+  "summary": "This is a general map of how a person can take part in what Joanna Macy called the Great Turning: the slow, shared shift away from a way of living that uses up the world toward one that lets life keep going. It treats you not as a fixed type but as a living mix of gifts, and it shows where those gifts are most needed across three kinds of work that all matter at once: slowing the harm being done now, building the fairer and more local systems that come next, and changing how we see ourselves and each other. Every gift has a bright side and a shadow side. And where one of your gifts meets a real need in the world, a small, well-placed first move can set a much larger change in motion.",
+  "lineage": [
+    {
+      "name": "Joanna Macy",
+      "contribution": "Named the Great Turning and its three dimensions, and developed the Work That Reconnects, including the teaching that grief for the world can become a doorway to courage and action."
+    },
+    {
+      "name": "R. Buckminster Fuller",
+      "contribution": "The trim-tab image: the small move that, placed well, turns a much larger system."
+    },
+    {
+      "name": "Joe Lightfoot",
+      "contribution": "Mapping of regenerative archetypes that helped shape several of the gifts named here."
+    },
+    {
+      "name": "Thich Nhat Hanh",
+      "contribution": "Interbeing: the felt recognition that nothing and no one exists separately, and that awakening happens between people, not only within them."
+    },
+    {
+      "name": "Charles Eisenstein",
+      "contribution": "Naming the old story of separation and pointing toward the more beautiful world our hearts know is possible."
+    }
+  ],
+  "dimensions": [
+    {
+      "id": "holding-actions",
+      "name": "Holding Actions",
+      "description": "The work of slowing the damage and protecting life right now, through resistance, advocacy, defense, and direct relief. It buys the time that everything else needs."
+    },
+    {
+      "id": "life-sustaining-systems",
+      "name": "Life-Sustaining Systems",
+      "description": "The work of building what comes next, the everyday alternatives the future will stand on: regenerative land and food, cooperative economies, shared self-governance, open tools, and knowledge held in common."
+    },
+    {
+      "id": "shift-in-consciousness",
+      "name": "Shift in Consciousness",
+      "description": "The inner and cultural ground beneath the other two: the change in how we see, from separation toward belonging, that makes the new systems possible and keeps the holding actions from repeating the harms they oppose."
+    }
+  ],
+  "domains": [
+    {
+      "id": "protection-advocacy",
+      "name": "Protection & Advocacy",
+      "dimension": "holding-actions",
+      "description": "Defending people, places, species, and rights from harm, and resisting and slowing the forces of extraction.",
+      "examples": [
+        "a nurse organizing coworkers for safer conditions",
+        "neighbors fighting a polluting development near their homes",
+        "a lawyer defending tenants from unfair eviction",
+        "a volunteer monitoring a local river for illegal dumping"
+      ]
+    },
+    {
+      "id": "care-relief",
+      "name": "Care & Relief",
+      "dimension": "holding-actions",
+      "description": "Meeting urgent human and ecological needs right now through direct, relational care.",
+      "examples": [
+        "running a food bank or stocking a community fridge",
+        "opening a cooling center for people during a heat wave",
+        "sitting with the dying as a hospice volunteer",
+        "organizing mutual aid in the days after a flood"
+      ]
+    },
+    {
+      "id": "land-living-systems",
+      "name": "Land & Living Systems",
+      "dimension": "life-sustaining-systems",
+      "description": "Regenerating watersheds, soils, food, and habitat, and tending a place patiently over the long term.",
+      "examples": [
+        "a farmer rebuilding healthy soil",
+        "neighbors planting and tending a community garden",
+        "restoring a creek bank or wetland",
+        "replanting native trees after a wildfire"
+      ]
+    },
+    {
+      "id": "regenerative-economy",
+      "name": "Regenerative Economy",
+      "dimension": "life-sustaining-systems",
+      "description": "Building cooperative, community-rooted economies where value circulates and stays local.",
+      "examples": [
+        "starting a worker-owned cooperative",
+        "joining a credit union or community lending circle",
+        "running a tool library or repair cafe",
+        "setting up a neighborhood time bank for trading skills"
+      ]
+    },
+    {
+      "id": "governance-commons",
+      "name": "Governance & the Commons",
+      "dimension": "life-sustaining-systems",
+      "description": "Growing participatory, place-based self-governance and shared stewardship of common resources.",
+      "examples": [
+        "a neighborhood association deciding things together",
+        "a community land trust keeping housing affordable",
+        "farmers sharing and maintaining an irrigation system",
+        "a housing co-op writing its own fair rules"
+      ]
+    },
+    {
+      "id": "tools-infrastructure",
+      "name": "Tools & Infrastructure",
+      "dimension": "life-sustaining-systems",
+      "description": "Making open, trustworthy technology and shared infrastructure that help communities coordinate.",
+      "examples": [
+        "building free, open-source software",
+        "setting up a community wifi network in an underserved area",
+        "designing a simple shared platform for a local group",
+        "creating clear public signs, forms, or maps people can actually use"
+      ]
+    },
+    {
+      "id": "knowledge-learning",
+      "name": "Knowledge & Learning",
+      "dimension": "life-sustaining-systems",
+      "description": "Stewarding knowledge as a commons, so that sensemaking and skill can travel between communities.",
+      "examples": [
+        "a teacher or mentor passing on a craft",
+        "running a free skill-share workshop",
+        "tending a public library or a seed library",
+        "recording elders' oral histories before they are lost"
+      ]
+    },
+    {
+      "id": "healing-wholeness",
+      "name": "Healing & Wholeness",
+      "dimension": "shift-in-consciousness",
+      "description": "Tending wounds in body, psyche, and relationship so that belonging can be restored.",
+      "examples": [
+        "a counselor helping someone work through trauma",
+        "a grief support group meeting after a loss",
+        "an addiction recovery sponsor walking beside someone",
+        "mending a long-broken family relationship"
+      ]
+    },
+    {
+      "id": "story-imagination-sacred",
+      "name": "Story, Imagination & the Sacred",
+      "dimension": "shift-in-consciousness",
+      "description": "Shifting how people see through narrative, art, ritual, and reverence for the living world.",
+      "examples": [
+        "a writer or filmmaker giving words to a shared feeling",
+        "an artist painting a mural that changes how a block feels",
+        "leading a ceremony that marks a birth, death, or season",
+        "a faith or contemplative leader helping people feel part of something larger"
+      ]
+    }
+  ],
+  "gifts": [
+    {
+      "id": "the-weaver",
+      "name": "The Weaver",
+      "essence": "Connects what was isolated, building the relationships and networks that let separate people and projects find one another and act as one.",
+      "shadow": "Can become the indispensable hub everything must route through, or weave so many threads that connection hardens into bureaucracy.",
+      "modality_signals": {
+        "western": [
+          "Libra (relationship, balance)",
+          "Gemini (connection, exchange)",
+          "Venus prominent (harmony)"
+        ],
+        "human_design": [
+          "Defined G-center (identity and direction)",
+          "Channel 37-40 (community and belonging)"
+        ],
+        "gene_keys": [
+          "19 (Sensitivity)",
+          "45 (Synergy)"
+        ],
+        "vedic": [
+          "Anuradha (friendship, alliance)",
+          "Vishakha (gathering toward a shared aim)"
+        ]
+      },
+      "description": "Connects what was isolated, building the relationships and networks that let separate people and projects find one another and act as one.",
+      "portrait": "The Weaver feels the spaces between people as keenly as the people themselves, and an unmet introduction can sit in them like an itch. They carry a quiet map of who knows what, who is lonely, who would spark if only they met, and they tend that map without being asked. Belonging matters to them at a bodily level; a room where everyone is connected feels like home, a room of strangers feels like work left undone. They take real pleasure in being the thread rather than the destination, and often measure a day by who they brought together rather than what they finished alone.",
+      "strengths": [
+        "Senses who should meet whom",
+        "Builds trust across difference",
+        "Holds a living map of relationships",
+        "Turns scattered people into community",
+        "Names a shared aim others rally to",
+        "Tends the spaces between people",
+        "Makes newcomers feel they belong"
+      ],
+      "shadow_how_to_relate": "When this gift over-reaches, the Weaver becomes the single point everything must pass through, mistaking being needed for being useful, until the network they built can no longer move without them and every new tie adds weight instead of life. It is tended not by weaving less but by weaving themselves toward the edges: making introductions that no longer need them, letting threads connect directly, and trusting that a healthy web holds even when no one is holding it. The relief is in becoming dispensable on purpose.",
+      "chart_signatures": {
+        "western": [
+          "Libra weighting toward fairness, pairing, and keeping the peace",
+          "Gemini ease with linking people, ideas, and messages",
+          "A prominent Venus drawn to harmony and warm exchange",
+          "Strong eleventh-house or Aquarian pull toward groups and friendship"
+        ],
+        "vedic": [
+          "Anuradha's gift for loyal friendship and alliance-building",
+          "Vishakha's drive to gather many toward one shared aim",
+          "Eleventh-house emphasis: gains and reach through networks",
+          "Mercury and Venus working together to connect and charm"
+        ],
+        "human_design": [
+          "A defined G-center giving a steady identity others orient around",
+          "The 37-40 current of community, bargain, and mutual provision",
+          "A 19-49 sensitivity to what the group needs to feel safe",
+          "An open or connecting throat that voices what binds people together"
+        ],
+        "gene_keys": [
+          "Gate 19 as fine attunement to others' needs and longing for closeness",
+          "Gate 45 as the instinct to gather and steward a community's resources",
+          "Gate 37 as the warmth that turns a group into a family",
+          "Gate 40 as the will to belong, provide, and hold the bargain"
+        ]
+      },
+      "great_turning_contribution": {
+        "summary": "The Weaver builds the connective tissue the Great Turning runs on, knitting isolated people and projects into movements strong enough to act together.",
+        "dimensions": [
+          "life-sustaining-systems",
+          "shift-in-consciousness"
+        ],
+        "domains": [
+          "governance-commons",
+          "care-relief",
+          "regenerative-economy"
+        ],
+        "what_its_for": "Real change rarely fails for lack of good projects; it fails because they never find each other. The Weaver is needed to close that gap, linking the lonely organizer to the willing volunteer, the surplus to the need, the small win in one town to the one starting in the next. They build the coalitions that hold the line, the mutual-aid webs that catch people when systems fail, and the felt sense of belonging that lets a culture of separation begin to remember it was always one body."
+      }
+    },
+    {
+      "id": "the-builder",
+      "name": "The Builder",
+      "essence": "Brings concrete things into being — the enterprises, institutions, and working alternatives that others can actually live inside.",
+      "shadow": "The same drive that makes something real can harden into building at any cost — pushing a project through on sheer willpower while the relationships around it fray, or chasing completion so single-mindedly that the new structure quietly reproduces the extraction, hierarchy, and burnout it was meant to replace. Solidity can curdle into rigidity, so that a thing built to last becomes a thing too heavy to ever change. And the habit of doing it alone, of being the one who actually finishes, can wall the work off from the very people it was for.",
+      "modality_signals": {
+        "western": [
+          "Capricorn (structure, follow-through)",
+          "Taurus (steady manifestation)",
+          "Mars-Saturn (drive plus discipline)"
+        ],
+        "human_design": [
+          "Generator sacral (sustainable life-force)",
+          "Channel 21-45 (material stewardship)"
+        ],
+        "gene_keys": [
+          "54 (Aspiration)",
+          "14 (Bounteousness)"
+        ],
+        "vedic": [
+          "Hasta (skillful hands)",
+          "Uttara Phalguni (reliable building)"
+        ]
+      },
+      "description": "Brings concrete things into being — the enterprises, institutions, and working alternatives that others can actually live inside.",
+      "portrait": "The Builder feels most alive at the moment an idea leaves the air and takes a form people can stand on. They trust what works over what merely sounds good; for them an argument is never settled until something is actually running. There is a quiet patience in them for the unglamorous middle of a project — the foundation, the second draft, the part where everyone else's enthusiasm drains away — and a deep satisfaction in durability, in making a thing solid enough to outlast their own attention. Their inner clock runs in stages and seasons rather than bursts, and they measure a day by what got finished, not by what got discussed. Underneath the steadiness is a builder's faith: that the future is not argued into being but assembled, piece by working piece.",
+      "strengths": [
+        "Turns vision into something that runs",
+        "Sustained follow-through past the exciting start",
+        "Sequencing big work into realistic stages",
+        "Stewarding budgets, materials, and resources",
+        "Making structures durable and repairable",
+        "Grounding ideas in working prototypes",
+        "Holding standards without stalling momentum"
+      ],
+      "shadow_how_to_relate": "This edge softens when the build is held as a relationship rather than a conquest — pausing now and then to ask whether the structure still serves the people inside it, and trusting that stopping to repair is part of building, not a failure of it. It helps to let the work be a little more shared and a little less finished, and to judge a project by who can live well within it, not only by whether it stands. The point is not to dampen the drive, only to keep aiming it at what is genuinely worth making solid.",
+      "chart_signatures": {
+        "western": [
+          "Capricorn weight — patience for the long climb and the finished thing",
+          "Taurus steadiness — making it tangible, lasting, and well-made",
+          "Mars and Saturn in dialogue — drive harnessed to discipline",
+          "Earth-heavy placements that favor results over theory"
+        ],
+        "vedic": [
+          "Hasta — capable hands that shape raw material into form",
+          "Uttara Phalguni — reliable building and kept commitments over time",
+          "A strong Saturn lending endurance through the slow stages",
+          "Earthy, fixed energy that grounds plans into output"
+        ],
+        "human_design": [
+          "Sacral life-force that sustains real, ongoing work",
+          "Response-based energy that keeps going once truly committed",
+          "Channel 21-45 — taking charge of material resources and the shared storehouse",
+          "Defined motor centers grounding steady, repeatable output"
+        ],
+        "gene_keys": [
+          "Gate 54 — the drive to rise and make ambition material",
+          "Gate 14 — fertile competence directed toward worthy work",
+          "Gate 45 — gathering and stewarding what a community holds in common",
+          "Gate 21 — the will to take responsibility for material order"
+        ]
+      },
+      "great_turning_contribution": {
+        "what_its_for": "The Great Turning needs more than critique and vision; it needs the next systems actually built and running, somewhere people can move in. The Builder's work lives mainly in Life-Sustaining Systems — standing up the regenerative, cooperative economies (regenerative-economy), making the open tools and shared infrastructure that let communities coordinate without a boss (tools-infrastructure), and turning neglected ground into tended, working places (land-living-systems). A functioning alternative settles an argument that a thousand essays cannot, and it hands everyone else something to point at and say \"like that,\" then copy. So the world is asking these hands to start the smallest real version of what should exist and let people actually use it this season, and to build the unglamorous shared pieces everyone assumes someone else will make. The deeper assignment is to build without smuggling the old extraction and hierarchy into the new walls — to raise structures measured by who can live well inside them, not only by whether they last.",
+        "domains": [
+          "regenerative-economy",
+          "tools-infrastructure",
+          "land-living-systems"
+        ],
+        "dimensions": [
+          "life-sustaining-systems"
+        ],
+        "summary": "Brings concrete things into being — the enterprises, institutions, and working alternatives that others can actually live inside."
+      }
+    },
+    {
+      "id": "the-steward",
+      "name": "The Steward",
+      "essence": "Tends land, resources, and what is held in common with patient love across long time, letting endings and decay compost into new fertility.",
+      "shadow": "Care can curdle into control: the same protectiveness that keeps a shared thing healthy can start to grip it, until tending slides into owning — hoarding, privatizing, or fencing off what was meant to stay common. The Steward's gift for continuity can also become a refusal to let go, clinging to a structure, a role, or a way of doing things long past the season for its release, so that holding on quietly starves the new growth it was meant to feed.",
+      "modality_signals": {
+        "western": [
+          "Taurus (earth, tending)",
+          "Virgo (care, maintenance)",
+          "Saturn (the long arc of time)"
+        ],
+        "human_design": [
+          "Defined sacral with root (grounded endurance)",
+          "Channel 27-50 (nourishment and values)"
+        ],
+        "gene_keys": [
+          "27 (Altruism)",
+          "50 (Equilibrium)"
+        ],
+        "vedic": [
+          "Rohini (growth, fertility)",
+          "Pushya (nourishment, tending)"
+        ]
+      },
+      "description": "Tends land, resources, and what is held in common with patient love across long time, letting endings and decay compost into new fertility.",
+      "portrait": "The Steward thinks in seasons rather than deadlines, and measures a thing's worth by whether it will still be healthy long after the credit has been forgotten. There is a quiet, almost bodily attentiveness here — noticing what is drying out, what is overgrown, what has quietly broken and been left, what is ready to be let go. The Steward feels responsible for the shared and the perishable in a way that is steadier than enthusiasm: not the rush of starting something, but the slower satisfaction of keeping something alive and passing it on intact. Endings do not frighten this temperament the way they frighten others; the Steward understands compost, knows that decay is part of fertility, and trusts that the right release in the right season makes room for what comes next. Underneath the practical care is a deep loyalty to continuity itself — to soil, to commons, to the unglamorous maintenance that civilization actually rests on.",
+      "strengths": [
+        "Tends patiently across years, not weeks",
+        "Notices early what is failing or fading",
+        "Keeps shared resources healthy and usable",
+        "Turns waste, decay, and endings into fertility",
+        "Reliable maintenance others can build upon",
+        "Holds the long view through hard seasons",
+        "Knows when to nurture and when to release"
+      ],
+      "shadow_how_to_relate": "This shadow is best met with gentleness rather than alarm, because it grows straight out of genuine devotion — the gripping is just love that forgot to breathe out. It helps to keep asking, without judgment, whether a thing is being tended or being controlled, and whether what is held is still being held for everyone or quietly for oneself. The Steward who already trusts compost and the turning of seasons has the very wisdom needed here; the practice is simply to extend that trust to letting go of control, and to treat release as another form of care rather than a loss.",
+      "chart_signatures": {
+        "western": [
+          "Strong Taurus or earth emphasis — steady, embodied, devoted to tending",
+          "Virgo care in the chart — maintenance, repair, attention to the small",
+          "Saturn well-placed — comfort with long time and patient responsibility",
+          "Sixth or fourth house weight — daily upkeep, roots, what is kept"
+        ],
+        "vedic": [
+          "Rohini's fertility and slow, nourishing growth",
+          "Pushya's instinct to nourish, protect, and sustain",
+          "Moon or earth-sign strength favoring continuity and care",
+          "Saturn dignified — endurance and stewardship of the long arc"
+        ],
+        "human_design": [
+          "Defined Sacral with Root — grounded, renewable working endurance",
+          "Channel 27-50 echo — nourishment, care, and held values",
+          "Generator or Manifesting Generator life-force suited to steady tending",
+          "Splenic notes — instinct for the health of what is alive"
+        ],
+        "gene_keys": [
+          "Gate 27 — caring for others and the commons over the self",
+          "Gate 50 — keeping a system in healthy balance and values",
+          "Gate 59 — fertility, intimacy, what makes things grow",
+          "Gate 32 — honoring what endures and knowing when to release"
+        ]
+      },
+      "great_turning_contribution": {
+        "what_its_for": "The Steward is what the Great Turning depends on once the cameras leave — the patient, place-bound care that lets damaged living systems actually recover and lets shared things stay shared. This gift belongs most to the work of building life-sustaining systems: regenerating soil, water, and habitat over real time, and keeping the commons — tools, land, knowledge, infrastructure — healthy and held in common rather than enclosed or let to rot. The world needs Stewards because almost everything that matters fails not from lack of vision but from lack of maintenance, and because the future will only stand on systems someone is willing to tend, season after season, long past the moment of excitement. Their quiet contribution to the shift in consciousness is to model abundance through care rather than accumulation, and to show that endings, decay, and release can be trusted as part of how life renews itself.",
+        "domains": [
+          "land-living-systems",
+          "governance-commons",
+          "regenerative-economy"
+        ],
+        "dimensions": [
+          "life-sustaining-systems"
+        ],
+        "summary": "Tends land, resources, and what is held in common with patient love across long time, letting endings and decay compost into new fertility."
+      }
+    },
+    {
+      "id": "the-healer",
+      "name": "The Healer",
+      "essence": "Turns toward wounds so they can move and transform, and helps people come home to their own bodies and to belonging.",
+      "shadow": "Can bypass the wound with spiritual language, sell peak experiences, or foster dependence instead of strength.",
+      "modality_signals": {
+        "western": [
+          "Pisces / Neptune (compassion)",
+          "Scorpio / Pluto (depth, transformation)",
+          "Chiron prominent (the wounded healer)"
+        ],
+        "human_design": [
+          "Emotional (solar plexus) authority",
+          "Channel 25-51 (love of spirit)"
+        ],
+        "gene_keys": [
+          "25 (Universal Love)",
+          "55 (Freedom through feeling)"
+        ]
+      },
+      "description": "Turns toward wounds so they can move and transform, and helps people come home to their own bodies and to belonging.",
+      "portrait": "The Healer is drawn toward the places most people flinch away from: grief, shame, pain held silently in the body. Where others see something broken, the Healer senses something asking to move. They tend to feel the room before anyone speaks, picking up sorrow and tension like weather, and they have learned, often through their own hard passage, that a wound met with presence rather than fear can become a source of depth. Their inner life runs in tides; they trust feeling as a form of knowing and need time to let an emotion clarify before they understand it. At their center is a quiet faith that nothing in a person is beyond tenderness, and that returning to the body and to connection is how people become whole.",
+      "strengths": [
+        "Holds intense emotion without recoiling",
+        "Senses unspoken pain in a room",
+        "Creates safety for grief to surface",
+        "Helps people return to their bodies",
+        "Turns personal suffering into compassion",
+        "Stays present through slow recovery",
+        "Restores a felt sense of belonging"
+      ],
+      "shadow_how_to_relate": "The Healer's reach for wholeness can slide past the actual ache into comforting words, dramatic breakthroughs, or a closeness where others lean rather than steady themselves. It helps to notice that this usually comes from how much they want relief for someone, not from any failure of care. The medicine is patience: letting a wound be exactly as raw as it is, trusting that real healing is slow and belongs to the other person, and tending the Healer's own unmet places so they are not quietly mending themselves through everyone they hold.",
+      "chart_signatures": {
+        "western": [
+          "Pisces or Neptune strong, a porous, compassionate sensitivity",
+          "Scorpio or Pluto themes, comfort in depth and transformation",
+          "Chiron prominent, the one whose own wound becomes medicine",
+          "Water-heavy chart or full 8th/12th houses"
+        ],
+        "vedic": [
+          "A strong, tender Moon, attuned to the emotional body",
+          "Ketu contact, a pull toward dissolving and letting go",
+          "Moon nakshatras of nurture and renewal like Revati or Ashlesha",
+          "Saturn lending endurance to long, patient recovery"
+        ],
+        "human_design": [
+          "Emotional (Solar Plexus) authority, clarity arrives over time",
+          "An open emotional or other center that absorbs what others feel",
+          "The 25-51 current, love met through shock and awakening",
+          "Channels carrying feeling between the heart and the throat"
+        ],
+        "gene_keys": [
+          "Gate 25, innocence and a love that excludes no one",
+          "Gate 55, freedom found by moving through feeling",
+          "Gate 22, grace that stays kind under pressure",
+          "Gate 51, the jolt that cracks a person open to spirit"
+        ]
+      },
+      "great_turning_contribution": {
+        "what_its_for": "The Healer is for the inner half of the Great Turning: tending the grief, trauma, and numbness that keep people frozen while the living world unravels. This gift belongs most to Healing and Wholeness and to Care and Relief, and it serves the shift in consciousness and the life-sustaining systems that depend on people being well enough to act. A movement that only fights and builds will burn out; the Healer keeps activists, communities, and the wounded from collapsing under the weight of what they witness. By helping people feel their pain for the world without drowning in it, the Healer turns despair into the kind of grounded courage that can stay in the work for the long haul, and rebuilds the felt sense of belonging that a culture of separation has worn thin.",
+        "domains": [
+          "healing-wholeness",
+          "care-relief",
+          "protection-advocacy"
+        ],
+        "dimensions": [
+          "shift-in-consciousness",
+          "holding-actions"
+        ],
+        "summary": "Turns toward wounds so they can move and transform, and helps people come home to their own bodies and to belonging."
+      }
+    },
+    {
+      "id": "the-convener",
+      "name": "The Convener",
+      "essence": "Gathers scattered people into a space safe enough that trust forms and a group's shared intelligence can finally wake up.",
+      "shadow": "Can force consensus or quietly become the gatekeeper who decides who belongs at the table.",
+      "modality_signals": {
+        "western": [
+          "Cancer (holding, the container)",
+          "Libra (bringing together)",
+          "Moon prominent (belonging)"
+        ],
+        "human_design": [
+          "Defined throat (voice that calls people in)",
+          "Channel 37-40 (community and contribution)"
+        ],
+        "gene_keys": [
+          "37 (Tenderness)",
+          "40 (Resolve)"
+        ],
+        "vedic": [
+          "Punarvasu (return, hospitality)",
+          "Anuradha (companionship in shared purpose)"
+        ]
+      },
+      "description": "Gathers scattered people into a space safe enough that trust forms and a group's shared intelligence can finally wake up.",
+      "portrait": "The Convener feels, almost physically, when a room is fragmented and when it has knit together, and is restless until the second thing happens. They tend to think in terms of who is missing, who has not spoken, and what conditions a circle needs before honesty becomes possible. Belonging is their native sense; they read the temperature of a group the way others read a single face. Their attention runs less to ideas in the abstract and more to the relationships that carry ideas, and they often experience their own purpose as incomplete until it is shared with others. There is a quiet hosting instinct in them, an urge to set the table well so that whatever wants to emerge has somewhere to land.",
+      "strengths": [
+        "Builds trust quickly across difference",
+        "Reads the emotional weather of a group",
+        "Calls in the missing and the quiet",
+        "Holds a container without dominating it",
+        "Turns scattered individuals into a we",
+        "Senses when a circle is ready",
+        "Tends belonging as real infrastructure"
+      ],
+      "shadow_how_to_relate": "The shadow here is just the hosting gift gripping too tight: a love of cohesion that starts smoothing over real disagreement, or a sense of responsibility for the group that hardens into control over who gets in. It helps to notice that a living circle can hold tension without breaking, and that letting conflict breathe is itself a form of care. The work is not to stop tending the container but to trust the people in it more, to share the keys, and to let belonging be something the group makes together rather than something one person guards.",
+      "chart_signatures": {
+        "western": [
+          "Cancer energy: the instinct to hold and shelter a group",
+          "Libra emphasis: a pull toward bringing people into balance",
+          "Prominent Moon: belonging felt as a basic need",
+          "Strong 7th or 11th house: life organized around partnership and community"
+        ],
+        "vedic": [
+          "Punarvasu: the warmth of return, refuge, and hospitality",
+          "Anuradha: steady devotion to companionship in shared purpose",
+          "Moon-ruled placements coloring a nurturing, gathering temperament"
+        ],
+        "human_design": [
+          "A defined Throat that can voice the invitation and call people in",
+          "The 37-40 channel: the bargain between community and contribution",
+          "An open or defined Solar Plexus tuned to a room's emotional tide",
+          "Splenic or sacral cues for sensing when a circle is ready"
+        ],
+        "gene_keys": [
+          "Gate 37: the warmth and tenderness that makes a group feel like family",
+          "Gate 40: the resolve to provide, balanced with the right to withdraw",
+          "Gate 19: deep attunement to what a community actually needs",
+          "Gate 6: learning when to open the boundary and when to hold it"
+        ]
+      },
+      "great_turning_contribution": {
+        "what_its_for": "The Convener is what lets collective work actually be collective. Most efforts to hold the line, build the alternative, or shift the culture fail not from bad ideas but from broken trust and people who never truly cohered, and this gift is the antidote: it creates the containers where coalitions hold, where mutual-aid networks become genuine relationships, and where communities govern themselves rather than fracture. This archetype belongs most to the life-sustaining-systems and shift-in-consciousness dimensions, and it is especially needed across governance-commons, care-relief, and protection-advocacy, wherever scattered people must become a durable, self-trusting we. The Great Turning needs Conveners to seed and steward the spaces where everyone else's gifts can meet, because no single hand rebuilds a world; circles do, and someone has to set the table.",
+        "domains": [
+          "governance-commons",
+          "knowledge-learning",
+          "care-relief"
+        ],
+        "dimensions": [
+          "life-sustaining-systems",
+          "holding-actions"
+        ],
+        "summary": "Gathers scattered people into a space safe enough that trust forms and a group's shared intelligence can finally wake up."
+      }
+    },
+    {
+      "id": "the-storyteller",
+      "name": "The Storyteller",
+      "essence": "Gives language and image to what many already feel but cannot yet name, and gently changes how people see.",
+      "shadow": "Can chase reach and resonance over truth, or harden a living, breathing story into doctrine, slogan, or personal brand.",
+      "modality_signals": {
+        "western": [
+          "Sagittarius (meaning)",
+          "Gemini (language)",
+          "Neptune (imagination)"
+        ],
+        "human_design": [
+          "Defined throat (expression)",
+          "Channel 11-56 (ideas into story)"
+        ],
+        "gene_keys": [
+          "56 (Enrichment)"
+        ]
+      },
+      "description": "Gives language and image to what many already feel but cannot yet name, and gently changes how people see.",
+      "portrait": "The Storyteller lives close to the gap between what is felt and what has been said. They notice the unspoken thing in a room, the ache that has no word yet, and something in them reaches for the phrase or image that will let it finally land. Meaning matters to them more than information; they would rather move one person than impress a crowd. Often they carry a sense that the world runs on the stories it tells itself, and that changing the story is a real form of work, not decoration. They tend to listen first, collecting other people's truths, then offer those truths back in a shape that makes the familiar suddenly visible.",
+      "strengths": [
+        "Names feelings others can't yet articulate",
+        "Turns abstract ideas into vivid images",
+        "Reframes a situation so people see freshly",
+        "Listens for the unspoken thing in a room",
+        "Carries meaning across difference and distance",
+        "Makes the future feel imaginable and near",
+        "Holds attention without coercing it"
+      ],
+      "shadow_how_to_relate": "This shadow is the gift forgetting it was meant to serve. The pull toward applause, virality, or a tidy signature line is a sign the story has started circling back toward the teller rather than out toward the people it was for. It eases not by self-criticism but by returning to the original question: who needed this, and is it still true for them? A story kept honest stays a little unfinished, open enough that listeners can step inside it rather than only admire it. The tending is gentle and ongoing, not a fault to root out.",
+      "chart_signatures": {
+        "western": [
+          "Sagittarius energy reaching for meaning and the larger frame",
+          "Gemini or strong Mercury wired for language and connection",
+          "Neptune coloring imagination, image, and felt atmosphere",
+          "3rd or 9th house emphasis: speech, teaching, the wider story"
+        ],
+        "vedic": [
+          "Mercury or Jupiter prominent, shaping word and wisdom",
+          "Nakshatras of warmth and delight in expression, like Purva Phalguni",
+          "Revati's gift for carrying meaning gently across thresholds",
+          "A talkative 3rd house pull toward voice and narration"
+        ],
+        "human_design": [
+          "Defined Throat oriented toward expression and being heard",
+          "Channel 11-56, ideas ripening into shareable story",
+          "Gates near 33 and 23, experience distilled into telling",
+          "Individual or collective circuitry that wants to transmit"
+        ],
+        "gene_keys": [
+          "Gate 56, the move from distraction to true enrichment",
+          "Gate 11, raw ideas seeking the right vessel",
+          "Gate 33, private experience refined into shared meaning",
+          "Gate 23, the knack for making the strange suddenly clear"
+        ]
+      },
+      "great_turning_contribution": {
+        "what_its_for": "The Storyteller exists for the shift in consciousness: the slow, decisive change in how people perceive themselves, each other, and the living world. Old extractive systems are held in place partly by the stories that make them seem normal and permanent, and they cannot be dismantled by facts alone. This gift is what makes another world feel imaginable before it is built, and it carries that vision into the domains of story, imagination, and the sacred, into knowledge and learning, and alongside protection and advocacy where a cause needs a heart and a human face. Its work is to render the invisible visible, to give grief and hope a shape people can hold, and to keep the new story honest, alive, and open enough that others can climb inside and help write what comes next.",
+        "domains": [
+          "story-imagination-sacred",
+          "protection-advocacy",
+          "knowledge-learning"
+        ],
+        "dimensions": [
+          "shift-in-consciousness",
+          "holding-actions",
+          "life-sustaining-systems"
+        ],
+        "summary": "Gives language and image to what many already feel but cannot yet name, and gently changes how people see."
+      }
+    },
+    {
+      "id": "the-toolmaker",
+      "name": "The Toolmaker",
+      "essence": "Builds the tools, systems, and reusable patterns that let people coordinate well without anyone needing to be in charge.",
+      "shadow": "Can mistake the tool for the relationships it serves, build power into the tool itself, or over-engineer and never ship.",
+      "modality_signals": {
+        "western": [
+          "Aquarius (systems, networks)",
+          "Virgo (precision, craft)",
+          "Uranus-Mercury (inventive design)"
+        ],
+        "human_design": [
+          "Channel 9-52 (focus, concentration)",
+          "Channel 16-48 (depth into skill)"
+        ],
+        "gene_keys": [
+          "48 (Resourcefulness)",
+          "16 (Mastery)"
+        ],
+        "vedic": [
+          "Chitra (the architect, the maker)",
+          "Hasta (skillful hands)"
+        ]
+      },
+      "description": "Builds the tools, systems, and reusable patterns that let people coordinate well without anyone needing to be in charge.",
+      "portrait": "The Toolmaker sees a recurring snag where others see a one-off frustration, and feels a quiet itch to fix it at the root so no one has to fight it again. Their attention runs to structure: how a thing is put together, where it leaks, what small change would let it carry far more weight. They tend to think in patterns and parts, finding deep satisfaction in elegance, in the click of something that finally just works. Often they would rather build the lever than pull it, trusting that a good tool placed in many hands does more than any single heroic act. Underneath the craft is a generous instinct: to leave behind something that keeps working long after they have walked away.",
+      "strengths": [
+        "Sees the root pattern under recurring problems",
+        "Designs systems that scale past their maker",
+        "Turns one-off fixes into reusable tools",
+        "Builds coordination that needs no boss",
+        "Refines craft toward elegant simplicity",
+        "Distributes power into shared infrastructure",
+        "Thinks in parts, interfaces, and leverage"
+      ],
+      "shadow_how_to_relate": "The gift over-reaches when the love of clean structure outgrows the messy human reason the tool exists. It can show up as polishing endlessly while the moment passes, solving for the elegant case while real people wait, or quietly concentrating control in a design that was meant to free people. The tend, not the fix, is to keep asking who the tool actually serves and to let them touch it early and often. A tool tested in real hands, while still rough, usually teaches more than another month alone with the blueprint.",
+      "chart_signatures": {
+        "western": [
+          "Aquarian leanings toward systems, networks, and shared design",
+          "Virgo precision and devotion to craft and useful detail",
+          "Uranus touching Mercury: inventive, original problem-solving",
+          "Earth-air mix that grounds big ideas into working things"
+        ],
+        "vedic": [
+          "Chitra, the celestial architect, drawn to elegant making",
+          "Hasta, the skilled hand that shapes raw material well",
+          "Mercury strength favoring design, logic, and structure",
+          "Saturn well-placed for patient, durable building"
+        ],
+        "human_design": [
+          "Channel 9-52 lending deep focus and concentration",
+          "Channel 16-48 carrying skill toward genuine mastery",
+          "Defined Throat or Ajna shaping ideas into clear form",
+          "Sacral or root drive that loves sustained, careful work"
+        ],
+        "gene_keys": [
+          "Gate 48 turning felt inadequacy into deep resourcefulness",
+          "Gate 16 moving raw enthusiasm toward true mastery",
+          "Gate 9 as focus that makes detail meaningful",
+          "Gate 52 as the stillness that lets concentration build"
+        ]
+      },
+      "great_turning_contribution": {
+        "summary": "The Toolmaker builds the open, trustworthy infrastructure and reusable patterns that let communities coordinate, govern themselves, and share resources without depending on a boss or a brittle platform.",
+        "dimensions": [
+          "life-sustaining-systems"
+        ],
+        "domains": [
+          "tools-infrastructure",
+          "governance-commons",
+          "regenerative-economy"
+        ],
+        "what_its_for": "The new systems the world is turning toward will live or die on whether ordinary people can run them together. This gift is for making the scaffolding: the open tools, shared protocols, and reusable patterns that let a co-op, a watershed council, or a mutual-aid network coordinate without a corporation in the middle. Built well, with power distributed and the design kept in common hands, these tools quietly multiply everyone else's work. The Toolmaker's task is to build the lever, then place it where the most people can pull."
+      }
+    },
+    {
+      "id": "the-guardian",
+      "name": "The Guardian",
+      "essence": "Stands between harm and what it loves, meeting danger directly without becoming the thing it fights.",
+      "shadow": "Can become what it opposes, harden into armor against grief, or turn insight into a weapon against perceived enemies.",
+      "modality_signals": {
+        "western": [
+          "Aries (courage)",
+          "Scorpio (fierce protection)",
+          "Mars-Pluto (power in defense)"
+        ],
+        "human_design": [
+          "Defined spleen (instinct, protection)",
+          "Channel 18-58 (correcting toward what is just)"
+        ],
+        "gene_keys": [
+          "18 (Integrity)",
+          "38 (The Warrior, perseverance)"
+        ],
+        "vedic": [
+          "Ardra (fierce clearing of harm)",
+          "Mula (going to the root)"
+        ]
+      },
+      "description": "Stands between harm and what it loves, meeting danger directly without becoming the thing it fights.",
+      "portrait": "The Guardian feels a wrong in the body before the mind has words for it, a tightening that says something here is not right and someone has to stand up. It is wired to notice threat, imbalance, and the quiet exploitation others learn to ignore, and it cannot easily look away once it has seen. There is a deep, almost protective tenderness underneath the fierceness, because the Guardian fights for things, not just against them, and the fight is always a measure of how much it cares. It tends to feel responsible for the safety of people, places, and principles, and steadies under pressure that scatters others. Its inner life moves between vigilance and the longing to finally rest, between drawn sword and open hand.",
+      "strengths": [
+        "Sees harm early and names it plainly",
+        "Steadies under pressure and conflict",
+        "Sets and holds firm boundaries",
+        "Acts decisively when others hesitate",
+        "Defends the vulnerable without seeking thanks",
+        "Endures long fights without burning out fast",
+        "Reads power and where it is misused"
+      ],
+      "shadow_how_to_relate": "The over-reach is gentlest to meet as a sign of how much is being carried, not a flaw to defeat. When vigilance never sets down its weapon, the body forgets the difference between a real threat and an old one, and grief that has nowhere to go calcifies into hardness or contempt. It helps to let the fierceness rest in trusted company, to grieve what it could not protect, and to remember that the softness underneath was always the point. The guard can stay loving when it knows it is allowed, sometimes, to be off duty.",
+      "chart_signatures": {
+        "western": [
+          "Mars or Pluto strong, lending fierce protective drive",
+          "Aries or Scorpio emphasis, courage and depth under fire",
+          "Saturn aspects giving stamina for the long fight",
+          "Fixed signs holding a boundary that will not move"
+        ],
+        "vedic": [
+          "Ardra leanings, clearing harm at the root",
+          "Mula placements, going to the source of a wrong",
+          "Mars-ruled signs lending the warrior's nerve",
+          "Ketu themes, cutting away what corrupts"
+        ],
+        "human_design": [
+          "Defined Spleen, instinct for danger and timing",
+          "Channel 18-58, the urge to correct toward what is just",
+          "Defined Root or motors fueling sustained resistance",
+          "Gate 38, the willingness to hold the line"
+        ],
+        "gene_keys": [
+          "18, turning judgment of wrongs into clear integrity",
+          "38, the warrior's perseverance for what matters",
+          "57, instinct that senses harm before it lands",
+          "51, the shock that wakes courage in others"
+        ]
+      },
+      "great_turning_contribution": {
+        "summary": "The Guardian is the Great Turning's holding force, buying time and safety by standing between extraction and the living world it would consume.",
+        "dimensions": [
+          "holding-actions"
+        ],
+        "domains": [
+          "protection-advocacy",
+          "care-relief",
+          "governance-commons"
+        ],
+        "what_its_for": "Every other gift needs time and a protected space to work, and the Guardian is the one who wins that time. The world needs people willing to face polluters, evictions, unjust laws, and emergencies head-on, to defend the vulnerable, the commons, and the rights that extraction erodes. This gift belongs on the front lines of resistance and relief, slowing the harm so healers, builders, and weavers can do the rest. Its deepest service is to fight without becoming the cruelty it opposes, keeping protection rooted in love."
+      }
+    },
+    {
+      "id": "the-elder",
+      "name": "The Elder",
+      "essence": "Holds grief and beauty, doubt and faith in the same hands, and walks others to the thresholds they're ready to cross.",
+      "shadow": "Can point to a threshold not yet crossed, mistake a role for an identity, or withhold rather than pass the torch.",
+      "modality_signals": {
+        "western": [
+          "Capricorn (maturity, authority)",
+          "Sagittarius (the guide, the teacher)",
+          "Saturn (earned wisdom)"
+        ],
+        "human_design": [
+          "Defined Ajna (settled knowing)",
+          "Channel 47-64 (making sense of confusion)"
+        ],
+        "gene_keys": [
+          "13 (Listening, the witness)",
+          "47 (Transmutation)"
+        ],
+        "vedic": [
+          "Uttara Bhadrapada (deep, wise counsel)",
+          "Pushya (nurturing guidance)"
+        ]
+      },
+      "description": "Holds grief and beauty, doubt and faith in the same hands, and walks others to the thresholds they're ready to cross.",
+      "portrait": "The Elder carries a long view. Where others see only the emergency or only the dream, this person can hold both, along with the grief, the paradox, and the quiet beauty underneath. Time has worked on them, or wisdom has arrived early, and they have learned to sit with what cannot be fixed without flinching or rushing to advise. Their orientation is not toward doing more but toward making meaning, steadying a room, and recognizing the moment someone is on the edge of a change they can't yet name. They tend to listen more than they speak, and what they pass on feels less like instruction than like permission.",
+      "strengths": [
+        "Holds paradox without collapsing it",
+        "Steadies a room under pressure",
+        "Mentors without taking over",
+        "Sits with grief and complexity",
+        "Recognizes thresholds in others",
+        "Makes meaning from confusion",
+        "Passes on what was earned"
+      ],
+      "shadow_how_to_relate": "The Elder gift over-reaches when wisdom becomes a perch: counsel offered before it's asked for, a story told as if the ending were already known, or a quiet refusal to let the next generation lead and fail in their own way. It can also harden into identity, where being the wise one matters more than being useful. This is tended, not corrected, by staying a fellow traveler who is also still crossing thresholds, by letting younger hands hold the torch sooner than feels comfortable, and by remembering that the deepest mentoring often looks like trusting someone enough to say less.",
+      "chart_signatures": {
+        "western": [
+          "Capricorn weight: earned authority, patience, the long arc",
+          "Saturn well-placed: maturity as a kind of teaching",
+          "Sagittarius reach: the guide who points toward meaning",
+          "Strong 9th or 12th house: wisdom, retreat, the elder's distance"
+        ],
+        "vedic": [
+          "Uttara Bhadrapada: deep, settled counsel",
+          "Pushya: nourishing, protective guidance",
+          "Saturn dignified: time-tested discernment",
+          "Jupiter as guru: the teacher who blesses rather than binds"
+        ],
+        "human_design": [
+          "Defined Ajna: a settled, repeatable way of knowing",
+          "Channel 47-64 glossed: turning confusion into clarity over time",
+          "Defined Head or Splenic awareness: instinctive timing for thresholds",
+          "Projector-leaning recognition: waits to be invited before guiding"
+        ],
+        "gene_keys": [
+          "Gate 13: the listener who holds others' stories",
+          "Gate 47 (our gloss): making sense of the murky and the heavy",
+          "Gate 64 (our gloss): sitting with not-knowing until it clears",
+          "Gate 22 (our gloss): grace under emotional weather"
+        ]
+      },
+      "great_turning_contribution": {
+        "what_its_for": "The Elder exists so that wisdom, grief, and perspective are not lost between generations as the old systems fall and new ones are born. In the Great Turning this gift serves the shift in consciousness most directly, holding the inner ground that the work of transition depends on. Their work is to mentor the people doing the holding actions and building the new, to keep grief and beauty in the same room so neither numbs the other, and to recognize when a person or a movement is at a threshold and needs witness more than advice. They serve the domains of knowledge and learning, healing and wholeness, and story, imagination, and the sacred, carrying the long memory and the steady nerve that let everyone else dare more.",
+        "domains": [
+          "healing-wholeness",
+          "knowledge-learning",
+          "story-imagination-sacred"
+        ],
+        "dimensions": [
+          "shift-in-consciousness",
+          "life-sustaining-systems"
+        ],
+        "summary": "Holds grief and beauty, doubt and faith in the same hands, and walks others to the thresholds they're ready to cross."
+      }
+    },
+    {
+      "id": "the-seer",
+      "name": "The Seer",
+      "essence": "Reads the deep pattern beneath the surface — the hidden fault line and the thing quietly trying to be born.",
+      "shadow": "Can become the very pattern it diagnoses, drift into abstraction cut off from lived practice, or prophesy without building the practical architecture the vision needs.",
+      "modality_signals": {
+        "western": [
+          "Virgo (discernment)",
+          "Scorpio (seeing the hidden)",
+          "Mercury-Saturn (rigorous perception)"
+        ],
+        "human_design": [
+          "Defined Ajna (conceptual seeing)",
+          "Channel 63-4 (questioning into insight)"
+        ],
+        "gene_keys": [
+          "63 (Inquiry)"
+        ]
+      },
+      "description": "Reads the deep pattern beneath the surface — the hidden fault line and the thing quietly trying to be born.",
+      "portrait": "The Seer lives a half-step ahead of the room, tracking the shape under the noise — what a system is really doing, where it will crack, and what wants to emerge through the crack. Their attention runs to roots and trajectories rather than headlines; they feel the pattern before they can prove it, and they are restless until the felt thing becomes clear. They tend to sit slightly apart, watching, holding questions longer than most people find comfortable, because a premature answer feels like a small betrayal of the truth. There is often a quiet ache in them: they see what is coming and cannot always make others see it in time. Discernment is their native weather — the steady sorting of signal from noise, of the real from the merely loud.",
+      "strengths": [
+        "Senses patterns long before they surface",
+        "Names the hidden fault line plainly",
+        "Holds a question without rushing closure",
+        "Sorts true signal from loud noise",
+        "Sees what is trying to emerge",
+        "Reframes a problem so it moves",
+        "Connects scattered dots into one shape"
+      ],
+      "shadow_how_to_relate": "When seeing outruns doing, the gift turns cold and lonely — clarity with no place to land. The tending is gentle: bring the vision back down to one body, one room, one next step, and let someone you trust help carry it into form. The clarity is not the contribution by itself; it becomes a contribution when it meets practice. Stay close to people who are building, so the sight stays warm and stays useful.",
+      "chart_signatures": {
+        "western": [
+          "Virgo's fine discernment, the eye for what's off",
+          "Scorpio's pull toward what stays hidden",
+          "Mercury and Saturn together — rigorous, patient perception",
+          "Aquarius or 11th-house distance that sees the whole system"
+        ],
+        "vedic": [
+          "Strong Mercury or Ketu — penetrating, detached insight",
+          "Jyeshtha or Mula's reach into root causes",
+          "8th-house themes: the buried, the transformative",
+          "Saturn's discipline lending weight to what is seen"
+        ],
+        "human_design": [
+          "Defined Ajna — a mind built for conceptualizing",
+          "Channel 63-4, questioning that resolves into insight",
+          "Channel 64-47, making sense of confusion over time",
+          "Projector-style seeing that waits to be invited"
+        ],
+        "gene_keys": [
+          "Gate 63, the urge to inquire beneath doubt",
+          "Gate 64, holding confusion until pattern clarifies",
+          "Gate 4, turning a question into workable answer",
+          "Gate 24, returning to a truth until it lands"
+        ]
+      },
+      "great_turning_contribution": {
+        "what_its_for": "The Seer's work is to give the movement its early sight — to name the fault line before it breaks and the possibility before it's obvious, so others can act in time and aim true. This gift serves most in the shift in consciousness, and within it the domains of knowledge and learning and of story, imagination and the sacred, with a strong hand in governance and the commons where clear pattern-reading keeps collective choices honest. In a time of overwhelm and false certainty, the Great Turning needs people who can hold complexity without flinching, refuse the comforting story, and point at what is actually happening. The Seer is for the diagnosis others avoid and the horizon others can't yet picture — but their sight only changes the world when it is handed to builders, healers, and weavers who can turn it into architecture. Their task is to see clearly, say it plainly, and stay close enough to practice that the vision lands.",
+        "domains": [
+          "knowledge-learning",
+          "governance-commons"
+        ],
+        "dimensions": [
+          "life-sustaining-systems"
+        ],
+        "summary": "Reads the deep pattern beneath the surface — the hidden fault line and the thing quietly trying to be born."
+      }
+    }
+  ],
+  "trim_tabs": [
+    {
+      "gift_id": "the-weaver",
+      "domain_id": "regenerative-economy",
+      "pattern": "Make a simple list of the people and small ventures near you working on related things, then introduce two who don't yet know each other but clearly should.",
+      "why_it_compounds": "Each introduction creates a relationship that can outlast you. As ties multiply, work that was stuck waiting for the right collaborator starts moving, and people begin bringing you what they need so the next match is easier to make.",
+      "id": "tt-the-weaver-regenerative-economy",
+      "upward_spiral_logic": "Each introduction creates a relationship that can outlast you. As ties multiply, work that was stuck waiting for the right collaborator starts moving, and people begin bringing you what they need so the next match is easier to make.",
+      "dimension": "life-sustaining-systems"
+    },
+    {
+      "gift_id": "the-weaver",
+      "domain_id": "governance-commons",
+      "pattern": "When several groups are quietly working on the same local issue, create one shared place where they can see each other and what each is doing.",
+      "why_it_compounds": "Once groups can find one another they stop duplicating effort and start covering each other's gaps. Visibility builds trust, and trust makes the next joint effort take far less convincing.",
+      "id": "tt-the-weaver-governance-commons",
+      "upward_spiral_logic": "Once groups can find one another they stop duplicating effort and start covering each other's gaps. Visibility builds trust, and trust makes the next joint effort take far less convincing.",
+      "dimension": "life-sustaining-systems"
+    },
+    {
+      "gift_id": "the-weaver",
+      "domain_id": "care-relief",
+      "pattern": "Connect someone who needs help with someone nearby who can give it, and stay in the loop long enough to see it land.",
+      "why_it_compounds": "A help that arrives through a named relationship tends to come back around. People who were once helped start helping others, turning a one-time favor into a web that catches more people over time.",
+      "id": "tt-the-weaver-care-relief",
+      "upward_spiral_logic": "A help that arrives through a named relationship tends to come back around. People who were once helped start helping others, turning a one-time favor into a web that catches more people over time.",
+      "dimension": "holding-actions"
+    },
+    {
+      "gift_id": "the-builder",
+      "domain_id": "regenerative-economy",
+      "pattern": "Start the smallest working version of the alternative you wish existed, and let real people actually use it this month.",
+      "why_it_compounds": "A thing people can use proves it is possible in a way no argument can. Early users bring feedback that improves the next version, and a working example draws collaborators that a pitch never would.",
+      "id": "tt-the-builder-regenerative-economy",
+      "upward_spiral_logic": "A thing people can use proves it is possible in a way no argument can. Early users bring feedback that improves the next version, and a working example draws collaborators that a pitch never would.",
+      "dimension": "life-sustaining-systems"
+    },
+    {
+      "gift_id": "the-builder",
+      "domain_id": "tools-infrastructure",
+      "pattern": "Build the unglamorous shared piece that everyone assumes someone else will make — the part many efforts quietly depend on.",
+      "why_it_compounds": "Once the shared piece exists, every project that needed it can move faster instead of rebuilding it alone. The savings spread across everyone who uses it, and each new user has reason to help maintain it.",
+      "id": "tt-the-builder-tools-infrastructure",
+      "upward_spiral_logic": "Once the shared piece exists, every project that needed it can move faster instead of rebuilding it alone. The savings spread across everyone who uses it, and each new user has reason to help maintain it.",
+      "dimension": "life-sustaining-systems"
+    },
+    {
+      "gift_id": "the-builder",
+      "domain_id": "land-living-systems",
+      "pattern": "Take one neglected space and turn it into a small working example of what's possible — a garden, a repair corner, a shared workshop.",
+      "why_it_compounds": "A visible, functioning place teaches more than any plan and gives people somewhere to point and say 'like that.' It attracts hands and donations, and what's learned there can be copied in the next neglected space.",
+      "id": "tt-the-builder-land-living-systems",
+      "upward_spiral_logic": "A visible, functioning place teaches more than any plan and gives people somewhere to point and say 'like that.' It attracts hands and donations, and what's learned there can be copied in the next neglected space.",
+      "dimension": "life-sustaining-systems"
+    },
+    {
+      "gift_id": "the-steward",
+      "domain_id": "land-living-systems",
+      "pattern": "Adopt one piece of land or water and commit to tending it on a regular rhythm, season after season.",
+      "why_it_compounds": "Steady care lets a place visibly recover, and a recovering place draws others who want to help. Your knowledge of that specific ground deepens with each visit, making every later repair quicker and surer.",
+      "id": "tt-the-steward-land-living-systems",
+      "upward_spiral_logic": "Steady care lets a place visibly recover, and a recovering place draws others who want to help. Your knowledge of that specific ground deepens with each visit, making every later repair quicker and surer.",
+      "dimension": "life-sustaining-systems"
+    },
+    {
+      "gift_id": "the-steward",
+      "domain_id": "governance-commons",
+      "pattern": "Take responsibility for one shared resource everyone uses but no one maintains, and keep a simple record of its condition over time.",
+      "why_it_compounds": "A cared-for shared thing stays usable instead of slowly breaking, which saves the whole group repeated cost. The record makes its value plain, so more people are willing to chip in to keep it going.",
+      "id": "tt-the-steward-governance-commons",
+      "upward_spiral_logic": "A cared-for shared thing stays usable instead of slowly breaking, which saves the whole group repeated cost. The record makes its value plain, so more people are willing to chip in to keep it going.",
+      "dimension": "life-sustaining-systems"
+    },
+    {
+      "gift_id": "the-steward",
+      "domain_id": "regenerative-economy",
+      "pattern": "Set up a simple way for things people would throw away to be repaired, shared, or passed on instead.",
+      "why_it_compounds": "Every item kept in use is one that didn't have to be bought or discarded, which keeps value circulating locally. As people see it working they bring more, and what looked like waste becomes a steady supply for others.",
+      "id": "tt-the-steward-regenerative-economy",
+      "upward_spiral_logic": "Every item kept in use is one that didn't have to be bought or discarded, which keeps value circulating locally. As people see it working they bring more, and what looked like waste becomes a steady supply for others.",
+      "dimension": "life-sustaining-systems"
+    },
+    {
+      "gift_id": "the-healer",
+      "domain_id": "healing-wholeness",
+      "pattern": "Offer a small, regular, low-pressure space where people can slow down, be in their bodies, and name what's hard — with no agenda to fix it.",
+      "why_it_compounds": "Feeling met loosens what people were carrying alone and frees up energy that worry was holding. Those who feel steadied tend to steady others, and the space becomes something people invite their friends into.",
+      "id": "tt-the-healer-healing-wholeness",
+      "upward_spiral_logic": "Feeling met loosens what people were carrying alone and frees up energy that worry was holding. Those who feel steadied tend to steady others, and the space becomes something people invite their friends into.",
+      "dimension": "shift-in-consciousness"
+    },
+    {
+      "gift_id": "the-healer",
+      "domain_id": "care-relief",
+      "pattern": "Learn one simple, hands-on way to help someone in acute distress, and quietly make yourself available to offer it in your immediate circle.",
+      "why_it_compounds": "A real skill offered close to home reaches people faster than any service can. As your circle sees that help is actually present, they learn the skill too, and care spreads from person to person.",
+      "id": "tt-the-healer-care-relief",
+      "upward_spiral_logic": "A real skill offered close to home reaches people faster than any service can. As your circle sees that help is actually present, they learn the skill too, and care spreads from person to person.",
+      "dimension": "holding-actions"
+    },
+    {
+      "gift_id": "the-healer",
+      "domain_id": "protection-advocacy",
+      "pattern": "Offer steady, ongoing support to the people doing exhausting frontline work so they can keep going without breaking down.",
+      "why_it_compounds": "Tending the carers keeps experienced people in the work instead of burning out and leaving. Each person who stays holds more skill and trust, so the whole effort grows stronger rather than starting over.",
+      "id": "tt-the-healer-protection-advocacy",
+      "upward_spiral_logic": "Tending the carers keeps experienced people in the work instead of burning out and leaving. Each person who stays holds more skill and trust, so the whole effort grows stronger rather than starting over.",
+      "dimension": "holding-actions"
+    },
+    {
+      "gift_id": "the-convener",
+      "domain_id": "governance-commons",
+      "pattern": "Start a regular gathering with a clear, simple structure where a group actually makes decisions together rather than just talking.",
+      "why_it_compounds": "Trust grows every time a group sees that meeting leads somewhere. Once people experience a process that works, they bring more of their decisions to it, and the group's ability to act together compounds.",
+      "id": "tt-the-convener-governance-commons",
+      "upward_spiral_logic": "Trust grows every time a group sees that meeting leads somewhere. Once people experience a process that works, they bring more of their decisions to it, and the group's ability to act together compounds.",
+      "dimension": "life-sustaining-systems"
+    },
+    {
+      "gift_id": "the-convener",
+      "domain_id": "knowledge-learning",
+      "pattern": "Host a recurring space where people take turns teaching each other something they know.",
+      "why_it_compounds": "Each session spreads skills sideways without anyone needing to hire a teacher. Teaching deepens the teacher's mastery too, so the group's shared knowledge keeps widening with every meeting.",
+      "id": "tt-the-convener-knowledge-learning",
+      "upward_spiral_logic": "Each session spreads skills sideways without anyone needing to hire a teacher. Teaching deepens the teacher's mastery too, so the group's shared knowledge keeps widening with every meeting.",
+      "dimension": "life-sustaining-systems"
+    },
+    {
+      "gift_id": "the-convener",
+      "domain_id": "care-relief",
+      "pattern": "Gather people in a simple format where everyone names one thing they need and one thing they can offer.",
+      "why_it_compounds": "Needs and offers that stay hidden never meet; said aloud, they pair up on the spot. As people experience getting help by giving it, the group becomes a reliable safety net that more people lean on.",
+      "id": "tt-the-convener-care-relief",
+      "upward_spiral_logic": "Needs and offers that stay hidden never meet; said aloud, they pair up on the spot. As people experience getting help by giving it, the group becomes a reliable safety net that more people lean on.",
+      "dimension": "holding-actions"
+    },
+    {
+      "gift_id": "the-storyteller",
+      "domain_id": "story-imagination-sacred",
+      "pattern": "Take one true thing your community already half-believes but can't quite say, and give it a clear, repeatable name and image where people gather.",
+      "why_it_compounds": "A shared name lowers the effort for the next person to recognize themselves in it. As more people pick it up, it spreads on its own, and the shared understanding makes joint action easier to start.",
+      "id": "tt-the-storyteller-story-imagination-sacred",
+      "upward_spiral_logic": "A shared name lowers the effort for the next person to recognize themselves in it. As more people pick it up, it spreads on its own, and the shared understanding makes joint action easier to start.",
+      "dimension": "shift-in-consciousness"
+    },
+    {
+      "gift_id": "the-storyteller",
+      "domain_id": "protection-advocacy",
+      "pattern": "Tell the human story behind a threatened place or group of people in a way strangers can feel, not just understand.",
+      "why_it_compounds": "People defend what they care about, and they care about what they can feel. A story that moves one person gets retold, widening the circle of people willing to show up before harm is done.",
+      "id": "tt-the-storyteller-protection-advocacy",
+      "upward_spiral_logic": "People defend what they care about, and they care about what they can feel. A story that moves one person gets retold, widening the circle of people willing to show up before harm is done.",
+      "dimension": "holding-actions"
+    },
+    {
+      "gift_id": "the-storyteller",
+      "domain_id": "knowledge-learning",
+      "pattern": "Take an idea that matters but is hard to grasp, and turn it into a simple story or picture anyone can pass on.",
+      "why_it_compounds": "A clear story travels far further than a complicated explanation. Each person who finally gets it can teach the next, so understanding spreads without needing the expert in the room.",
+      "id": "tt-the-storyteller-knowledge-learning",
+      "upward_spiral_logic": "A clear story travels far further than a complicated explanation. Each person who finally gets it can teach the next, so understanding spreads without needing the expert in the room.",
+      "dimension": "life-sustaining-systems"
+    },
+    {
+      "gift_id": "the-toolmaker",
+      "domain_id": "tools-infrastructure",
+      "pattern": "Find a task your group keeps redoing by hand and turn it into a simple reusable template, checklist, or tool anyone can pick up.",
+      "why_it_compounds": "Once the tool exists, the same work takes a fraction of the effort for everyone who uses it. People adapt and improve it as they go, so it gets better the more it's used.",
+      "id": "tt-the-toolmaker-tools-infrastructure",
+      "upward_spiral_logic": "Once the tool exists, the same work takes a fraction of the effort for everyone who uses it. People adapt and improve it as they go, so it gets better the more it's used.",
+      "dimension": "life-sustaining-systems"
+    },
+    {
+      "gift_id": "the-toolmaker",
+      "domain_id": "governance-commons",
+      "pattern": "Design one clear, lightweight rule or routine for a decision a group keeps having to make from scratch.",
+      "why_it_compounds": "A good shared rule removes the argument from routine choices, freeing the group's attention for what actually matters. As people trust the routine, coordination stops depending on any one person being in charge.",
+      "id": "tt-the-toolmaker-governance-commons",
+      "upward_spiral_logic": "A good shared rule removes the argument from routine choices, freeing the group's attention for what actually matters. As people trust the routine, coordination stops depending on any one person being in charge.",
+      "dimension": "life-sustaining-systems"
+    },
+    {
+      "gift_id": "the-toolmaker",
+      "domain_id": "regenerative-economy",
+      "pattern": "Build a simple system that lets people share, track, or trade resources directly with each other, without a gatekeeper in the middle.",
+      "why_it_compounds": "Cutting out the middle step makes exchange cheaper and more local, so people use it more. Every new participant makes the system more useful to everyone already in it.",
+      "id": "tt-the-toolmaker-regenerative-economy",
+      "upward_spiral_logic": "Cutting out the middle step makes exchange cheaper and more local, so people use it more. Every new participant makes the system more useful to everyone already in it.",
+      "dimension": "life-sustaining-systems"
+    },
+    {
+      "gift_id": "the-guardian",
+      "domain_id": "protection-advocacy",
+      "pattern": "Pick one specific person, place, or principle under threat and learn its situation deeply enough to speak and act on its behalf.",
+      "why_it_compounds": "Focused, well-informed attention raises the cost of doing harm and gives others a credible lead to follow. As your reliability becomes known, people bring you what needs defending early, when it's still defendable.",
+      "id": "tt-the-guardian-protection-advocacy",
+      "upward_spiral_logic": "Focused, well-informed attention raises the cost of doing harm and gives others a credible lead to follow. As your reliability becomes known, people bring you what needs defending early, when it's still defendable.",
+      "dimension": "holding-actions"
+    },
+    {
+      "gift_id": "the-guardian",
+      "domain_id": "land-living-systems",
+      "pattern": "Become the regular eyes on the ground for one local ecosystem — notice changes, document harm early, and raise it before it's too late.",
+      "why_it_compounds": "Early warning catches damage while it's still cheap to stop. A consistent watch builds a record that makes your concerns hard to dismiss, and others learn to watch alongside you.",
+      "id": "tt-the-guardian-land-living-systems",
+      "upward_spiral_logic": "Early warning catches damage while it's still cheap to stop. A consistent watch builds a record that makes your concerns hard to dismiss, and others learn to watch alongside you.",
+      "dimension": "life-sustaining-systems"
+    },
+    {
+      "gift_id": "the-guardian",
+      "domain_id": "governance-commons",
+      "pattern": "Learn the rights and rules that are supposed to protect a community, then help ordinary people actually use them.",
+      "why_it_compounds": "Protections that no one knows how to use may as well not exist; once people can use them, harm gets challenged routinely. Each person you equip can show the next, so the knowledge defends the community even when you're not there.",
+      "id": "tt-the-guardian-governance-commons",
+      "upward_spiral_logic": "Protections that no one knows how to use may as well not exist; once people can use them, harm gets challenged routinely. Each person you equip can show the next, so the knowledge defends the community even when you're not there.",
+      "dimension": "life-sustaining-systems"
+    },
+    {
+      "gift_id": "the-elder",
+      "domain_id": "healing-wholeness",
+      "pattern": "Make yourself regularly available to listen to someone younger or newer, without rushing to advise or fix.",
+      "why_it_compounds": "Being truly heard steadies a person far more than instruction does. Steadied people make better decisions and pass the same patience on, so calm and clarity ripple outward from a single reliable ear.",
+      "id": "tt-the-elder-healing-wholeness",
+      "upward_spiral_logic": "Being truly heard steadies a person far more than instruction does. Steadied people make better decisions and pass the same patience on, so calm and clarity ripple outward from a single reliable ear.",
+      "dimension": "shift-in-consciousness"
+    },
+    {
+      "gift_id": "the-elder",
+      "domain_id": "knowledge-learning",
+      "pattern": "Gather a few less-experienced people on a regular basis and pass on the hard-won practical wisdom you wish someone had given you.",
+      "why_it_compounds": "Knowledge that took you years to earn can save others that time, so they get further faster. As they grow, they begin mentoring in turn, and the wisdom keeps moving forward instead of being lost.",
+      "id": "tt-the-elder-knowledge-learning",
+      "upward_spiral_logic": "Knowledge that took you years to earn can save others that time, so they get further faster. As they grow, they begin mentoring in turn, and the wisdom keeps moving forward instead of being lost.",
+      "dimension": "life-sustaining-systems"
+    },
+    {
+      "gift_id": "the-elder",
+      "domain_id": "story-imagination-sacred",
+      "pattern": "Mark the real thresholds in your community's life — beginnings, endings, losses, arrivals — with simple ritual that lets people feel them together.",
+      "why_it_compounds": "Transitions that are honored get integrated instead of leaving people stuck. A community that can grieve and celebrate together holds together through hard change, and the practice gets richer each time it's repeated.",
+      "id": "tt-the-elder-story-imagination-sacred",
+      "upward_spiral_logic": "Transitions that are honored get integrated instead of leaving people stuck. A community that can grieve and celebrate together holds together through hard change, and the practice gets richer each time it's repeated.",
+      "dimension": "shift-in-consciousness"
+    },
+    {
+      "gift_id": "the-seer",
+      "domain_id": "knowledge-learning",
+      "pattern": "Write down the pattern you see underneath a problem everyone keeps arguing about, name what's quietly trying to emerge, and share it plainly.",
+      "why_it_compounds": "Naming a hidden pattern lets other people see and act on it too. Once enough people can name it, the conversation moves to firmer ground and stops circling the same arguments.",
+      "id": "tt-the-seer-knowledge-learning",
+      "upward_spiral_logic": "Naming a hidden pattern lets other people see and act on it too. Once enough people can name it, the conversation moves to firmer ground and stops circling the same arguments.",
+      "dimension": "life-sustaining-systems"
+    },
+    {
+      "gift_id": "the-seer",
+      "domain_id": "governance-commons",
+      "pattern": "Spot the early warning sign in a system you're part of and flag it clearly while it's still small enough to address.",
+      "why_it_compounds": "A risk named early can be handled at a fraction of the cost of a crisis. As your read proves accurate, people start listening sooner, so problems get caught earlier and earlier.",
+      "id": "tt-the-seer-governance-commons",
+      "upward_spiral_logic": "A risk named early can be handled at a fraction of the cost of a crisis. As your read proves accurate, people start listening sooner, so problems get caught earlier and earlier.",
+      "dimension": "life-sustaining-systems"
+    }
+  ],
+  "ikigai_lens": {
+    "love": "Does this grow out of something you genuinely love, the kind of work you would do even if no one paid you? Work rooted in love can weather hard seasons; work rooted in guilt or obligation tends to burn out.",
+    "skill": "Does this draw on a real gift and competence of yours? A small move has real leverage only when the right hand is on the lever.",
+    "world_need": "Does this meet a real need somewhere across the three kinds of work, and is there an honest reason it would build on itself, each step making the next one easier?",
+    "livelihood": "Can value flow back to you so you can keep showing up for years rather than one heroic, exhausting season? Care that bankrupts the person giving it cannot last."
+  }
+}

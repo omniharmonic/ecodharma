@@ -1,0 +1,12 @@
+{
+  "name": "EcoDharma",
+  "short_name": "EcoDharma",
+  "description": "Your gifts in service of life — a living map of how you plug into the regenerative transition.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0e1311",
+  "theme_color": "#0e1311",
+  "icons": [
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}

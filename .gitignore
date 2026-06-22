@@ -1,0 +1,39 @@
+# deps
+node_modules/
+.pnp.*
+.venv/
+__pycache__/
+*.pyc
+
+# next
+.next/
+out/
+build/
+dist/
+
+# env
+.env
+.env*.local
+.env.local
+
+# supabase
+supabase/.branches/
+supabase/.temp/
+
+# misc
+.DS_Store
+*.log
+playwright-report/
+test-results/
+
+# large vendored corpus clone kept out of history (referenced, not committed)
+omniharmonic-wiki/
+
+# ephemeris data files (downloaded at build)
+services/ephemeris/ephe/*.se1
+
+# local pg cluster
+.pgdata/
+
+# playwright MCP session artifacts
+.playwright-mcp/

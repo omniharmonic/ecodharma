@@ -1,0 +1,389 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================
+   Two printings of the same press — now drafting table & cyanotype.
+   Day = cool engineering vellum (NOT warm manila). Night = blueprint teal.
+   An open canvas governed by rules, registration, and silence.
+   ============================================================ */
+:root {
+  --bg: 237 238 231;       /* #EDEEE7 cool vellum — the open sheet */
+  --surface: 230 231 223;  /* #E6E7DF faintly recessed inset (rare) */
+  --fg: 21 25 27;          /* #15191B cool graphite ink */
+  --muted: 84 91 97;       /* #545B61 cool slate (AA body) */
+  --rule: 21 25 27;        /* ink hairline, used at low alpha */
+  --accent: 232 161 58;    /* #E8A13A SOLAR — fills / large only */
+  --solar-ink: 154 106 30; /* #9A6A1E warm text that passes AA */
+  --link: 20 91 121;       /* #145B79 deepened ferro */
+  --live: 28 74 54;        /* #1C4A36 deep pine */
+  --flag: 168 65 42;       /* #A8412A deepened oxblood */
+  color-scheme: light;
+
+  /* --- v3 CRT / phosphor terminal vars (vellum printing) --- */
+  --crt-scan-alpha: 0.030;     /* scanline darkness */
+  --crt-scan-size: 3px;        /* scanline period */
+  --crt-glow: 154 106 30;      /* solar-ink bloom on light ground */
+  --crt-glow-alpha: 0.10;      /* phosphor glow strength */
+  --crt-grain-alpha: 0.025;    /* fractal grain opacity */
+  --crt-flicker-alpha: 0.010;  /* sub-perceptual flicker amplitude */
+  --box: 21 25 27;             /* box-drawing ink */
+}
+.mode-blueprint {
+  --bg: 10 39 43;          /* #0A272B cyanotype ground */
+  --surface: 13 46 50;     /* #0D2E32 the one plate per screen */
+  --fg: 220 232 224;       /* chalk */
+  --muted: 142 178 178;    /* dim cyan (AA) */
+  --rule: 79 163 184;      /* cyan hairline */
+  --accent: 232 161 58;    /* solar carries across */
+  --solar-ink: 232 161 58; /* on dark, solar text is fine */
+  --link: 79 163 184;
+  --live: 155 232 176;     /* phosphor */
+  --flag: 214 104 78;
+  color-scheme: dark;
+
+  /* --- v3 CRT / phosphor terminal vars (blueprint printing) --- */
+  --crt-scan-alpha: 0.075;     /* deeper scanlines on dark ground */
+  --crt-scan-size: 3px;
+  --crt-glow: 155 232 176;     /* phosphor-green bloom */
+  --crt-glow-alpha: 0.22;
+  --crt-grain-alpha: 0.05;
+  --crt-flicker-alpha: 0.035;
+  --box: 79 163 184;           /* cyan box-drawing */
+}
+
+body {
+  @apply bg-bg text-fg font-sans antialiased;
+  min-height: 100vh;
+}
+
+/* Paper tooth — a whisper of grain, never a filter. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.35;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+}
+.mode-blueprint body::before { mix-blend-mode: screen; opacity: 0.28; }
+
+/* CRT glass — fixed scanlines + vignette over everything (non-interactive). */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      rgb(0 0 0 / var(--crt-scan-alpha)) 0,
+      rgb(0 0 0 / var(--crt-scan-alpha)) 1px,
+      transparent 1px,
+      transparent var(--crt-scan-size)
+    ),
+    radial-gradient(
+      120% 120% at 50% 50%,
+      transparent 58%,
+      rgb(0 0 0 / 0.06) 100%
+    );
+}
+.mode-blueprint body::after {
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      rgb(0 0 0 / var(--crt-scan-alpha)) 0,
+      rgb(0 0 0 / var(--crt-scan-alpha)) 1px,
+      transparent 1px,
+      transparent var(--crt-scan-size)
+    ),
+    radial-gradient(
+      120% 120% at 50% 50%,
+      transparent 46%,
+      rgb(0 0 0 / 0.34) 100%
+    );
+}
+
+#app-root { position: relative; z-index: 1; }
+::selection { background: rgb(var(--accent) / 0.3); }
+
+@layer components {
+  /* The new default container: a ruled ROW on the open sheet — not a card. */
+  .row {
+    @apply border-b border-rule/15 py-6;
+  }
+  /* The rare framed instrument plate — max one per screen. */
+  .plate {
+    @apply rounded-plate border border-rule/40 bg-surface/60 p-6;
+  }
+  /* Back-compat: existing .cell usages render as quiet plates (sharper). */
+  .cell { @apply plate; }
+  .cell-solar { @apply border-accent/45; }
+
+  /* Mono taxonomy / patent labels */
+  .eyebrow { @apply font-mono text-2xs uppercase tracking-eyebrow text-muted; }
+  .fig { @apply font-mono text-2xs uppercase tracking-eyebrow text-[color:rgb(var(--solar-ink))]; }
+  .kv { @apply font-mono text-xs text-muted; }
+
+  /* Drafting buttons — square, mechanical */
+  .btn {
+    @apply inline-flex items-center justify-center rounded-none px-5 py-2.5 font-mono text-sm uppercase tracking-eyebrow transition-colors;
+  }
+  .btn-solar { @apply btn bg-accent text-ink hover:bg-accent/85; }
+  /* Secondary actions read as bracketed terminal links */
+  .btn-line {
+    @apply inline-flex items-center font-mono text-sm uppercase tracking-eyebrow text-fg/90
+           before:mr-1 before:text-muted before:content-['['] after:ml-1 after:text-muted after:content-[']']
+           hover:text-accent;
+  }
+
+  /* Drafting-underline inputs (retire boxed fields) */
+  .input {
+    @apply w-full border-0 border-b border-rule/35 bg-transparent px-0 py-2 font-sans text-fg
+           placeholder:text-muted/50 focus:border-accent focus:outline-none focus:ring-0;
+  }
+  textarea.input { @apply border border-rule/35 px-3 rounded-plate; }
+  .label { @apply mb-1 block font-mono text-2xs uppercase tracking-eyebrow text-muted; }
+
+  /* Mono inline tag (retire rounded pills) */
+  .pill {
+    @apply inline-block font-mono text-2xs uppercase tracking-eyebrow text-muted
+           before:mr-1 before:text-rule/50 before:content-['·'];
+  }
+  .pill-solar { @apply text-[color:rgb(var(--solar-ink))]; }
+
+  .h-display { @apply font-display text-title leading-tight md:text-hero; }
+  .rule-x { @apply border-0 border-t border-rule/20; }
+
+  /* Riso halftone — fills only, never on AA text */
+  .riso-solar {
+    background-color: rgb(var(--accent));
+    background-image: radial-gradient(rgb(0 0 0 / 0.45) 0.5px, transparent 0.6px);
+    background-size: 4px 4px;
+    color: rgb(var(--fg));
+  }
+}
+
+/* Focus = crisp solar drafting outline (mechanical, AA-UI on both grounds) */
+:where(a, button, input, textarea, select, [tabindex]):focus-visible {
+  outline: 2px solid rgb(var(--accent));
+  outline-offset: 3px;
+  border-radius: 1px;
+}
+
+/* Blueprint draw-on linework */
+.draft-line { stroke-dasharray: 1200; stroke-dashoffset: 1200; animation: draft 1.2s ease-out forwards; }
+@keyframes draft { to { stroke-dashoffset: 0; } }
+.animate-rise { animation: rise 0.6s ease-out both; }
+@keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .draft-line { animation: none; stroke-dashoffset: 0; }
+  .animate-rise { animation: none; }
+  /* v3: still throughout — kill flicker, grain drift, and 3D reveals. */
+  .crt-live { animation: none; }
+  .crt-grain::before { animation: none; }
+  .pt-stage,
+  .sr-item { transform: none; opacity: 1; animation: none; }
+}
+
+/* ============================================================
+   v3 — ancient-future CRT terminal layer.
+   Additive only. Opt-in classes (not global) so the screen never
+   becomes nauseating. Mode-aware via --crt-* vars on :root / .mode-blueprint.
+   ============================================================ */
+@layer components {
+  /* --- Phosphor glow text (mode-aware bloom via --crt-glow) --- */
+  .phosphor {
+    text-shadow:
+      0 0 1px rgb(var(--crt-glow) / calc(var(--crt-glow-alpha) * 1.2)),
+      0 0 6px rgb(var(--crt-glow) / var(--crt-glow-alpha));
+  }
+  .phosphor-solar {
+    text-shadow:
+      0 0 1px rgb(var(--accent) / 0.55),
+      0 0 8px rgb(var(--accent) / 0.30);
+  }
+  .phosphor-live {
+    text-shadow:
+      0 0 1px rgb(var(--live) / 0.55),
+      0 0 8px rgb(var(--live) / 0.28);
+  }
+
+  /* --- Sub-perceptual flicker (opt-in) --- */
+  .crt-live { animation: crt-flicker 7s steps(1, end) infinite; }
+
+  /* --- Fractal grain veil (opt-in, sits inside its host) --- */
+  .crt-grain { position: relative; }
+  .crt-grain::before {
+    content: "";
+    position: absolute;
+    inset: -25%;
+    z-index: 0;
+    pointer-events: none;
+    opacity: var(--crt-grain-alpha);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+    background-size: 140px 140px;
+    animation: crt-grain 6s steps(4) infinite;
+  }
+  .crt-grain > * { position: relative; z-index: 1; }
+
+  /* --- Terminal chrome frame --- */
+  .crt-frame {
+    position: relative;
+    border: 1px solid rgb(var(--box) / 0.45);
+    border-radius: 2px;
+    background: rgb(var(--surface) / 0.50);
+    box-shadow:
+      inset 0 0 0 1px rgb(var(--box) / 0.06),
+      inset 0 0 32px rgb(var(--crt-glow) / calc(var(--crt-glow-alpha) * 0.6)),
+      0 0 0 1px rgb(var(--bg) / 0.4);
+  }
+  /* title strip read from data-title */
+  .crt-frame::before {
+    content: attr(data-title);
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 0.4rem 0.75rem;
+    border-bottom: 1px solid rgb(var(--box) / 0.30);
+    font-family: var(--font-plex-mono), ui-monospace, monospace;
+    font-size: 0.6875rem;
+    line-height: 1;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: rgb(var(--muted));
+    pointer-events: none;
+  }
+  /* four solar registration corner ticks (8 layered gradients) */
+  .crt-frame::after {
+    content: "";
+    position: absolute;
+    inset: 6px;
+    pointer-events: none;
+    background-repeat: no-repeat;
+    background-image:
+      linear-gradient(rgb(var(--accent)), rgb(var(--accent))),
+      linear-gradient(rgb(var(--accent)), rgb(var(--accent))),
+      linear-gradient(rgb(var(--accent)), rgb(var(--accent))),
+      linear-gradient(rgb(var(--accent)), rgb(var(--accent))),
+      linear-gradient(rgb(var(--accent)), rgb(var(--accent))),
+      linear-gradient(rgb(var(--accent)), rgb(var(--accent))),
+      linear-gradient(rgb(var(--accent)), rgb(var(--accent))),
+      linear-gradient(rgb(var(--accent)), rgb(var(--accent)));
+    background-size:
+      10px 1px, 1px 10px,   /* top-left */
+      10px 1px, 1px 10px,   /* top-right */
+      10px 1px, 1px 10px,   /* bottom-left */
+      10px 1px, 1px 10px;   /* bottom-right */
+    background-position:
+      left top, left top,
+      right top, right top,
+      left bottom, left bottom,
+      right bottom, right bottom;
+  }
+  .crt-screen { padding: 2.25rem 1.25rem 1.25rem; position: relative; z-index: 1; }
+
+  /* --- ASCII / box-drawing dividers --- */
+  .rule-ascii,
+  .rule-box { display: block; overflow: hidden; white-space: nowrap; line-height: 1; }
+  .rule-ascii { color: rgb(var(--rule) / 0.45); }
+  .rule-box { color: rgb(var(--rule) / 0.55); }
+  .rule-ascii::before {
+    content: "────────────────────────────────────────────────────────────────────────────────────────";
+    font-family: var(--font-plex-mono), ui-monospace, monospace;
+    letter-spacing: -0.5px;
+  }
+  .rule-box::before {
+    content: "════════════════════════════════════════════════════════════════════════════════════════";
+    font-family: var(--font-plex-mono), ui-monospace, monospace;
+    letter-spacing: -0.5px;
+  }
+  .divider-glyph {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: rgb(var(--muted));
+    font-family: var(--font-plex-mono), ui-monospace, monospace;
+  }
+  .divider-glyph::before,
+  .divider-glyph::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: rgb(var(--rule) / 0.25);
+  }
+
+  /* --- Poster boldness --- */
+  .poster-mega {
+    font-family: var(--font-fraunces), Georgia, serif;
+    font-size: clamp(3.5rem, 11vw, 8rem);
+    line-height: 0.95;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+  .slab {
+    background: rgb(var(--accent));
+    color: rgb(var(--fg));
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+    padding: 0 0.2em;
+  }
+  .mode-blueprint .slab { color: #0A272B; }
+}
+
+/* ============================================================
+   v3 — CSS-only 3D transitions + CRT motion keyframes.
+   translateZ kept <=140px to avoid clip/blur. Always fill: both.
+   ============================================================ */
+@keyframes pt-in {
+  from {
+    transform: perspective(1200px) translateZ(-140px) translateY(26px) rotateX(7deg);
+    opacity: 0;
+  }
+  to {
+    transform: perspective(1200px) translateZ(0) translateY(0) rotateX(0);
+    opacity: 1;
+  }
+}
+@keyframes sr-in {
+  from {
+    transform: perspective(1000px) translateZ(-60px) translateY(20px) rotateX(4deg);
+    opacity: 0;
+  }
+  to {
+    transform: perspective(1000px) translateZ(0) translateY(0) rotateX(0);
+    opacity: 1;
+  }
+}
+.pt-stage {
+  transform-style: preserve-3d;
+  animation: pt-in 0.55s cubic-bezier(0.16, 0.84, 0.3, 1) both;
+}
+.sr-item {
+  opacity: 0;
+  animation: sr-in 0.6s cubic-bezier(0.16, 0.84, 0.3, 1) both;
+  animation-delay: calc(var(--i, 0) * 70ms);
+}
+
+@keyframes crt-flicker {
+  0%, 100% { opacity: calc(1 - var(--crt-flicker-alpha)); }
+  10% { opacity: 1; }
+  23% { opacity: calc(1 - var(--crt-flicker-alpha) * 2); }
+  37% { opacity: 1; }
+  52% { opacity: calc(1 - var(--crt-flicker-alpha)); }
+  68% { opacity: 1; }
+  81% { opacity: calc(1 - var(--crt-flicker-alpha) * 1.5); }
+}
+@keyframes crt-grain {
+  0% { transform: translate(0, 0); }
+  25% { transform: translate(-4%, 3%); }
+  50% { transform: translate(3%, -2%); }
+  75% { transform: translate(-2%, -3%); }
+  100% { transform: translate(0, 0); }
+}
