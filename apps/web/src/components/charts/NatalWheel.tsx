@@ -81,21 +81,49 @@ export function NatalWheel({
       ? houses.cusps
       : null;
 
-  // ---- declustered bodies (sweep by longitude; bump inward when crowded) ----
+  // ---- de-collided bodies (spread crowded glyphs ANGULARLY along one ring) ----
+  // Conjunct planets share a longitude; rather than stack them inward (and run out
+  // of room past the hub), we fan them apart by a minimum angular separation on a
+  // single planet ring and draw a connector back to each body's true degree tick.
   const bodies = Object.entries(positions ?? {})
     .filter(([name]) => PLANET_ABBR[name])
     .map(([name, p]) => ({ name, ...p }))
     .sort((a, b) => a.lon - b.lon);
 
-  let lastLon = -999;
-  let lastTier = 0;
-  const placed = bodies.map((b) => {
-    const tier =
-      b.lon - lastLon < 6 ? Math.min(lastTier + 1, WHEEL.maxTier) : 0;
-    lastLon = b.lon;
-    lastTier = tier;
-    return { ...b, r: WHEEL.planet - tier * WHEEL.planetTier };
-  });
+  const MIN_SEP = 8.5; // degrees between adjacent glyph centers at the planet ring
+  const n = bodies.length;
+  const placed = (() => {
+    if (n === 0) return [] as Array<(typeof bodies)[number] & { displayLon: number; r: number }>;
+    // Start the chain just after the largest empty gap so the forward-push never
+    // wraps a cluster across 0°/360°.
+    let startIdx = 0;
+    let maxGap = -1;
+    for (let i = 0; i < n; i++) {
+      const cur = bodies[i].lon;
+      const nxt = bodies[(i + 1) % n].lon + (i === n - 1 ? 360 : 0);
+      const gap = nxt - cur;
+      if (gap > maxGap) {
+        maxGap = gap;
+        startIdx = (i + 1) % n;
+      }
+    }
+    // Unwrap to a monotonic sequence, then push each apart to honor MIN_SEP.
+    const unwrapped: number[] = [];
+    let last = bodies[startIdx].lon;
+    unwrapped.push(last);
+    for (let k = 1; k < n; k++) {
+      let lon = bodies[(startIdx + k) % n].lon;
+      while (lon < last) lon += 360;
+      unwrapped.push(lon);
+      last = lon;
+    }
+    const disp: number[] = [unwrapped[0]];
+    for (let k = 1; k < n; k++) disp[k] = Math.max(unwrapped[k], disp[k - 1] + MIN_SEP);
+    return bodies.map((_, k) => {
+      const b = bodies[(startIdx + k) % n];
+      return { ...b, displayLon: norm360(disp[k]), r: WHEEL.planet };
+    });
+  })();
 
   const isHot = (name: string): boolean => highlight.includes(name);
 
@@ -139,7 +167,7 @@ export function NatalWheel({
       viewBox="0 0 400 400"
       width={size}
       height={size}
-      className={className ?? "h-auto w-full"}
+      className={["h-auto w-full max-w-full", className].filter(Boolean).join(" ")}
       role="img"
       aria-label={label}
     >
@@ -304,14 +332,14 @@ export function NatalWheel({
         );
       })}
 
-      {/* planets — degree tick on the ring, glyph drawn inward by tier */}
+      {/* planets — true degree tick on the ring, glyph fanned to displayLon */}
       {placed.map((b) => {
         const tick0 = polar(b.lon, WHEEL.signInner);
         const tick1 = polar(b.lon, WHEEL.signInner - 6);
         const conn0 = polar(b.lon, WHEEL.signInner - 6);
-        const conn1 = polar(b.lon, b.r + 9);
-        const gp = polar(b.lon, b.r);
-        const dp = polar(b.lon, b.r - 11);
+        const conn1 = polar(b.displayLon, b.r + 9);
+        const gp = polar(b.displayLon, b.r);
+        const dp = polar(b.displayLon, b.r - 11);
         const hot = isHot(b.name);
         const glyph = glyphMode === "unicode" ? PLANET_GLYPH[b.name] : PLANET_ABBR[b.name];
         return (

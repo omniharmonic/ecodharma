@@ -55,6 +55,7 @@
 body {
   @apply bg-bg text-fg font-sans antialiased;
   min-height: 100vh;
+  overflow-x: hidden; /* guard: no horizontal scroll from wide SVGs / fixed elements */
 }
 
 /* Paper tooth — a whisper of grain, never a filter. */
@@ -234,6 +235,7 @@ body::after {
   /* --- Terminal chrome frame --- */
   .crt-frame {
     position: relative;
+    overflow: hidden; /* keep grain veil + any wide child inside the screen */
     border: 1px solid rgb(var(--box) / 0.45);
     border-radius: 2px;
     background: rgb(var(--surface) / 0.50);

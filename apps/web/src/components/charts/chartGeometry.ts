@@ -108,7 +108,7 @@ export const WHEEL = {
   maxTier: 2,
   houseNum: 116,
   hub: 96,
-  callout: 205,
+  callout: 192,
 } as const;
 
 export const clamp = (min: number, max: number, v: number): number =>

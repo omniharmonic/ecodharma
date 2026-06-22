@@ -37,10 +37,9 @@ export default async function Home() {
         <figure className="crt-frame crt-grain" data-title="Fig. 1 · whole earth · live ephemeris">
           <div className="crt-screen">
             <AsciiEarth
-              cols={74}
-              rows={40}
+              fit
               speed={0.16}
-              className="mx-auto phosphor-live text-[0.5rem] leading-[0.92] sm:text-[0.62rem]"
+              className="mx-auto phosphor-live text-[0.5rem] leading-[0.92] sm:text-[0.6rem]"
             />
           </div>
         </figure>

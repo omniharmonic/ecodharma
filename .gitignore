@@ -37,3 +37,6 @@ services/ephemeris/ephe/*.se1
 
 # playwright MCP session artifacts
 .playwright-mcp/
+
+# typescript incremental build cache
+*.tsbuildinfo

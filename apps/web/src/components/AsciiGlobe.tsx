@@ -125,22 +125,47 @@ export function AsciiGlobe({
   rows = 30,
   className = "",
   speed = 0.18,
+  fit = false,
 }: {
   cols?: number;
   rows?: number;
   className?: string;
   speed?: number;
+  /** when true, size the grid to the element's width (responsive, never overflows). */
+  fit?: boolean;
 }) {
   const ref = useRef<HTMLPreElement>(null);
+  const dims = useRef<{ cols: number; rows: number }>({ cols, rows });
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+    // measure the available width → character grid (monospace advance ≈ 0.6em)
+    const recomputeDims = () => {
+      if (!fit) {
+        dims.current = { cols, rows };
+        return;
+      }
+      const fontPx = parseFloat(getComputedStyle(el).fontSize) || 10;
+      const w = el.clientWidth || el.parentElement?.clientWidth || 320;
+      const c = Math.max(28, Math.min(110, Math.floor(w / (fontPx * 0.6))));
+      dims.current = { cols: c, rows: Math.round(c * 0.55) };
+    };
+    recomputeDims();
+    const drawStatic = () => (el.innerHTML = computeFrame(0.6, dims.current.cols, dims.current.rows));
+
+    // re-fit on container resize (both motion + reduced-motion paths)
+    const ro = new ResizeObserver(() => {
+      recomputeDims();
+      if (reduce) drawStatic();
+    });
+    ro.observe(el);
+
     if (reduce) {
-      el.innerHTML = computeFrame(0.6, cols, rows);
-      return;
+      drawStatic();
+      return () => ro.disconnect();
     }
 
     let angle = 0;
@@ -156,20 +181,21 @@ export function AsciiGlobe({
       if (t - last < 55) return; // ~18fps — computed, not frantic
       angle += speed * ((t - last) / 1000) * 6;
       last = t;
-      el.innerHTML = computeFrame(angle, cols, rows);
+      el.innerHTML = computeFrame(angle, dims.current.cols, dims.current.rows);
     };
     raf = requestAnimationFrame(loop);
     return () => {
       cancelAnimationFrame(raf);
       io.disconnect();
+      ro.disconnect();
     };
-  }, [cols, rows, speed]);
+  }, [cols, rows, speed, fit]);
 
   return (
     <pre
       ref={ref}
       aria-hidden
-      className={`select-none font-mono leading-[0.95] text-[0.62rem] sm:text-[0.7rem] [&_.e1]:text-live/45 [&_.e2]:text-live [&_.e3]:text-accent ${className}`}
+      className={`block max-w-full overflow-hidden select-none font-mono leading-[0.95] text-[0.62rem] sm:text-[0.7rem] [&_.e1]:text-live/45 [&_.e2]:text-live [&_.e3]:text-accent ${className}`}
     >
       {/* drawn on mount */}
     </pre>

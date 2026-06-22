@@ -52,7 +52,7 @@ export default async function ProfilePage() {
       {/* RECOGNITION — the one thing, in plain language */}
       <section className="max-w-measure pt-10 animate-rise">
         <p className="eyebrow mb-4">The work that is only yours</p>
-        <p className="poster-mega font-display text-title leading-[1.1] text-fg md:text-[2.6rem]" data-testid="recognition">
+        <p className="font-display text-title leading-[1.15] text-fg md:text-[2.6rem]" data-testid="recognition">
           {gp.recognition}
         </p>
       </section>
@@ -264,7 +264,7 @@ export default async function ProfilePage() {
 
 function ChartPlate({ title, testid, children }: { title: string; testid?: string; children: React.ReactNode }) {
   return (
-    <figure className="crt-frame plate" data-title={title} data-testid={testid}>
+    <figure className="crt-frame" data-title={title} data-testid={testid}>
       <div className="crt-screen">{children}</div>
     </figure>
   );

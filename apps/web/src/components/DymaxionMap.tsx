@@ -60,10 +60,13 @@ const GRATICULE = [
 type Edge = { a: number; b: number; kind?: "resonance" | "friction" };
 
 export function DymaxionMap({ names, edges }: { names: string[]; edges?: Edge[] }) {
-  // place each member on a face centroid, deterministic by index; nudge wraps.
+  // place each member on a face centroid, deterministic by index, spread EVENLY
+  // across the whole net (rather than clustering in the first few left slots).
+  const step = names.length > 0 ? SLOTS.length / names.length : 1;
   const nodes = names.map((name, i) => {
-    const slot = SLOTS[i % SLOTS.length];
-    const wrap = Math.floor(i / SLOTS.length);
+    const t = i * step;
+    const slot = SLOTS[Math.floor(t) % SLOTS.length];
+    const wrap = Math.floor(t / SLOTS.length); // 0 until members exceed slot count
     return { name, i, x: slot.cx + wrap * 9, y: slot.cy + wrap * 9 };
   });
 
@@ -82,13 +85,13 @@ export function DymaxionMap({ names, edges }: { names: string[]; edges?: Edge[] 
     `, woven by ${links.length} connection${links.length === 1 ? "" : "s"}.`;
 
   return (
-    <svg viewBox="0 0 960 480" className="h-auto w-full" role="img" aria-label={label}>
-      {/* registration ticks — drafting corner marks */}
+    <svg viewBox="108 58 744 388" className="h-auto w-full max-w-full" role="img" aria-label={label}>
+      {/* registration ticks — drafting corner marks (aligned to the tightened frame) */}
       {[
-        [16, 16, 1, 1],
-        [944, 16, -1, 1],
-        [16, 464, 1, -1],
-        [944, 464, -1, -1],
+        [116, 66, 1, 1],
+        [844, 66, -1, 1],
+        [116, 438, 1, -1],
+        [844, 438, -1, -1],
       ].map(([x, y, sx, sy], i) => (
         <path
           key={`reg-${i}`}

@@ -60,11 +60,14 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               <nav className="flex items-center gap-3 sm:gap-4">
                 {user ? (
                   <>
-                    <NavLink href="/profile">Profile</NavLink>
-                    <NavLink href="/constellations">Constellations</NavLink>
-                    <NavLink href="/work">Work</NavLink>
-                    <NavLink href="/curate">Curate</NavLink>
-                    <NavLink href="/settings">Data</NavLink>
+                    {/* primary links — collapse into the command menu (⌘ menu) on phones */}
+                    <span className="hidden items-center gap-4 md:flex">
+                      <NavLink href="/profile">Profile</NavLink>
+                      <NavLink href="/constellations">Constellations</NavLink>
+                      <NavLink href="/work">Work</NavLink>
+                      <NavLink href="/curate">Curate</NavLink>
+                      <NavLink href="/settings">Data</NavLink>
+                    </span>
                     <form action={logoutAction}>
                       <button className="font-mono text-2xs uppercase tracking-eyebrow text-muted hover:text-accent" type="submit">
                         Sign out
@@ -83,10 +86,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             </div>
           </header>
 
-          <main className="mx-auto max-w-6xl px-5 pb-28">{children}</main>
+          <main className="mx-auto max-w-6xl px-5 pb-12">{children}</main>
           <TerminalNav />
 
-          <footer className="mx-auto max-w-6xl px-5 py-10">
+          <footer className="mx-auto max-w-6xl px-5 pt-10 pb-28">
             <hr className="rule-x mb-4" />
             <p className="font-mono text-2xs uppercase tracking-eyebrow text-muted">
               Mythopoetic, not predictive · lenses for reflection · offered toward the commons (CC BY-SA)

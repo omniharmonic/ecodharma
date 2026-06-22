@@ -102,6 +102,15 @@ export function TerminalNav() {
         </div>
       </div>
 
+      {/* mobile command menu — single tap target opening the full palette */}
+      <button
+        onClick={() => setPalette(true)}
+        className="fixed bottom-4 right-4 z-30 flex items-center gap-2 border border-rule/30 bg-bg/90 px-3 py-2 font-mono text-2xs uppercase tracking-eyebrow text-muted shadow-sm backdrop-blur hover:text-accent md:hidden"
+        aria-label="Open command menu"
+      >
+        <span className="text-accent">⌘</span> menu
+      </button>
+
       {palette && (
         <div className="fixed inset-0 z-50 flex items-start justify-center bg-bg/80 pt-[18vh] backdrop-blur-sm" onClick={() => setPalette(false)}>
           <div className="w-[min(92vw,560px)] border border-rule/40 bg-surface" onClick={(e) => e.stopPropagation()}>

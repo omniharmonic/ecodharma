@@ -77,12 +77,7 @@ export default async function ConstellationsPage() {
       <section className="mt-16">
         <p className="eyebrow mb-4">Yours</p>
         {owned.length === 0 && (
-          <p className="text-muted/70">
-            None yet.{" "}
-            <Link href="/constellations/sample" className="text-link hover:text-accent">
-              See a sample constellation →
-            </Link>
-          </p>
+          <p className="text-muted/70">None yet — compose one below.</p>
         )}
         <div className="divide-y divide-rule/12">
           {owned.map((r) => (

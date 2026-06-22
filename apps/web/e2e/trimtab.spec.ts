@@ -8,7 +8,7 @@ test("trim-tab commons: resonance feedback + curation surface", async ({ page })
   // Profile has trim-tabs with resonance controls.
   const firstTab = page.getByTestId("trim-tab").first();
   await expect(firstTab).toBeVisible();
-  await firstTab.getByRole("button", { name: "Yes ✷" }).click();
+  await firstTab.getByRole("button", { name: "[ yes ]" }).click();
   await expect(firstTab.getByText(/Resonance noted/)).toBeVisible();
 
   // Curation surface renders the growing library stats.
