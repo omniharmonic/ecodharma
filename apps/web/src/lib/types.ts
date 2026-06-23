@@ -124,6 +124,10 @@ export type CoreProfile = {
   gift_constellation: GiftCarry[]; // 2–3 dominant gifts + how this person carries each
   orientations?: string[]; // 3–6 short leaning phrases
   edges?: { pattern: string; how_to_relate: string }[]; // richer shadow; canonical when present
+  // Compact, shareable Human Design structure (no birth data) — travels with the
+  // profile so a CONSENTED constellation can compute relational mechanics
+  // without ever reading another person's owner-only raw chart. See hd-relational.ts.
+  hd_signature?: import("./hd-relational").HdSignature;
 };
 
 export type GiftProfile = CoreProfile & {
@@ -147,5 +151,12 @@ export type ConstellationRead = {
   weaving_guidance: string;
   pairwise?: { a: string; b: string; dynamic: string }[];
   narrative: string;
+  // The Human Design relational substrate beneath the gift read — computed
+  // structurally (not by the model) from members' consented hd_signatures.
+  relational?: {
+    engine: string;
+    group?: import("./hd-relational").PentaResult;
+    pair?: import("./hd-relational").CompareResult;
+  };
   meta?: { engine: string; framework_version: string };
 };

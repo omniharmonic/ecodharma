@@ -5,6 +5,7 @@
 // our own words — no proprietary descriptive text reproduced.
 
 import type { ConstellationRead } from "./types";
+import { analyzePenta, compareHumanDesign, signatureFromChannels, type HdSignature } from "./hd-relational";
 
 // A member as shown in the sample roster. `archetype` is the human-readable gift
 // name; `gift_id` matches the framework gift id.
@@ -254,10 +255,64 @@ const storyAndSoil: SampleConstellation = {
   },
 };
 
+// Self-consistent HD signatures for the Story & Soil cell, so the public sample
+// showcases the relational substrate (penta roles + electromagnetics) computed
+// by the same engine that runs on real, consented constellations. Channels are
+// chosen to fill most centre-roles and leave the mental centres open — echoing
+// the read's "no builder/toolmaker, no long-horizon voice" gap.
+const STORY_SOIL_SIGS: { name: string; sig: HdSignature }[] = [
+  {
+    name: "Noor",
+    sig: signatureFromChannels({
+      type: "Manifesting Generator", profile: "1/3", authority: "Sacral",
+      channels: [[1, 8], [20, 34]], loneGates: [57],
+    }),
+  },
+  {
+    name: "Sam",
+    sig: signatureFromChannels({
+      type: "Generator", profile: "2/4", authority: "Sacral",
+      channels: [[27, 50], [3, 60]], loneGates: [22],
+    }),
+  },
+  {
+    name: "Kaya",
+    sig: signatureFromChannels({
+      type: "Projector", profile: "5/1", authority: "Self-Projected",
+      channels: [[19, 49], [25, 51]], loneGates: [12, 10],
+    }),
+  },
+];
+storyAndSoil.read.relational = {
+  engine: "hd-relational@1.0.0",
+  group: analyzePenta(STORY_SOIL_SIGS),
+};
+
+// A two-person view, exposed as a fourth sample, to show the dyadic connection
+// chart (electromagnetic / companionship / compromise / dominance + conditioning).
+const noorKaya: SampleConstellation = {
+  slug: "noor-and-kaya",
+  name: "Noor & Kaya",
+  tagline: "A two-person look at the connection chart beneath a partnership.",
+  members: [storyAndSoil.members[0], storyAndSoil.members[2]],
+  read: {
+    ...storyAndSoil.read,
+    narrative:
+      "Two people is not yet a group field — it's a connection. Noor brings the story and the engine; Kaya brings the network and the long read on what's true. Below the gifts, the bodygraph mechanics show where you complete each other, where you simply agree, and where one of you quietly sets the weather. Read the substrate as a map of pulls, not a verdict.",
+    pairwise: [storyAndSoil.read.pairwise!.find((p) => p.a === "Noor" && p.b === "Kaya")!],
+    relational: {
+      engine: "hd-relational@1.0.0",
+      group: analyzePenta([STORY_SOIL_SIGS[0], STORY_SOIL_SIGS[2]]),
+      pair: compareHumanDesign(STORY_SOIL_SIGS[0].sig, STORY_SOIL_SIGS[2].sig, "Noor", "Kaya"),
+    },
+  },
+};
+
 export const SAMPLE_CONSTELLATIONS: SampleConstellation[] = [
   cascadiaWeavers,
   mutualCreditGuild,
   storyAndSoil,
+  noorKaya,
 ];
 
 // Return the sample constellation for a slug, or the first one as default.

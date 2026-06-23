@@ -3,8 +3,26 @@ import Anthropic from "@anthropic-ai/sdk";
 import type { ConstellationRead, Framework, GiftProfile } from "./types";
 import { loadFramework } from "./framework";
 import { loadVoice } from "./voice";
+import { analyzePenta, compareHumanDesign, type PentaMember } from "./hd-relational";
 
 const ENGINE_FIXTURE = "fixture-constellation@1.0.0";
+const RELATIONAL_ENGINE = "hd-relational@1.0.0";
+
+// The structural HD substrate beneath the gift read. Computed deterministically
+// from members' consented hd_signatures — independent of the gift interpreter,
+// so it's identical on the fixture and Claude paths.
+function relationalLayer(members: Member[]): ConstellationRead["relational"] | undefined {
+  const withSig: PentaMember[] = members
+    .filter((m) => m.profile?.hd_signature)
+    .map((m) => ({ name: m.display_name, sig: m.profile!.hd_signature! }));
+  if (withSig.length < 2) return undefined;
+  const group = analyzePenta(withSig);
+  const pair =
+    withSig.length === 2
+      ? compareHumanDesign(withSig[0].sig, withSig[1].sig, withSig[0].name, withSig[1].name)
+      : undefined;
+  return { engine: RELATIONAL_ENGINE, group, pair };
+}
 
 export type Member = {
   display_name: string;
@@ -109,7 +127,11 @@ const READ_TOOL = {
   },
 } as const;
 
-async function claudeRead(framework: Framework, members: Member[]): Promise<ConstellationRead> {
+async function claudeRead(
+  framework: Framework,
+  members: Member[],
+  relational: ConstellationRead["relational"],
+): Promise<ConstellationRead> {
   const anthropic = new Anthropic();
   // Sonnet for pairs, Opus for groups (model routing per the architecture).
   const model = members.length <= 2 ? "claude-sonnet-4-6" : "claude-opus-4-8";
@@ -130,6 +152,11 @@ async function claudeRead(framework: Framework, members: Member[]): Promise<Cons
           "Read this constellation THROUGH the framework, in the EcoDharma voice. Surface collective gifts, " +
           "complementarities, frictions, gaps vs. the domains, what to make explicit, and weaving guidance. " +
           "For two members give a 1:1 synastry dynamic; invite reflection, never assert deterministic compatibility.\n\n" +
+          (relational
+            ? "Beneath the gift read is a Human Design relational substrate (computed structurally — electromagnetic/companionship/compromise/dominance channels, centre conditioning, group penta roles, composite type). " +
+              "You may ground your narrative in it where it illuminates the gifts — but do NOT recite it mechanically; the gifts lead.\n" +
+              `HD_RELATIONAL:\n${JSON.stringify(relational)}\n\n`
+            : "") +
           `MEMBERS:\n${JSON.stringify(members)}`,
       },
     ],
@@ -142,12 +169,16 @@ async function claudeRead(framework: Framework, members: Member[]): Promise<Cons
 
 export async function generateConstellationRead(members: Member[]): Promise<ConstellationRead> {
   const framework = loadFramework();
+  const relational = relationalLayer(members);
+  let read: ConstellationRead | null = null;
   if (process.env.ANTHROPIC_API_KEY && process.env.ECODHARMA_INTERPRETER !== "fixture") {
     try {
-      return await claudeRead(framework, members);
+      read = await claudeRead(framework, members, relational);
     } catch (err) {
       console.error("[interpret-constellation] Claude path failed, fixture fallback:", err);
     }
   }
-  return fixtureRead(framework, members);
+  if (!read) read = fixtureRead(framework, members);
+  if (relational) read.relational = relational;
+  return read;
 }

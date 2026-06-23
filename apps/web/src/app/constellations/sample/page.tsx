@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { DymaxionMap } from "@/components/DymaxionMap";
+import { ConstellationRelational } from "@/components/ConstellationRelational";
 import { SAMPLE_CONSTELLATIONS, getSampleConstellation } from "@/lib/mock";
 
 export const metadata = {
@@ -99,6 +100,8 @@ export default function SampleConstellationPage({
           <p className="eyebrow mb-2">Weaving guidance</p>
           <p className="text-fg">{read.weaving_guidance}</p>
         </div>
+
+        <ConstellationRelational relational={read.relational} />
       </section>
 
       <section className="mt-20 border-t border-rule/15 pt-8">

@@ -4,6 +4,7 @@ import { getUser } from "@/lib/auth";
 import { withUser } from "@/lib/db";
 import { MessageForm } from "@/components/MessageForm";
 import { DymaxionMap } from "@/components/DymaxionMap";
+import { ConstellationRelational } from "@/components/ConstellationRelational";
 import { generateReadAction, inviteMemberAction } from "../../actions/constellation";
 import type { ConstellationRead } from "@/lib/types";
 
@@ -128,6 +129,8 @@ export default async function ConstellationDetail({ params }: { params: { id: st
             <p className="eyebrow mb-2">Weaving guidance</p>
             <p className="text-fg">{read.weaving_guidance}</p>
           </div>
+
+          <ConstellationRelational relational={read.relational} />
         </section>
       )}
     </div>

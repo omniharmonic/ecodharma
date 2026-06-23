@@ -5,6 +5,7 @@ import { loadFramework } from "./framework";
 import { loadVoice, VOICE_VERSION } from "./voice";
 import { useClaude } from "./llm";
 import { personalizeTrimTab, resolveTrimTab } from "./trimtabs";
+import { extractHdSignature } from "./hd-relational";
 
 export { useClaude };
 
@@ -385,8 +386,14 @@ export async function generateGiftProfile(charts: Charts, ikigai: Ikigai): Promi
     trim_tabs.push(personalizeTrimTab(row, nameOf(p.gift_id, "gift"), nameOf(p.domain_id, "domain"), ikigai));
   }
 
+  // Attach the compact HD signature so consented constellations can compute the
+  // relational substrate (electromagnetics, conditioning, penta roles) without
+  // ever touching the owner-only raw chart.
+  const hd_signature = extractHdSignature(charts["human_design"]) ?? undefined;
+
   return {
     ...core,
+    hd_signature,
     trim_tabs,
     meta: { engine, framework_version: framework.framework_version, voice_version: VOICE_VERSION },
   };
