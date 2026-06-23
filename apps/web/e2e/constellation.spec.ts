@@ -46,6 +46,11 @@ test("Journey B — consent-gated constellation: invite → consent → woven re
   await expect(owner.getByText("The constellation read")).toBeVisible();
   await expect(owner.getByText("Weaving guidance")).toBeVisible();
 
+  // The Human Design relational substrate is computed from both members'
+  // consented HD signatures and rendered beneath the gift read.
+  await expect(owner.getByTestId("relational-substrate")).toBeVisible();
+  await expect(owner.getByTestId("penta-filled")).toBeVisible();
+
   // REVOCATION: kin revokes; a fresh read should again refuse.
   await kin.goto("/constellations");
   await kin.getByRole("button", { name: "Revoke consent" }).click();

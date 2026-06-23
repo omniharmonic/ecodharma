@@ -9,6 +9,7 @@ import { PageTransition, SectionReveal } from "@/components/PageTransition";
 import { NatalWheel } from "@/components/charts/NatalWheel";
 import BodyGraph from "@/components/charts/BodyGraph";
 import GeneKeysViz from "@/components/charts/GeneKeysViz";
+import { TermPane } from "@/components/Terminal";
 import { regenerateProfileAction, saveOfferingsAction } from "../actions/profile";
 import type { ChartLens, ChartThread, GiftProfile } from "@/lib/types";
 
@@ -51,7 +52,11 @@ export default async function ProfilePage() {
     <PageTransition>
       {/* RECOGNITION — the one thing, in plain language */}
       <section className="max-w-measure pt-10 animate-rise">
-        <p className="eyebrow mb-4">The work that is only yours</p>
+        <p className="term-prompt mb-4 text-2xs">
+          <span className="term-prompt-user">eco@dharma</span><span className="text-muted">:</span>
+          <span className="term-prompt-path">~/profile</span><span className="term-prompt-sigil">$</span>{" "}
+          <span className="text-muted">cat the-work-that-is-only-yours.txt</span>
+        </p>
         <p className="font-display text-title leading-[1.15] text-fg md:text-[2.6rem]" data-testid="recognition">
           {gp.recognition}
         </p>
@@ -263,10 +268,12 @@ export default async function ProfilePage() {
 }
 
 function ChartPlate({ title, testid, children }: { title: string; testid?: string; children: React.ReactNode }) {
+  // Split "Fig. A · Natal wheel — tropical" into a corner tag + a title.
+  const [tag, ...rest] = title.split(" · ");
   return (
-    <figure className="crt-frame" data-title={title} data-testid={testid}>
-      <div className="crt-screen">{children}</div>
-    </figure>
+    <TermPane title={rest.join(" · ") || title} corner={tag} testid={testid}>
+      {children}
+    </TermPane>
   );
 }
 

@@ -85,9 +85,14 @@ export function TerminalNav() {
 
   return (
     <>
-      {/* command rail — quiet, in the footer region */}
+      {/* status line — the persistent prompt rail at the very bottom */}
       <div className="pointer-events-none fixed inset-x-0 bottom-0 z-30 hidden justify-center pb-3 md:flex">
-        <div className="pointer-events-auto flex items-center gap-3 border border-rule/20 bg-bg/85 px-4 py-1.5 font-mono text-2xs uppercase tracking-eyebrow text-muted backdrop-blur">
+        <div className="term-status pointer-events-auto">
+          <span className="term-prompt" aria-hidden>
+            <span className="term-prompt-user">eco@dharma</span>
+            <span className="text-muted">:</span>
+            <span className="term-prompt-sigil">$</span>
+          </span>
           {NAV.slice(1).map((c) => (
             <button key={c.label} onClick={() => choose(c)} className="hover:text-accent">
               <span className="text-accent">[{c.key}]</span> {c.label.toLowerCase()}
@@ -99,6 +104,7 @@ export function TerminalNav() {
           <button onClick={() => setHelp(true)} className="hover:text-accent">
             <span className="text-accent">[?]</span> keys
           </button>
+          <span className="caret" aria-hidden />
         </div>
       </div>
 
@@ -113,9 +119,16 @@ export function TerminalNav() {
 
       {palette && (
         <div className="fixed inset-0 z-50 flex items-start justify-center bg-bg/80 pt-[18vh] backdrop-blur-sm" onClick={() => setPalette(false)}>
-          <div className="w-[min(92vw,560px)] border border-rule/40 bg-surface" onClick={(e) => e.stopPropagation()}>
+          <div className="term-window w-[min(92vw,560px)]" onClick={(e) => e.stopPropagation()}>
+            <div className="term-titlebar">
+              <span className="term-dots" aria-hidden><i /><i /><i /></span>
+              <span className="term-title">command palette</span>
+              <span className="term-corner" aria-hidden>⌘K</span>
+            </div>
             <div className="flex items-center gap-2 border-b border-rule/25 px-4 py-3 font-mono text-sm">
-              <span className="text-accent">{">"}</span>
+              <span className="term-prompt" aria-hidden>
+                <span className="term-prompt-user">eco@dharma</span><span className="text-muted">:</span><span className="term-prompt-sigil">$</span>
+              </span>
               <input
                 ref={inputRef}
                 value={q}
@@ -138,7 +151,10 @@ export function TerminalNav() {
                     onClick={() => choose(c)}
                     className={`flex w-full items-baseline justify-between px-4 py-2 text-left font-mono text-sm ${i === sel ? "bg-accent/15 text-fg" : "text-muted"}`}
                   >
-                    <span>{c.key && <span className="mr-2 text-accent">[{c.key}]</span>}{c.label}</span>
+                    <span>
+                      <span className={`mr-2 ${i === sel ? "text-accent" : "text-transparent"}`} aria-hidden>▸</span>
+                      {c.key && <span className="mr-2 text-accent">[{c.key}]</span>}{c.label}
+                    </span>
                     <span className="text-2xs uppercase tracking-eyebrow text-muted/70">{c.hint}</span>
                   </button>
                 </li>

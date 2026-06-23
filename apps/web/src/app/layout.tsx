@@ -3,9 +3,12 @@ import Link from "next/link";
 import { Fraunces, Archivo, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import { getUser } from "@/lib/auth";
+import { loadFramework } from "@/lib/framework";
 import { logoutAction } from "./actions/auth";
 import { ModeToggle } from "@/components/ModeToggle";
 import { TerminalNav } from "@/components/TerminalNav";
+import { RoutePrompt } from "@/components/RoutePrompt";
+import { BootSequence } from "@/components/BootSequence";
 import Scanlines from "@/components/Scanlines";
 
 const fraunces = Fraunces({
@@ -40,6 +43,7 @@ const modeInit = `(function(){try{var m=localStorage.getItem('eco-mode');if(m===
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const user = await getUser();
+  const fw = loadFramework();
   return (
     <html lang="en" className={`${fraunces.variable} ${archivo.variable} ${plexMono.variable}`}>
       <head>
@@ -47,16 +51,20 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       </head>
       <body>
         <Scanlines />
+        <BootSequence domains={fw.domains.length} gifts={fw.gifts.length} trimtabs={fw.trim_tabs.length} />
         <div id="app-root">
-          {/* Catalog running header — quiet, mono, registration marks */}
-          <header className="border-b border-rule/25">
-            <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-3">
-              <Link href="/" className="flex items-baseline gap-2">
-                <span className="font-display text-lg text-fg">EcoDharma</span>
-                <span className="hidden font-mono text-2xs uppercase tracking-eyebrow text-muted sm:inline">
-                  · access to gifts
-                </span>
-              </Link>
+          {/* Terminal menubar — traffic-light dots, tty label, live shell prompt */}
+          <header className="border-b border-rule/25 bg-[rgb(var(--box)/0.04)]">
+            <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-2.5">
+              <div className="flex min-w-0 items-center gap-3">
+                <span className="term-dots" aria-hidden><i /><i /><i /></span>
+                <Link href="/" className="flex items-baseline gap-2">
+                  <span className="font-mono text-sm font-medium lowercase tracking-tight text-fg">ecodharma</span>
+                  <span className="hidden font-mono text-2xs uppercase tracking-eyebrow text-muted/70 sm:inline">— tty</span>
+                </Link>
+                <span className="hidden font-mono text-2xs text-muted/60 lg:inline" aria-hidden>·</span>
+                <span className="hidden lg:inline"><RoutePrompt caret={false} /></span>
+              </div>
               <nav className="flex items-center gap-3 sm:gap-4">
                 {user ? (
                   <>

@@ -340,6 +340,138 @@ body::after {
 }
 
 /* ============================================================
+   v4 — the unified TTY shell. The whole app reads as one terminal
+   session: window chrome with traffic-light dots, a phosphor screen,
+   ASCII art, box-drawing dividers, a blinking prompt, and a status line.
+   ============================================================ */
+@layer components {
+  /* --- Terminal window: titlebar + screen --- */
+  .term-window {
+    position: relative;
+    border: 1px solid rgb(var(--box) / 0.45);
+    border-radius: 3px;
+    background: rgb(var(--surface) / 0.5);
+    box-shadow:
+      inset 0 0 0 1px rgb(var(--box) / 0.05),
+      inset 0 0 38px rgb(var(--crt-glow) / calc(var(--crt-glow-alpha) * 0.55)),
+      0 1px 0 rgb(var(--bg) / 0.6),
+      0 8px 24px rgb(0 0 0 / 0.06);
+    overflow: hidden;
+  }
+  .mode-blueprint .term-window { box-shadow:
+      inset 0 0 0 1px rgb(var(--box) / 0.08),
+      inset 0 0 44px rgb(var(--crt-glow) / calc(var(--crt-glow-alpha) * 0.5)),
+      0 10px 30px rgb(0 0 0 / 0.35); }
+
+  .term-titlebar {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.45rem 0.7rem;
+    border-bottom: 1px solid rgb(var(--box) / 0.3);
+    background: rgb(var(--box) / 0.05);
+    font-family: var(--font-plex-mono), ui-monospace, monospace;
+    font-size: 0.6875rem;
+    line-height: 1;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: rgb(var(--muted));
+  }
+  .term-dots { display: inline-flex; gap: 5px; flex: none; }
+  .term-dots i {
+    width: 8px; height: 8px; border-radius: 9999px;
+    background: rgb(var(--box) / 0.35);
+    box-shadow: inset 0 0 0 0.5px rgb(var(--box) / 0.4);
+  }
+  .term-dots i:first-child { background: rgb(var(--flag) / 0.8); }
+  .term-dots i:nth-child(2) { background: rgb(var(--accent) / 0.85); }
+  .term-dots i:nth-child(3) { background: rgb(var(--live) / 0.85); }
+  .term-title { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .term-corner { flex: none; color: rgb(var(--accent)); letter-spacing: 0.1em; }
+  .term-body { position: relative; padding: 1.15rem 1.15rem 1.25rem; }
+
+  /* --- ASCII art block --- */
+  .ascii-art {
+    font-family: var(--font-plex-mono), ui-monospace, monospace;
+    white-space: pre;
+    line-height: 1.05;
+    letter-spacing: 0;
+    margin: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    color: rgb(var(--live));
+    font-size: clamp(0.5rem, 2.3vw, 0.8rem);
+    scrollbar-width: none;
+  }
+  .ascii-art::-webkit-scrollbar { display: none; }
+
+  /* --- ASCII divider with centered glyph --- */
+  .ascii-divider { display: flex; align-items: center; gap: 0.9rem; margin: 0; }
+  .ascii-divider-line { flex: 1; height: 0; border-top: 1px dashed rgb(var(--rule) / 0.3); }
+  .ascii-divider-glyph {
+    flex: none;
+    font-family: var(--font-plex-mono), ui-monospace, monospace;
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    color: rgb(var(--accent));
+  }
+
+  /* --- Shell prompt + blinking caret --- */
+  .term-prompt { font-family: var(--font-plex-mono), ui-monospace, monospace; }
+  .term-prompt-user { color: rgb(var(--live)); }
+  .term-prompt-path { color: rgb(var(--link)); }
+  .term-prompt-sigil { color: rgb(var(--accent)); }
+  .caret {
+    display: inline-block;
+    width: 0.62ch; height: 1.05em;
+    margin-left: 0.1ch;
+    transform: translateY(0.16em);
+    background: rgb(var(--accent));
+    animation: caret-blink 1.05s steps(1, end) infinite;
+  }
+  @keyframes caret-blink { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
+
+  /* --- Status line (the persistent prompt rail at the very bottom) --- */
+  .term-status {
+    display: flex; align-items: center; gap: 0.85rem;
+    border: 1px solid rgb(var(--box) / 0.25);
+    background: rgb(var(--bg) / 0.9);
+    padding: 0.4rem 0.8rem;
+    font-family: var(--font-plex-mono), ui-monospace, monospace;
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: rgb(var(--muted));
+    backdrop-filter: blur(6px);
+  }
+
+  /* --- The boot overlay --- */
+  .boot-overlay {
+    position: fixed; inset: 0; z-index: 80;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 1.5rem;
+    background: rgb(var(--bg));
+    animation: boot-out 0.5s ease-out 1.7s forwards;
+  }
+  .boot-log {
+    font-family: var(--font-plex-mono), ui-monospace, monospace;
+    font-size: 0.72rem;
+    line-height: 1.7;
+    color: rgb(var(--muted));
+    min-width: min(90vw, 30rem);
+  }
+  .boot-log b { color: rgb(var(--live)); font-weight: 500; }
+  @keyframes boot-out { to { opacity: 0; visibility: hidden; } }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .caret { animation: none; opacity: 1; }
+  .boot-overlay { animation: none; display: none; }
+}
+
+/* ============================================================
    v3 — CSS-only 3D transitions + CRT motion keyframes.
    translateZ kept <=140px to avoid clip/blur. Always fill: both.
    ============================================================ */
