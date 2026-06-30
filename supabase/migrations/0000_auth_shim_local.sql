@@ -37,7 +37,14 @@ do $$ begin
     create role authenticated nologin noinherit;
   end if;
   if not exists (select from pg_roles where rolname = 'service_role') then
-    create role service_role nologin noinherit bypassrls;
+    -- BYPASSRLS needs superuser; on managed Postgres (Neon) fall back to a plain
+    -- role. The app's withService() bypasses RLS via table OWNERSHIP, not this
+    -- attribute, so the fallback is functionally equivalent there.
+    begin
+      create role service_role nologin noinherit bypassrls;
+    exception when insufficient_privilege then
+      create role service_role nologin noinherit;
+    end;
   end if;
 end $$;
 

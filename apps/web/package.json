@@ -10,7 +10,8 @@
     "lint": "next lint",
     "test:e2e": "playwright test",
     "mcp": "npx tsx src/mcp/server.ts",
-    "mcp:smoke": "npx tsx src/mcp/smoke.mts"
+    "mcp:smoke": "npx tsx src/mcp/smoke.mts",
+    "sync:framework": "node -e \"const fs=require('fs');fs.mkdirSync('framework/voice',{recursive:true});fs.copyFileSync('../../framework/framework.json','framework/framework.json');fs.copyFileSync('../../framework/voice/ecodharma-voice@2.0.0.md','framework/voice/ecodharma-voice@2.0.0.md');console.log('synced repo-root framework/ into apps/web/framework for deploy bundling')\""
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.32.1",
