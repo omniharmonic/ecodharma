@@ -5,6 +5,7 @@ import { getUser } from "@/lib/auth";
 import { withUser } from "@/lib/db";
 import { computeChart, type BirthInput } from "@/lib/ephemeris";
 import { generateGiftProfile } from "@/lib/interpret";
+import { userCanUseClaude } from "@/lib/entitlements";
 import { frameworkVersion } from "@/lib/framework";
 import { VOICE_VERSION } from "@/lib/voice";
 import { geocode } from "@/lib/places";
@@ -107,7 +108,8 @@ export async function createReadingAction(_prev: unknown, formData: FormData) {
   // 3) Interpret through framework + voice -> persist gift profile.
   let profile: GiftProfile;
   try {
-    profile = await generateGiftProfile(charts, ikigai);
+    const entitled = await userCanUseClaude(user!.id, user!.email);
+    profile = await generateGiftProfile(charts, ikigai, { entitled });
     await withUser(user!.id, (c) =>
       c.query(
         `insert into gift_profiles (user_id, framework_version, voice_version, content_json, status)

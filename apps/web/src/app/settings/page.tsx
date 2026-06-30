@@ -1,13 +1,17 @@
 import { redirect } from "next/navigation";
 import { getUser } from "@/lib/auth";
 import { dataSummary } from "@/lib/account";
+import { getTier, claudeAvailable } from "@/lib/entitlements";
 import { MessageForm } from "@/components/MessageForm";
 import { revokeAllConsentsAction, deleteAccountAction } from "../actions/account";
+import { redeemCodeAction } from "../actions/access";
 
 export default async function SettingsPage() {
   const user = await getUser();
   if (!user) redirect("/login");
   const summary = await dataSummary(user.id);
+  const tier = await getTier(user.id);
+  const claudeOn = claudeAvailable();
 
   return (
     <div className="max-w-measure pt-10">
@@ -37,6 +41,28 @@ export default async function SettingsPage() {
         <a href="/api/export" className="btn-line" data-testid="export-link" download>
           Export my data
         </a>
+      </section>
+
+      <section className="mt-16" data-testid="access-section">
+        <p className="eyebrow mb-2">Reading engine</p>
+        {tier === "claude" ? (
+          <p className="mb-2 text-sm text-fg" data-testid="tier-badge" data-tier="claude">
+            <span className="text-live">✦ Claude-powered readings unlocked.</span>{" "}
+            {claudeOn
+              ? "Your next reading is drafted by Claude."
+              : "They activate wherever Claude is enabled."}
+          </p>
+        ) : (
+          <>
+            <p className="mb-4 text-sm text-muted" data-testid="tier-badge" data-tier="free">
+              Your readings use the free, deterministic engine — chart-grounded and instant.
+              Have an unlock code from a steward? Redeem it for Claude-powered readings.
+            </p>
+            <MessageForm action={redeemCodeAction} submitLabel="Redeem code" pendingLabel="Redeeming…" className="btn-line">
+              <input name="code" className="input" placeholder="e.g. weave-trim-8421" aria-label="Unlock code" data-testid="redeem-code-input" />
+            </MessageForm>
+          </>
+        )}
       </section>
 
       <section className="mt-16">

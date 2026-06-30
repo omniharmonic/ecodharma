@@ -2,9 +2,11 @@ import { redirect } from "next/navigation";
 import { getUser } from "@/lib/auth";
 import { isAdmin } from "@/lib/admin";
 import { listCandidates, libraryStats } from "@/lib/trimtabs";
+import { listCodes } from "@/lib/entitlements";
 import { loadFramework } from "@/lib/framework";
 import { MessageForm } from "@/components/MessageForm";
 import { promoteTrimTabAction, deleteCandidateAction } from "../actions/trimtab";
+import { mintCodeAction } from "../actions/access";
 
 export default async function CuratePage() {
   const user = await getUser();
@@ -16,7 +18,7 @@ export default async function CuratePage() {
   const fw = loadFramework();
   const name = (id: string, kind: "gift" | "domain") =>
     (kind === "gift" ? fw.gifts : fw.domains).find((x) => x.id === id)?.name || id;
-  const [candidates, stats] = await Promise.all([listCandidates(), libraryStats()]);
+  const [candidates, stats, codes] = await Promise.all([listCandidates(), libraryStats(), listCodes()]);
 
   return (
     <div className="max-w-measure pt-10">
@@ -35,6 +37,35 @@ export default async function CuratePage() {
             {s.source}/{s.status}: {s.n} ({s.uses ?? 0} uses)
           </span>
         ))}
+      </section>
+
+      <section className="mt-16" data-testid="unlock-codes">
+        <p className="eyebrow mb-2">Unlock codes</p>
+        <p className="mb-4 text-sm text-muted">
+          Mint a code and share it with a friend. Redeeming it upgrades their account to
+          Claude-powered readings. Leave the limit blank for an unlimited code, or cap it
+          (e.g. 1 for a personal invite).
+        </p>
+        <MessageForm action={mintCodeAction} submitLabel="Mint a code" pendingLabel="Minting…" className="btn-line">
+          <div className="flex flex-wrap gap-3">
+            <input name="note" className="input flex-1" placeholder="who it's for (optional)" aria-label="Code note" />
+            <input name="max_redemptions" className="input w-28" placeholder="limit" inputMode="numeric" aria-label="Max redemptions" />
+          </div>
+        </MessageForm>
+        {codes.length > 0 && (
+          <div className="mt-6 divide-y divide-rule/12">
+            {codes.map((c) => (
+              <div key={c.code} className="flex flex-wrap items-center gap-x-3 gap-y-1 py-3" data-testid="unlock-code-row">
+                <code className="font-mono text-sm text-fg">{c.code}</code>
+                {c.note && <span className="text-sm text-muted">{c.note}</span>}
+                <span className="kv">
+                  {c.redeemed_count}{c.max_redemptions != null ? `/${c.max_redemptions}` : ""} redeemed
+                  {c.active ? "" : " · disabled"}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
       </section>
 
       <section className="mt-16">

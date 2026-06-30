@@ -167,11 +167,15 @@ async function claudeRead(
   return out;
 }
 
-export async function generateConstellationRead(members: Member[]): Promise<ConstellationRead> {
+export async function generateConstellationRead(
+  members: Member[],
+  opts: { entitled?: boolean } = {},
+): Promise<ConstellationRead> {
   const framework = loadFramework();
   const relational = relationalLayer(members);
   let read: ConstellationRead | null = null;
-  if (process.env.ANTHROPIC_API_KEY && process.env.ECODHARMA_INTERPRETER !== "fixture") {
+  // Gated per-owner: only an entitled constellation owner triggers Claude.
+  if (opts.entitled && process.env.ANTHROPIC_API_KEY && process.env.ECODHARMA_INTERPRETER !== "fixture") {
     try {
       read = await claudeRead(framework, members, relational);
     } catch (err) {

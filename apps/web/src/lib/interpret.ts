@@ -149,11 +149,17 @@ function dedupePairings(framework: Framework, pairings: Pairing[]): Pairing[] {
   return out;
 }
 
-export async function generateGiftProfile(charts: Charts, ikigai: Ikigai): Promise<GiftProfile> {
+export async function generateGiftProfile(
+  charts: Charts,
+  ikigai: Ikigai,
+  opts: { entitled?: boolean } = {},
+): Promise<GiftProfile> {
   const framework = loadFramework();
   let core: CoreProfile;
   let engine = ENGINE_FIXTURE;
-  if (useClaude()) {
+  // Claude is gated per-user: only an entitled (code-redeeming) caller burns
+  // tokens; everyone else gets the free, deterministic fixture reading.
+  if (opts.entitled && useClaude()) {
     try {
       core = await claudeCore(framework, charts, ikigai);
       engine = MODEL;
