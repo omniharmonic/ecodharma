@@ -57,7 +57,7 @@ export default async function ProfilePage() {
           <span className="term-prompt-path">~/profile</span><span className="term-prompt-sigil">$</span>{" "}
           <span className="text-muted">cat the-work-that-is-only-yours.txt</span>
         </p>
-        <p className="font-display text-title leading-[1.15] text-fg md:text-[2.6rem]" data-testid="recognition">
+        <p className="font-display text-[1.6rem] leading-[1.22] text-fg sm:text-[2.1rem] sm:leading-[1.18] md:text-[2.6rem] md:leading-[1.15]" data-testid="recognition">
           {gp.recognition}
         </p>
       </section>

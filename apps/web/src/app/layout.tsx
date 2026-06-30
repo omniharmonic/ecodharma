@@ -30,6 +30,11 @@ export const metadata: Metadata = {
   description:
     "A field manual for your contribution to the regenerative transition — read through many lenses, mapped to the work that is only yours.",
   manifest: "/manifest.webmanifest",
+  icons: {
+    icon: [{ url: "/icon.svg", type: "image/svg+xml" }],
+    shortcut: "/icon.svg",
+    apple: "/icon.svg",
+  },
 };
 
 export const viewport: Viewport = {
@@ -45,7 +50,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const user = await getUser();
   const fw = loadFramework();
   return (
-    <html lang="en" className={`${fraunces.variable} ${archivo.variable} ${plexMono.variable}`}>
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={`${fraunces.variable} ${archivo.variable} ${plexMono.variable}`}
+    >
       <head>
         <script dangerouslySetInnerHTML={{ __html: modeInit }} />
       </head>

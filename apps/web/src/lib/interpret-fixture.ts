@@ -44,6 +44,22 @@ export function extractSignals(charts: Charts): Signals {
 
 export const clip = (s: string, n = 60) => (s && s.length > n ? s.slice(0, n).replace(/[\s,.;:]+\S*$/, "") + "…" : s || "");
 
+// Embed a user's own sentence mid-sentence: clip it, drop any trailing terminal
+// punctuation (so we never get "…." or ".."), and downcase the first letter unless
+// it's "I" or an acronym — so "Bringing people together." reads as "...you love
+// bringing people together, ..." instead of a capital mid-clause with a doubled dot.
+const DANGLING = /\s+(?:and|or|but|so|the|a|an|to|of|in|on|for|with|that|which|as|at|by|from)$/i;
+export const frag = (s: string, n = 90) => {
+  let t = clip(s, n).replace(/[….,;:!?\s]+$/, "").trimStart();
+  // A clip can leave a dangling conjunction/preposition ("…hold money and"); drop it
+  // so the embedded clause doesn't read as truncated.
+  while (DANGLING.test(t)) t = t.replace(DANGLING, "");
+  if (!t) return "";
+  const first = t.split(/\s+/)[0] || "";
+  if (first === "I" || /^[A-Z]{2,}/.test(first)) return t;
+  return t.charAt(0).toLowerCase() + t.slice(1);
+};
+
 // ---------- deterministic, chart+framework-driven fixture ----------
 export function scoreGift(gift: Gift, sig: Signals, ikigai: Ikigai): number {
   let score = 0;
@@ -93,10 +109,11 @@ export function fixtureCore(framework: Framework, charts: Charts, ikigai: Ikigai
     sig.sunSign ? `Sun in ${sig.sunSign}` : null,
     sig.hdProfile ? `${sig.hdProfile} profile` : null,
   ].filter(Boolean).join(", ");
+  const leadName = lead?.name?.replace(/^The /, "") || "the gifts you carry";
   const recognition =
-    `You love ${clip(ikigai.love, 70)} and you're good at ${clip(ikigai.skill, 60)} — and the world, you sense, needs ${clip(ikigai.world_need, 60)}. ` +
+    `You love ${frag(ikigai.love, 96)}, you're good at ${frag(ikigai.skill, 88)}, and the world around you — you sense — needs ${frag(ikigai.world_need, 88)}. ` +
     (chartClause ? `Your chart (${chartClause}) echoes it: ` : `Read together, `) +
-    `your medicine gathers most around being ${lead?.name?.toLowerCase().replace(/^the /, "") || "yourself"} — connecting people, tending what matters, and helping good work take root.`;
+    `your medicine gathers most around the ${leadName} in you — connecting people, tending what matters, and helping good work take root.`;
 
   const narrative =
     `Across the lenses, a consistent shape shows up` +
@@ -118,7 +135,7 @@ export function fixtureCore(framework: Framework, charts: Charts, ikigai: Ikigai
     `points to how you naturally give${sig.ascSign ? `, while ${sig.ascSign} rising shapes how you first meet a room` : ""}. ` +
     (sig.hdType ? `As a ${sig.hdType}${sig.hdAuthority ? ` with ${sig.hdAuthority.toLowerCase()} authority` : ""}, you do your truest work when you move from your own rhythm rather than pushing against it. ` : "") +
     (sig.unknownTime ? `Your birth time is uncertain, so hold the rising sign and Human Design lightly. ` : "") +
-    `What these mirrors keep reflecting is someone whose medicine gathers around being ${lead2?.name?.toLowerCase().replace(/^the /, "") || "yourself"} — ` +
+    `What these mirrors keep reflecting is someone whose medicine gathers around the ${lead2?.name?.replace(/^The /, "") || "gifts you carry"} in you — ` +
     `${clip(lead2?.essence || lead2?.description || "", 120)}. ` +
     `Your second and third notes — ${chosen.slice(1).map((g) => g.name.replace(/^The /, "")).join(" and ") || "the quieter ones"} — round it out. ` +
     `None of this is a verdict; it's a set of doorways. The work that is most yours is where one of these gifts meets a real need in ${domainIds.map(domainName).join(", ")}, ` +
