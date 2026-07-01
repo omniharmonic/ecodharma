@@ -14,7 +14,7 @@ import { regenerateProfileAction, saveOfferingsAction } from "../actions/profile
 import type { ChartLens, ChartThread, GiftProfile } from "@/lib/types";
 
 // re-draft's server action calls Claude — give it the full function budget.
-export const maxDuration = 60;
+export const maxDuration = 300;
 
 export default async function ProfilePage() {
   const user = await getUser();

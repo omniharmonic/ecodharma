@@ -14,13 +14,13 @@ import { fixtureCore, clip } from "./interpret-fixture";
 export { useClaude };
 
 const ENGINE_FIXTURE = "fixture-interpreter@2.0.0";
-// Default to Sonnet — fast enough to complete the deep reading inside a serverless
-// function's time budget (Vercel Hobby caps at 60s). Set ECODHARMA_PROFILE_MODEL=
-// claude-opus-4-8 for maximum depth once on a plan with longer functions (Pro: 300s).
-const MODEL = process.env.ECODHARMA_PROFILE_MODEL || "claude-sonnet-4-6";
-// Abort the Claude call before the function is killed, so a too-slow reading falls
-// back to the (rich, deterministic) fixture instead of timing out to a blank profile.
-const CLAUDE_TIMEOUT_MS = Number(process.env.ECODHARMA_CLAUDE_TIMEOUT_MS || 45_000);
+// Opus for maximum depth. A full reading runs ~90–120s, which fits the serverless
+// budget on Fluid Compute (the routes set maxDuration=300). Set ECODHARMA_PROFILE_MODEL=
+// claude-sonnet-4-6 for a faster (~50–70s), slightly lighter reading if preferred.
+const MODEL = process.env.ECODHARMA_PROFILE_MODEL || "claude-opus-4-8";
+// Safety net: abort well before the function's own limit so a genuinely hung call
+// still falls back to the (rich, deterministic) fixture instead of a blank profile.
+const CLAUDE_TIMEOUT_MS = Number(process.env.ECODHARMA_CLAUDE_TIMEOUT_MS || 240_000);
 const MAX_PAIRINGS = 3; // a lead + two — not a pile of "highest-leverage" moves
 
 // An Anthropic failure that means "out of credits / quota / rate limit" — the
