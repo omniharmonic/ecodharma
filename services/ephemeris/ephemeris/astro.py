@@ -24,7 +24,11 @@ PLANETS: dict[str, int] = {
     "Uranus": swe.URANUS,
     "Neptune": swe.NEPTUNE,
     "Pluto": swe.PLUTO,
-    "North_Node": swe.MEAN_NODE,
+    # TRUE node (the oscillating node), matching Human Design software and modern
+    # astrology. The mean node can differ by up to ~1.8° (≈2 gate-lines), which
+    # shifts nodal gates/lines and can add spurious HD channels — the miss that
+    # gave a tester a wrong 17-62 channel and a wrong line distribution.
+    "North_Node": swe.TRUE_NODE,
 }
 
 SIGNS = [
