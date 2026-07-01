@@ -5,7 +5,7 @@ import { test, expect } from "@playwright/test";
 test("sample constellation is public and renders a full woven read", async ({ page }) => {
   await page.goto("/constellations/sample");
 
-  await expect(page.getByText("Sample · no real users")).toBeVisible();
+  await expect(page.getByText("Sample constellation")).toBeVisible();
   await expect(page.getByRole("heading", { name: "Cascadia Weavers" })).toBeVisible();
 
   // member roster + the geodesic map + the woven read

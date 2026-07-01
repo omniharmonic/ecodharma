@@ -7,8 +7,6 @@ import { loadFramework } from "@/lib/framework";
 import { logoutAction } from "./actions/auth";
 import { ModeToggle } from "@/components/ModeToggle";
 import { TerminalNav } from "@/components/TerminalNav";
-import { RoutePrompt } from "@/components/RoutePrompt";
-import { BootSequence } from "@/components/BootSequence";
 import Scanlines from "@/components/Scanlines";
 
 const fraunces = Fraunces({
@@ -26,7 +24,7 @@ const plexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "EcoDharma — access to gifts",
+  title: "EcoDharma — the work that is only yours",
   description:
     "A field manual for your contribution to the regenerative transition — read through many lenses, mapped to the work that is only yours.",
   manifest: "/manifest.webmanifest",
@@ -60,21 +58,14 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       </head>
       <body>
         <Scanlines />
-        <BootSequence domains={fw.domains.length} gifts={fw.gifts.length} trimtabs={fw.trim_tabs.length} />
         <div id="app-root">
-          {/* Terminal menubar — traffic-light dots, tty label, live shell prompt */}
-          <header className="border-b border-rule/25 bg-[rgb(var(--box)/0.04)]">
-            <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-2.5">
-              <div className="flex min-w-0 items-center gap-3">
-                <span className="term-dots" aria-hidden><i /><i /><i /></span>
-                <Link href="/" className="flex items-baseline gap-2">
-                  <span className="font-mono text-sm font-medium lowercase tracking-tight text-fg">ecodharma</span>
-                  <span className="hidden font-mono text-2xs uppercase tracking-eyebrow text-muted/70 sm:inline">— tty</span>
-                </Link>
-                <span className="hidden font-mono text-2xs text-muted/60 lg:inline" aria-hidden>·</span>
-                <span className="hidden lg:inline"><RoutePrompt caret={false} /></span>
-              </div>
-              <nav className="flex items-center gap-3 sm:gap-4">
+          {/* Masthead — a quiet wordmark + navigation. */}
+          <header className="border-b border-rule/20">
+            <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-3.5">
+              <Link href="/" className="font-display text-lg lowercase tracking-tight text-fg">
+                ecodharma
+              </Link>
+              <nav className="flex items-center gap-4 sm:gap-5">
                 {user ? (
                   <>
                     {/* primary links — collapse into the command menu (⌘ menu) on phones */}
@@ -97,7 +88,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                     <Link href="/signup" className="btn-solar text-2xs">Begin</Link>
                   </>
                 )}
-                <span className="hidden font-mono text-muted/40 sm:inline" aria-hidden>＋</span>
                 <ModeToggle />
               </nav>
             </div>
@@ -106,7 +96,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <main className="mx-auto max-w-6xl px-5 pb-12">{children}</main>
           <TerminalNav />
 
-          <footer className="mx-auto max-w-6xl px-5 pt-10 pb-28">
+          <footer className="mx-auto max-w-6xl px-5 pt-10 pb-16">
             <hr className="rule-x mb-4" />
             <p className="font-mono text-2xs uppercase tracking-eyebrow text-muted">
               Mythopoetic, not predictive · lenses for reflection · offered toward the commons (CC BY-SA)

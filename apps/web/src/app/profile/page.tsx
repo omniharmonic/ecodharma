@@ -55,12 +55,8 @@ export default async function ProfilePage() {
   return (
     <PageTransition>
       {/* RECOGNITION — the one thing, in plain language */}
-      <section className="max-w-measure pt-10 animate-rise">
-        <p className="term-prompt mb-4 text-2xs">
-          <span className="term-prompt-user">eco@dharma</span><span className="text-muted">:</span>
-          <span className="term-prompt-path">~/profile</span><span className="term-prompt-sigil">$</span>{" "}
-          <span className="text-muted">cat the-work-that-is-only-yours.txt</span>
-        </p>
+      <section className="max-w-measure pt-12 animate-rise">
+        <p className="eyebrow mb-4">Your reading</p>
         <p className="font-display text-[1.6rem] leading-[1.22] text-fg sm:text-[2.1rem] sm:leading-[1.18] md:text-[2.6rem] md:leading-[1.15]" data-testid="recognition">
           {gp.recognition}
         </p>
@@ -133,23 +129,25 @@ export default async function ProfilePage() {
         </SectionReveal>
       )}
 
-      {/* CHART, LENS BY LENS — deep per-lens readings through the Great Turning */}
+      {/* CHART, LENS BY LENS — deep per-lens readings, each a two-column spread */}
       {lensReadings.length > 0 && (
-        <SectionReveal className="mt-24 max-w-measure" index={2}>
+        <SectionReveal className="mt-24 max-w-4xl" index={2}>
           <p className="eyebrow mb-2">Your chart, lens by lens</p>
-          <p className="mb-8 text-sm text-muted">
+          <p className="mb-8 max-w-measure text-sm text-muted">
             Each tradition read in full — your actual placements, and what each one equips you to do in the turning.
           </p>
-          <div className="space-y-10">
+          <div className="space-y-8">
             {lensReadings.map((lr) => (
-              <div key={lr.lens} className="crt-frame p-6 pt-8" data-title={lr.title} data-testid={`lens-reading-${lr.lens}`}>
-                <div data-testid="lens-reading">
-                  {lr.summary && <p className="font-mono text-2xs uppercase tracking-eyebrow text-accent">{lr.summary}</p>}
-                  <div className="mt-4 whitespace-pre-line font-sans leading-relaxed text-fg/90">{lr.reading}</div>
+              <div key={lr.lens} className="crt-frame p-6 pt-9 md:p-8 md:pt-10" data-title={lr.title} data-testid={`lens-reading-${lr.lens}`}>
+                <div data-testid="lens-reading" className="md:grid md:grid-cols-[1.05fr_0.95fr] md:gap-10">
+                  <div>
+                    {lr.summary && <p className="font-mono text-2xs uppercase leading-relaxed tracking-eyebrow text-accent">{lr.summary}</p>}
+                    <div className="mt-4 whitespace-pre-line font-sans leading-relaxed text-fg/90">{lr.reading}</div>
+                  </div>
                   {lr.placements?.length > 0 && (
-                    <ul className="mt-6 divide-y divide-rule/12 border-t border-rule/12">
+                    <ul className="mt-8 divide-y divide-rule/12 border-t border-rule/12 md:mt-0 md:border-t-0 md:border-l md:border-rule/15 md:pl-8">
                       {lr.placements.map((p, i) => (
-                        <li key={i} className="py-4" data-testid="lens-placement">
+                        <li key={i} className="py-3.5 first:pt-0 md:py-3" data-testid="lens-placement">
                           <p className="font-mono text-sm text-accent">{p.label}</p>
                           <p className="mt-1 text-sm text-fg/90">{p.meaning}</p>
                           <p className="mt-1 text-sm text-muted">
@@ -168,11 +166,11 @@ export default async function ProfilePage() {
 
       {/* GIFT CONSTELLATION — the 2–3 archetypes most alive, and how you carry each */}
       {constellation.length > 0 && (
-        <SectionReveal className="mt-16 max-w-measure" index={2}>
+        <SectionReveal className="mt-16 max-w-4xl" index={2}>
           <p className="eyebrow mb-4">Your gift constellation</p>
-          <div className="divide-y divide-rule/12">
+          <div className="grid gap-x-10 gap-y-6 sm:grid-cols-2">
             {constellation.map((g, i) => (
-              <div key={i} className="py-5" data-testid="gift-carry">
+              <div key={i} data-testid="gift-carry">
                 <h3 className="font-display text-fig text-fg">{giftName(g.gift_id)}</h3>
                 <p className="mt-2 font-sans leading-relaxed text-muted">{g.how_they_carry}</p>
               </div>

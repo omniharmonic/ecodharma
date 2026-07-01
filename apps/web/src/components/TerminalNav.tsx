@@ -85,28 +85,14 @@ export function TerminalNav() {
 
   return (
     <>
-      {/* status line — the persistent prompt rail at the very bottom */}
-      <div className="pointer-events-none fixed inset-x-0 bottom-0 z-30 hidden justify-center pb-3 md:flex">
-        <div className="term-status pointer-events-auto">
-          <span className="term-prompt" aria-hidden>
-            <span className="term-prompt-user">eco@dharma</span>
-            <span className="text-muted">:</span>
-            <span className="term-prompt-sigil">$</span>
-          </span>
-          {NAV.slice(1).map((c) => (
-            <button key={c.label} onClick={() => choose(c)} className="hover:text-accent">
-              <span className="text-accent">[{c.key}]</span> {c.label.toLowerCase()}
-            </button>
-          ))}
-          <button onClick={() => setPalette(true)} className="hover:text-accent">
-            <span className="text-accent">[⌘k]</span> palette
-          </button>
-          <button onClick={() => setHelp(true)} className="hover:text-accent">
-            <span className="text-accent">[?]</span> keys
-          </button>
-          <span className="caret" aria-hidden />
-        </div>
-      </div>
+      {/* desktop: a quiet command-palette affordance, bottom-right */}
+      <button
+        onClick={() => setPalette(true)}
+        className="fixed bottom-4 right-4 z-30 hidden items-center gap-2 rounded-sm border border-rule/25 bg-bg/85 px-3 py-1.5 font-mono text-2xs uppercase tracking-eyebrow text-muted shadow-sm backdrop-blur transition hover:border-accent/40 hover:text-accent md:flex"
+        aria-label="Open command palette"
+      >
+        <span className="text-accent">⌘K</span> menu
+      </button>
 
       {/* mobile command menu — single tap target opening the full palette */}
       <button
@@ -121,14 +107,11 @@ export function TerminalNav() {
         <div className="fixed inset-0 z-50 flex items-start justify-center bg-bg/80 pt-[18vh] backdrop-blur-sm" onClick={() => setPalette(false)}>
           <div className="term-window w-[min(92vw,560px)]" onClick={(e) => e.stopPropagation()}>
             <div className="term-titlebar">
-              <span className="term-dots" aria-hidden><i /><i /><i /></span>
-              <span className="term-title">command palette</span>
+              <span className="term-title">Go to…</span>
               <span className="term-corner" aria-hidden>⌘K</span>
             </div>
             <div className="flex items-center gap-2 border-b border-rule/25 px-4 py-3 font-mono text-sm">
-              <span className="term-prompt" aria-hidden>
-                <span className="term-prompt-user">eco@dharma</span><span className="text-muted">:</span><span className="term-prompt-sigil">$</span>
-              </span>
+              <span className="text-muted/60" aria-hidden>↳</span>
               <input
                 ref={inputRef}
                 value={q}

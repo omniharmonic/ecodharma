@@ -26,11 +26,8 @@ export function TermPane({
       data-testid={testid}
     >
       <div className="term-titlebar">
-        <span className="term-dots" aria-hidden>
-          <i /><i /><i />
-        </span>
         <span className="term-title">{title}</span>
-        <span className="term-corner" aria-hidden>{corner || NODE}</span>
+        {corner && <span className="term-corner" aria-hidden>{corner}</span>}
       </div>
       <div className={["term-body", grain ? "crt-grain" : "", bodyClassName].filter(Boolean).join(" ")}>
         {children}

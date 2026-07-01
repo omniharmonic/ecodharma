@@ -21,14 +21,14 @@ export default function SampleConstellationPage({
   const names = members.map((m) => m.display_name);
 
   return (
-    <div className="max-w-measure pt-10">
-      <div className="flex items-center justify-between animate-rise">
-        <div>
-          <p className="eyebrow mb-4">Sample · no real users</p>
-          <h1 className="font-display text-title leading-tight text-fg">{constellation.name}</h1>
-          <p className="mt-3 max-w-prose text-muted">{constellation.tagline}</p>
+    <div className="max-w-5xl pt-12">
+      <div className="flex flex-wrap items-start justify-between gap-4 animate-rise">
+        <div className="max-w-measure">
+          <p className="eyebrow mb-4">Sample constellation</p>
+          <h1 className="font-display text-title leading-[1.05] text-fg sm:text-hero">{constellation.name}</h1>
+          <p className="mt-4 text-lg text-muted">{constellation.tagline}</p>
         </div>
-        <Link href="/constellations" className="btn-line">back</Link>
+        <Link href="/constellations" className="btn-line shrink-0">← Back</Link>
       </div>
 
       {/* Switcher chips — change which sample is shown */}
@@ -39,7 +39,7 @@ export default function SampleConstellationPage({
             <Link
               key={c.slug}
               href={`/constellations/sample?c=${c.slug}`}
-              className={active ? "pill" : "btn-line"}
+              className={active ? "pill pill-solar" : "btn-line"}
               aria-current={active ? "page" : undefined}
             >
               {c.name}
@@ -48,33 +48,34 @@ export default function SampleConstellationPage({
         })}
       </nav>
 
-      {/* Member roster */}
+      {/* Member roster — a scannable grid of who's woven in */}
       <section className="mt-16">
-        <p className="eyebrow mb-4">Members</p>
-        <ul className="divide-y divide-rule/12">
+        <p className="eyebrow mb-5">Woven in · {members.length}</p>
+        <div className="grid gap-x-10 gap-y-6 sm:grid-cols-2">
           {members.map((m) => (
-            <li key={m.display_name} className="py-4" data-testid="sample-member-row">
+            <div key={m.display_name} className="border-t border-rule/15 pt-4" data-testid="sample-member-row">
               <div className="flex flex-wrap items-baseline justify-between gap-3">
-                <span className="font-sans text-fg">{m.display_name}</span>
+                <span className="font-display text-fig text-fg">{m.display_name}</span>
                 <span className="pill">{m.archetype}</span>
               </div>
-              <p className="mt-1 text-sm text-muted">{m.profile}</p>
-              {m.placements && <p className="kv mt-1">{m.placements}</p>}
-            </li>
+              <p className="mt-2 text-sm text-muted">{m.profile}</p>
+              {m.placements && <p className="kv mt-1.5">{m.placements}</p>}
+            </div>
           ))}
-        </ul>
+        </div>
       </section>
 
       <section className="mt-20" data-testid="constellation-read">
-        <p className="eyebrow mb-2">The constellation read</p>
-        <figure className="plate mt-4">
-          <figcaption className="fig mb-2">Fig. C · sample constellation read</figcaption>
-          <DymaxionMap names={names} />
-        </figure>
+        <p className="eyebrow mb-5">The constellation, woven</p>
+        <div className="grid items-start gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)]">
+          <figure className="plate lg:sticky lg:top-6">
+            <figcaption className="fig mb-2">The field, mapped</figcaption>
+            <DymaxionMap names={names} />
+          </figure>
+          <p className="whitespace-pre-line text-lg leading-relaxed text-fg">{read.narrative}</p>
+        </div>
 
-        <p className="mt-10 whitespace-pre-line text-lg leading-relaxed text-fg">{read.narrative}</p>
-
-        <div className="mt-10 grid gap-x-10 gap-y-10 md:grid-cols-2">
+        <div className="mt-12 grid gap-x-10 gap-y-10 md:grid-cols-2">
           <ReadList title="Collective gifts" items={read.collective_gifts} />
           <ReadList title="Complementarities" items={read.complementarities} />
           <ReadList title="Frictions to name" items={read.frictions} />
