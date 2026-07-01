@@ -70,7 +70,7 @@ export const frag = (s: string, n = 90) => {
 // ---------- deterministic, chart+framework-driven fixture ----------
 export function scoreGift(gift: Gift, sig: Signals, ikigai: Ikigai): number {
   let score = 0;
-  const hay = `${ikigai.love} ${ikigai.skill} ${ikigai.world_need} ${ikigai.livelihood}`.toLowerCase();
+  const hay = `${ikigai.love} ${ikigai.skill} ${ikigai.world_need || ""} ${ikigai.livelihood || ""}`.toLowerCase();
   const hd = gift.modality_signals?.human_design || [];
   const w = [...(gift.modality_signals?.western || []), ...(gift.modality_signals?.vedic || [])];
   for (const s of hd) {
@@ -98,7 +98,7 @@ export function fixtureCore(framework: Framework, charts: Charts, ikigai: Ikigai
 
   const domainScore = new Map<string, number>();
   for (const tt of framework.trim_tabs) if (chosenIds.has(tt.gift_id)) domainScore.set(tt.domain_id, (domainScore.get(tt.domain_id) || 0) + 2);
-  const need = ikigai.world_need.toLowerCase();
+  const need = (ikigai.world_need || "").toLowerCase();
   for (const d of framework.domains)
     for (const word of `${d.name} ${d.description}`.toLowerCase().split(/\W+/))
       if (word.length > 4 && need.includes(word)) domainScore.set(d.id, (domainScore.get(d.id) || 0) + 1);

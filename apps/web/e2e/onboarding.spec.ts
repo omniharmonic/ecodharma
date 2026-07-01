@@ -11,8 +11,6 @@ test("unknown birth time still yields a complete reading", async ({ page }) => {
   await page.getByLabel("Birth place").fill("Berlin, Germany");
   await page.getByLabel("What do you love? What makes you feel alive?").fill("Bringing people together.");
   await page.getByLabel("What are you genuinely good at?").fill("Seeing the pattern that connects.");
-  await page.getByLabel("What does the world (your place, now) most need?").fill("regenerative coordination");
-  await page.getByLabel("What could sustain you materially?").fill("facilitation and stewardship");
   await page.getByRole("button", { name: "Reveal my gift profile" }).click();
 
   await page.waitForURL("**/profile", { timeout: 45_000 });

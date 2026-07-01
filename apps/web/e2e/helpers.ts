@@ -33,14 +33,12 @@ export async function onboard(
   page: Page,
   opts: { date?: string; time?: string; place?: string; need?: string } = {},
 ) {
-  const { date = "1990-06-15", time = "06:30", place = "Berlin, Germany", need = "regenerative coordination and community weaving" } = opts;
+  const { date = "1990-06-15", time = "06:30", place = "Berlin, Germany" } = opts;
   await page.getByLabel("Birth date").fill(date);
   await page.getByLabel("Birth time", { exact: true }).fill(time);
   await page.getByLabel("Birth place").fill(place);
   await page.getByLabel("What do you love? What makes you feel alive?").fill("Bringing people together around a shared dream.");
   await page.getByLabel("What are you genuinely good at?").fill("Listening deeply and seeing the pattern that connects.");
-  await page.getByLabel("What does the world (your place, now) most need?").fill(need);
-  await page.getByLabel("What could sustain you materially?").fill("Facilitation, stewardship, and regenerative project work.");
   await page.getByRole("button", { name: "Reveal my gift profile" }).click();
   await page.waitForURL("**/profile", { timeout: 45_000 });
 }

@@ -74,8 +74,10 @@ export type Framework = {
 export type Ikigai = {
   love: string;
   skill: string;
-  world_need: string;
-  livelihood: string;
+  // What the world needs / what could sustain you are things the reading itself
+  // surfaces from the charts — not asked of the person. Optional / back-compat.
+  world_need?: string;
+  livelihood?: string;
 };
 
 export type Charts = Record<string, unknown>;

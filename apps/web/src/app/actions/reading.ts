@@ -28,8 +28,8 @@ const schema = z.object({
   tz_str: z.string().optional(),
   love: z.string().min(1),
   skill: z.string().min(1),
-  world_need: z.string().min(1),
-  livelihood: z.string().min(1),
+  world_need: z.string().optional(),
+  livelihood: z.string().optional(),
 });
 
 export async function createReadingAction(_prev: unknown, formData: FormData) {
@@ -78,7 +78,7 @@ export async function createReadingAction(_prev: unknown, formData: FormData) {
     year, month, day, hour, minute, lat, lng, tz_str: tz, unknown_time: unknown,
   };
   const ikigai: Ikigai = {
-    love: f.love, skill: f.skill, world_need: f.world_need, livelihood: f.livelihood,
+    love: f.love, skill: f.skill, world_need: f.world_need || "", livelihood: f.livelihood || "",
   };
 
   // 1) Persist birth data + ikigai (RLS owner-only).

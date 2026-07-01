@@ -79,13 +79,13 @@ export function OnboardingForm({ action, defaults }: { action: Action; defaults?
           <h2 className="font-display text-fig text-fg">Your Ikigai reflection</h2>
         </div>
         <p className="text-sm text-muted">
-          Four honest sentences. These keep the reading grounded in your own voice.
+          Two honest sentences — just enough to ground the reading in your own voice.
+          What the world needs from you, and what could sustain you, are things the
+          reading itself surfaces from your charts.
         </p>
         <div className="grid gap-4">
           <Field name="love" label="What do you love? What makes you feel alive?" defaultValue={defaults?.ikigai?.love} />
           <Field name="skill" label="What are you genuinely good at?" defaultValue={defaults?.ikigai?.skill} />
-          <Field name="world_need" label="What does the world (your place, now) most need?" defaultValue={defaults?.ikigai?.world_need} />
-          <Field name="livelihood" label="What could sustain you materially?" defaultValue={defaults?.ikigai?.livelihood} />
         </div>
       </section>
 

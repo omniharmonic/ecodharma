@@ -4,8 +4,6 @@ import { uniqueEmail, signup } from "./helpers";
 async function fillIkigai(page: Page) {
   await page.getByLabel("What do you love? What makes you feel alive?").fill("Tending damaged land back to life.");
   await page.getByLabel("What are you genuinely good at?").fill("Patient observation and steady repair.");
-  await page.getByLabel("What does the world (your place, now) most need?").fill("watersheds tended for the long term");
-  await page.getByLabel("What could sustain you materially?").fill("ecological restoration and stewardship");
 }
 
 // The gazetteer is not a hard-coded handful of cities: any birthplace resolves.

@@ -137,7 +137,7 @@ const IKIGAI_SCHEMA = {
     world_need: { type: "string", description: "What does the world (your place, now) most need?" },
     livelihood: { type: "string", description: "What could sustain you materially?" },
   },
-  required: ["love", "skill", "world_need", "livelihood"],
+  required: ["love", "skill"],
 };
 
 const TOOLS = [
@@ -250,7 +250,7 @@ async function dispatch(name: string, args: any): Promise<unknown> {
     case "gift_reading": {
       const birth = await resolveBirth(args.birth);
       const ikigai = args.ikigai as Ikigai;
-      for (const k of ["love", "skill", "world_need", "livelihood"]) if (!ikigai?.[k as keyof Ikigai]) throw new Error(`ikigai.${k} is required`);
+      for (const k of ["love", "skill"]) if (!ikigai?.[k as keyof Ikigai]) throw new Error(`ikigai.${k} is required`);
       const charts = await computeAllCharts(birth);
       const core = fixtureCore(framework(), charts, ikigai);
       return {
