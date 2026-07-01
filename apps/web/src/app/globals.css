@@ -251,43 +251,20 @@ body::after {
     top: 0;
     left: 0;
     right: 0;
-    padding: 0.4rem 0.75rem;
+    padding: 0.45rem 1rem;
     border-bottom: 1px solid rgb(var(--box) / 0.30);
     font-family: var(--font-plex-mono), ui-monospace, monospace;
     font-size: 0.6875rem;
     line-height: 1;
     text-transform: uppercase;
-    letter-spacing: 0.18em;
+    letter-spacing: 0.16em;
     color: rgb(var(--muted));
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     pointer-events: none;
   }
-  /* four solar registration corner ticks (8 layered gradients) */
-  .crt-frame::after {
-    content: "";
-    position: absolute;
-    inset: 6px;
-    pointer-events: none;
-    background-repeat: no-repeat;
-    background-image:
-      linear-gradient(rgb(var(--accent)), rgb(var(--accent))),
-      linear-gradient(rgb(var(--accent)), rgb(var(--accent))),
-      linear-gradient(rgb(var(--accent)), rgb(var(--accent))),
-      linear-gradient(rgb(var(--accent)), rgb(var(--accent))),
-      linear-gradient(rgb(var(--accent)), rgb(var(--accent))),
-      linear-gradient(rgb(var(--accent)), rgb(var(--accent))),
-      linear-gradient(rgb(var(--accent)), rgb(var(--accent))),
-      linear-gradient(rgb(var(--accent)), rgb(var(--accent)));
-    background-size:
-      10px 1px, 1px 10px,   /* top-left */
-      10px 1px, 1px 10px,   /* top-right */
-      10px 1px, 1px 10px,   /* bottom-left */
-      10px 1px, 1px 10px;   /* bottom-right */
-    background-position:
-      left top, left top,
-      right top, right top,
-      left bottom, left bottom,
-      right bottom, right bottom;
-  }
+  /* (solar registration corner ticks removed — they clipped the title strip) */
   .crt-screen { padding: 2.25rem 1.25rem 1.25rem; position: relative; z-index: 1; }
 
   /* --- ASCII / box-drawing dividers --- */
