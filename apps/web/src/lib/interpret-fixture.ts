@@ -9,6 +9,7 @@ import {
   HD_TYPE_MEANING, HD_AUTHORITY_MEANING, HD_CENTER_MEANING,
   GK_SPHERE_MEANING, GK_SPHERE_LABEL, houseOf,
 } from "./astro-meanings";
+import { GENE_KEYS } from "./gene-keys";
 
 const MAX_PAIRINGS = 3; // a lead + two — not a pile of "highest-leverage" moves
 
@@ -419,9 +420,11 @@ export function buildLensReadings(sig: Signals, charts: Charts, chosen: Gift[], 
     let i = 0;
     for (const [id, s] of spheres) {
       if (!s?.gate) continue;
+      const gk = GENE_KEYS[s.gate];
       placements.push({
-        label: `${GK_SPHERE_LABEL[id] || id} — Gate ${s.gate}.${s.line}`,
-        meaning: `${cap(GK_SPHERE_MEANING[id] || "a thread of your path")}.`,
+        label: `${GK_SPHERE_LABEL[id] || id} — Gate ${s.gate}.${s.line}${gk ? ` · ${gk.siddhi}` : ""}`,
+        meaning: `${cap(GK_SPHERE_MEANING[id] || "a thread of your path")}.` +
+          (gk ? ` This key's arc runs from ${gk.shadow} (its shadow) through ${gk.gift} (its gift) to ${gk.siddhi} (its highest expression).` : ""),
         great_turning: turningFor(chosen, i++, "thread"),
       });
     }

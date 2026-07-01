@@ -10,6 +10,20 @@ import { extractHdSignature } from "./hd-relational";
 // Chart signal extraction + the deterministic fixture interpreter live in
 // interpret-fixture.ts (pure, no `server-only`) so the MCP server can reuse them.
 import { fixtureCore, clip } from "./interpret-fixture";
+import { GENE_KEYS } from "./gene-keys";
+
+// The shadow→gift→siddhi names for THIS person's gene-key gates — so Claude can
+// name them exactly (the names aren't proprietary; the descriptive prose is).
+function geneKeyNames(charts: Charts): string {
+  const gk = (charts["gene_keys"] as any) || {};
+  const gates = new Set<number>();
+  for (const seq of [gk.activation_sequence, gk.venus_sequence, gk.pearl_sequence]) {
+    for (const k in seq || {}) { const g = seq[k]?.gate; if (typeof g === "number") gates.add(g); }
+  }
+  return [...gates].sort((a, b) => a - b)
+    .map((g) => (GENE_KEYS[g] ? `Gate ${g}: ${GENE_KEYS[g].shadow} → ${GENE_KEYS[g].gift} → ${GENE_KEYS[g].siddhi}` : ""))
+    .filter(Boolean).join("; ");
+}
 
 export { useClaude };
 
@@ -149,7 +163,7 @@ const V3_DIRECTIVE = `You write EcoDharma's gift readings. This reading goes DEE
 - Write `+"`lens_readings`"+`: THREE deep sections — astrology (western + vedic together), human_design, gene_keys — each 2–3 paragraphs PLUS 4–6 explained placements, reading THIS person's real chart in that lens through the great turning. Go thorough here; this is where the reading earns its depth. Name real placements (signs, houses, aspects, nakshatras; type/authority/profile/centers/channels; the gene-key spheres by gate.line) and explain what each equips them to do. Never reproduce proprietary HD/Gene-Keys prose.
 - The framework is invisible scaffolding: reason WITH it, never recite it. A reader who never heard "trim-tab" or "Great Turning" must still feel deeply seen. At most 1–2 framework terms in the whole reading.
 - Use their IKIGAI answers to CONFIRM and ground the chart reading — a resonance check, woven in lightly — but never recite their answers back to them verbatim. The charts lead; their words quietly corroborate. If birth time is uncertain, hold the rising sign and Human Design lightly and say so once.
-- Original language only. NEVER reproduce proprietary Gene Keys or Human Design descriptive text — positions/structure and your own words only.`;
+- Original language only. You MAY name a Gene Key's Shadow / Gift / Siddhi (the single-word names provided) and any computed HD structure, but NEVER reproduce proprietary Gene Keys or Human Design descriptive PROSE — the paragraphs of meaning must be your own words.`;
 
 async function claudeCore(framework: Framework, charts: Charts, ikigai: Ikigai): Promise<CoreProfile> {
   const anthropic = new Anthropic();
@@ -170,7 +184,8 @@ async function claudeCore(framework: Framework, charts: Charts, ikigai: Ikigai):
           content:
             "Reflect this specific person back to themselves: a short recognition, then a deep, chart-grounded portrait, the interpretive chart_threads, and their gift constellation. " +
             "Choose the gift x domain `pairings` (framework ids), most-alive first.\n\n" +
-            `CHARTS:\n${JSON.stringify(charts)}\n\nIKIGAI:\n${JSON.stringify(ikigai)}`,
+            `CHARTS:\n${JSON.stringify(charts)}\n\nIKIGAI:\n${JSON.stringify(ikigai)}\n\n` +
+            `GENE KEY NAMES (shadow → gift → siddhi for this person's gates — use these EXACT names in the gene_keys lens):\n${geneKeyNames(charts)}`,
         },
       ],
     },

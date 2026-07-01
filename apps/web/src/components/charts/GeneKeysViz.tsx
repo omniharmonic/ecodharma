@@ -11,6 +11,7 @@
 // Component; no canvas, no WebGL, no new deps.
 
 import type { CSSProperties } from "react";
+import { siddhiName } from "@/lib/gene-keys";
 
 /* ------------------------------------------------------------------ types -- */
 
@@ -349,14 +350,26 @@ export default function GeneKeysViz({
               {n.label}
             </text>
 
-            {/* sub below */}
+            {/* siddhi name (the highest frequency of this gate) below the sphere */}
             <text
               x={n.x}
-              y={n.y + R + 14}
+              y={n.y + R + 13}
+              textAnchor="middle"
+              className="font-display"
+              fill={color}
+              fontSize="10"
+              style={{ ...halo }}
+            >
+              {siddhiName(v.gate)}
+            </text>
+            {/* body / sphere role, quieter, beneath the siddhi */}
+            <text
+              x={n.x}
+              y={n.y + R + 23}
               textAnchor="middle"
               className="font-mono"
               fill="rgb(var(--muted))"
-              fontSize="7"
+              fontSize="6.5"
               style={{ ...halo, letterSpacing: "0.08em" }}
             >
               {n.sub}
