@@ -14,7 +14,13 @@ import { fixtureCore, clip } from "./interpret-fixture";
 export { useClaude };
 
 const ENGINE_FIXTURE = "fixture-interpreter@2.0.0";
-const MODEL = "claude-opus-4-8";
+// Default to Sonnet — fast enough to complete the deep reading inside a serverless
+// function's time budget (Vercel Hobby caps at 60s). Set ECODHARMA_PROFILE_MODEL=
+// claude-opus-4-8 for maximum depth once on a plan with longer functions (Pro: 300s).
+const MODEL = process.env.ECODHARMA_PROFILE_MODEL || "claude-sonnet-4-6";
+// Abort the Claude call before the function is killed, so a too-slow reading falls
+// back to the (rich, deterministic) fixture instead of timing out to a blank profile.
+const CLAUDE_TIMEOUT_MS = Number(process.env.ECODHARMA_CLAUDE_TIMEOUT_MS || 45_000);
 const MAX_PAIRINGS = 3; // a lead + two — not a pile of "highest-leverage" moves
 
 // An Anthropic failure that means "out of credits / quota / rate limit" — the
@@ -146,26 +152,30 @@ const V3_DIRECTIVE = `You write EcoDharma's gift readings. This reading goes DEE
 
 async function claudeCore(framework: Framework, charts: Charts, ikigai: Ikigai): Promise<CoreProfile> {
   const anthropic = new Anthropic();
-  const msg = await anthropic.messages.create({
-    model: MODEL,
-    max_tokens: 20000, // room for the three deep lens_readings on top of the portrait
-    tools: [PROFILE_TOOL as any],
-    tool_choice: { type: "tool", name: "gift_profile" },
-    system: [
-      { type: "text", text: loadVoice(), cache_control: { type: "ephemeral" } },
-      { type: "text", text: V3_DIRECTIVE, cache_control: { type: "ephemeral" } },
-      { type: "text", text: `FRAMEWORK (reason WITH this; never recite it):\n${JSON.stringify(slimFramework(framework))}`, cache_control: { type: "ephemeral" } },
-    ] as any,
-    messages: [
-      {
-        role: "user",
-        content:
-          "Reflect this specific person back to themselves: a short recognition, then a deep, chart-grounded portrait, the interpretive chart_threads, and their gift constellation. " +
-          "Choose the gift x domain `pairings` (framework ids), most-alive first.\n\n" +
-          `CHARTS:\n${JSON.stringify(charts)}\n\nIKIGAI:\n${JSON.stringify(ikigai)}`,
-      },
-    ],
-  });
+  const msg = await anthropic.messages.create(
+    {
+      model: MODEL,
+      max_tokens: 20000, // room for the three deep lens_readings on top of the portrait
+      tools: [PROFILE_TOOL as any],
+      tool_choice: { type: "tool", name: "gift_profile" },
+      system: [
+        { type: "text", text: loadVoice(), cache_control: { type: "ephemeral" } },
+        { type: "text", text: V3_DIRECTIVE, cache_control: { type: "ephemeral" } },
+        { type: "text", text: `FRAMEWORK (reason WITH this; never recite it):\n${JSON.stringify(slimFramework(framework))}`, cache_control: { type: "ephemeral" } },
+      ] as any,
+      messages: [
+        {
+          role: "user",
+          content:
+            "Reflect this specific person back to themselves: a short recognition, then a deep, chart-grounded portrait, the interpretive chart_threads, and their gift constellation. " +
+            "Choose the gift x domain `pairings` (framework ids), most-alive first.\n\n" +
+            `CHARTS:\n${JSON.stringify(charts)}\n\nIKIGAI:\n${JSON.stringify(ikigai)}`,
+        },
+      ],
+    },
+    // Abort before the serverless function is killed → graceful fixture fallback.
+    { signal: AbortSignal.timeout(CLAUDE_TIMEOUT_MS) },
+  );
   const block = msg.content.find((b) => b.type === "tool_use") as any;
   const out = block?.input as CoreProfile;
   if (!out?.recognition || !out?.portrait || !out?.pairings?.length || !out?.chart_threads?.length) {

@@ -4,6 +4,10 @@ import { CITIES } from "@/lib/places";
 import { OnboardingForm } from "@/components/OnboardingForm";
 import { createReadingAction } from "../actions/reading";
 
+// The reading's server action calls the ephemeris + Claude; give it the full
+// serverless budget (Vercel Hobby caps at 60s; Pro allows up to 300s).
+export const maxDuration = 60;
+
 export default async function OnboardingPage() {
   const user = await getUser();
   if (!user) redirect("/login");
