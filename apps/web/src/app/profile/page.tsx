@@ -23,16 +23,17 @@ export default async function ProfilePage() {
   const domainName = (id: string) => fw.domains.find((d) => d.id === id)?.name || id;
   const giftName = (id: string) => fw.gifts.find((g) => g.id === id)?.name || id;
 
-  const { profile, offerings, charts } = await withUser(user!.id, async (c) => {
+  const { profile, offerings, charts, birth } = await withUser(user!.id, async (c) => {
     const p = await c.query(
       "select content_json, framework_version, voice_version, generated_at from gift_profiles where user_id=$1 order by generated_at desc limit 1",
       [user!.id],
     );
     const o = await c.query("select skills, offerings, availability from offerings where user_id=$1", [user!.id]);
     const ch = await c.query("select modality, raw_json from charts where user_id=$1", [user!.id]);
+    const bd = await c.query("select to_char(birth_date,'FMDD Mon YYYY') as birth_date, to_char(birth_time,'HH24:MI') as birth_time, unknown_time, place_label, round(lat::numeric,3) as lat, round(lng::numeric,3) as lng, tz_str from birth_data where user_id=$1", [user!.id]);
     const chartMap: Record<string, any> = {};
     for (const row of ch.rows) chartMap[row.modality] = row.raw_json;
-    return { profile: p.rows[0], offerings: o.rows[0], charts: chartMap };
+    return { profile: p.rows[0], offerings: o.rows[0], charts: chartMap, birth: bd.rows[0] };
   });
 
   if (!profile) {
@@ -61,6 +62,27 @@ export default async function ProfilePage() {
           {gp.recognition}
         </p>
       </section>
+
+      {/* BIRTH DETAILS — verify these; a wrong city silently breaks every chart. */}
+      {birth && (
+        <section className="mt-8 max-w-measure" data-testid="birth-details">
+          <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1 border-t border-rule/15 pt-4 text-sm">
+            <span className="eyebrow">Computed from</span>
+            <span className="text-fg">{birth.birth_date}</span>
+            <span className="text-muted/50">·</span>
+            <span className="text-fg">{birth.unknown_time ? "time unknown" : birth.birth_time}</span>
+            <span className="text-muted/50">·</span>
+            <span className="text-fg">{birth.place_label || `${birth.lat}, ${birth.lng}`}</span>
+            <span className="kv">({birth.tz_str})</span>
+            <Link href="/onboarding" className="ml-1 font-mono text-2xs uppercase tracking-eyebrow text-accent hover:underline" data-testid="edit-birth">
+              Correct these →
+            </Link>
+          </div>
+          <p className="mt-1.5 text-2xs text-muted/70">
+            If the city or time is wrong, correct it — the ascendant, Human Design, and Gene Keys all depend on it.
+          </p>
+        </section>
+      )}
 
       {/* THE CHARTS, READ — real visuals with the interpretive layer woven on top */}
       {(charts.western || charts.human_design || charts.gene_keys) && (

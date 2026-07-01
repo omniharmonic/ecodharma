@@ -115,10 +115,11 @@ const SEQ_FLOW: Record<SeqKey, SphereId[]> = {
   pearl: ["vocation", "culture", "brand"],
 };
 
+// Gene Keys convention: Activation green, Venus red, Pearl blue.
 const GK_SEQ_COLOR: Record<SeqKey, string> = {
-  activation: "--accent",
-  venus: "--link",
-  pearl: "--live",
+  activation: "--live", // green
+  venus: "--flag", // red
+  pearl: "--link", // blue
 };
 
 const SEQ_CAPTION: { seq: SeqKey; x: number; text: string }[] = [
@@ -205,7 +206,7 @@ export default function GeneKeysViz({
       viewBox={`0 0 ${VB_W} ${VB_H}`}
       width={size}
       height={(size * VB_H) / VB_W}
-      className={className}
+      className={["h-auto max-w-full", className].filter(Boolean).join(" ")}
       role="img"
       aria-label={ariaLabel}
     >

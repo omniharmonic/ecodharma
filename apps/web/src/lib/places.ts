@@ -95,17 +95,53 @@ type OpenMeteoResult = {
   admin1?: string; admin2?: string; country?: string; country_code?: string;
 };
 
-async function openMeteo(city: string, region: string): Promise<Place | null> {
+const fullLabel = (f: OpenMeteoResult): string =>
+  [f.name, f.admin1, f.country].filter(Boolean).join(", ");
+
+const toPlace = (f: OpenMeteoResult): Place => ({
+  lat: f.latitude, lng: f.longitude, tz: f.timezone || tzFromLng(f.longitude), label: fullLabel(f),
+});
+
+async function openMeteoResults(city: string): Promise<OpenMeteoResult[]> {
   const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=10&language=en&format=json`;
   const r = await fetch(url, { signal: AbortSignal.timeout(8000), cache: "no-store" });
-  if (!r.ok) return null;
+  if (!r.ok) return [];
   const j = (await r.json()) as { results?: OpenMeteoResult[] };
-  const results = (j.results || []).filter((f) => Number.isFinite(f.latitude) && Number.isFinite(f.longitude));
+  return (j.results || []).filter((f) => Number.isFinite(f.latitude) && Number.isFinite(f.longitude));
+}
+
+async function openMeteo(city: string, region: string): Promise<Place | null> {
+  const results = await openMeteoResults(city);
   if (results.length === 0) return null;
   // Prefer a result matching the region hint; otherwise take the top (highest population).
   const f = results.find((x) => regionMatches(x, region)) || results[0];
-  const label = [f.name, f.admin1, f.country_code].filter(Boolean).join(", ");
-  return { lat: f.latitude, lng: f.longitude, tz: f.timezone || tzFromLng(f.longitude), label };
+  return toPlace(f);
+}
+
+// Multi-result search for the autocomplete — so a person picks the EXACT city
+// (e.g. "Salem, Oregon" vs "Salem, Tamil Nadu"), which is the only reliable way
+// to disambiguate. Returns a de-duplicated, most-relevant-first list with a
+// human label and precise lat/lng/tz. Curated cities seed the top for fast local UX.
+export async function searchPlaces(query: string, limit = 6): Promise<Place[]> {
+  const q = query.trim();
+  if (q.length < 2) return [];
+  const out: Place[] = [];
+  const seen = new Set<string>();
+  const add = (p: Place) => {
+    const key = `${p.lat.toFixed(2)},${p.lng.toFixed(2)}`;
+    if (seen.has(key)) return;
+    seen.add(key);
+    out.push(p);
+  };
+  for (const [name, p] of Object.entries(CITIES)) {
+    if (name.toLowerCase().startsWith(q.toLowerCase())) add({ ...p, label: name });
+  }
+  try {
+    for (const f of await openMeteoResults(splitPlace(q).city)) add(toPlace(f));
+  } catch {
+    /* network down — return whatever curated matches we have */
+  }
+  return out.slice(0, limit);
 }
 
 // The universal resolver. Returns null if a place genuinely can't be resolved

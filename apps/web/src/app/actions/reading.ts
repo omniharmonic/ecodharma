@@ -18,6 +18,11 @@ const schema = z.object({
   birth_time: z.string().optional(),
   unknown_time: z.coerce.boolean().optional(),
   place: z.string().optional(),
+  // precise coords from the birthplace autocomplete selection (the reliable path)
+  place_lat: z.coerce.number().optional(),
+  place_lng: z.coerce.number().optional(),
+  place_tz: z.string().optional(),
+  // manual override (Advanced: exact coordinates)
   lat: z.coerce.number().optional(),
   lng: z.coerce.number().optional(),
   tz_str: z.string().optional(),
@@ -35,21 +40,27 @@ export async function createReadingAction(_prev: unknown, formData: FormData) {
   if (!parsed.success) return { error: parsed.error.issues[0].message };
   const f = parsed.data;
 
-  // Resolve location. Explicit coordinates win; otherwise geocode the place name
-  // through the universal resolver (any city on Earth, real IANA timezone).
-  let lat = f.lat;
-  let lng = f.lng;
-  let tz = f.tz_str;
+  // Resolve location, most-precise first:
+  //   1. manual "exact coordinates" override,
+  //   2. the coords of the city the person PICKED in the autocomplete (reliable —
+  //      no ambiguity), 3. geocode the typed text as a last resort.
+  let lat = f.lat ?? f.place_lat;
+  let lng = f.lng ?? f.place_lng;
+  let tz = f.tz_str || f.place_tz;
+  // Human-readable label to show back on the profile (so a wrong city is catchable).
+  let placeLabel = f.place_lat !== undefined ? (f.place || null) : null;
   if (lat === undefined || lng === undefined || !tz) {
     const place = await geocode(f.place || null);
     if (place) {
       lat = place.lat;
       lng = place.lng;
       tz = place.tz;
+      placeLabel = place.label || f.place || null;
     }
   }
+  if (!placeLabel && f.place) placeLabel = f.place;
   if (lat === undefined || lng === undefined || !tz) {
-    return { error: "We couldn't find that place — try a city (e.g. \"Reykjavík\"), or enter latitude, longitude and timezone below." };
+    return { error: "We couldn't place that town. Start typing and pick your city from the list, or add exact coordinates under “Can't find your town?”." };
   }
 
   const [year, month, day] = f.birth_date.split("-").map(Number);
@@ -73,12 +84,13 @@ export async function createReadingAction(_prev: unknown, formData: FormData) {
   // 1) Persist birth data + ikigai (RLS owner-only).
   await withUser(user!.id, async (c) => {
     await c.query(
-      `insert into birth_data (user_id, birth_date, birth_time, lat, lng, tz_str, unknown_time)
-       values ($1,$2,$3,$4,$5,$6,$7)
+      `insert into birth_data (user_id, birth_date, birth_time, lat, lng, tz_str, unknown_time, place_label)
+       values ($1,$2,$3,$4,$5,$6,$7,$8)
        on conflict (user_id) do update set
          birth_date=excluded.birth_date, birth_time=excluded.birth_time,
-         lat=excluded.lat, lng=excluded.lng, tz_str=excluded.tz_str, unknown_time=excluded.unknown_time`,
-      [user!.id, f.birth_date, unknown ? null : f.birth_time, lat, lng, tz, unknown],
+         lat=excluded.lat, lng=excluded.lng, tz_str=excluded.tz_str,
+         unknown_time=excluded.unknown_time, place_label=excluded.place_label`,
+      [user!.id, f.birth_date, unknown ? null : f.birth_time, lat, lng, tz, unknown, placeLabel],
     );
     await c.query(
       `update profiles set

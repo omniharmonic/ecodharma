@@ -29,10 +29,10 @@ test("an unresolvable place is surfaced, and coordinates are a working fallback"
   await page.getByLabel("Birth place").fill("zzqxnowhereplace12345");
   await fillIkigai(page);
   await page.getByRole("button", { name: "Reveal my gift profile" }).click();
-  await expect(page.getByText(/couldn.t find that place/i)).toBeVisible();
+  await expect(page.getByText(/couldn.t place that town/i)).toBeVisible();
 
   // Provide exact coordinates via the advanced disclosure (overrides the place).
-  await page.getByText("Advanced: exact coordinates").click();
+  await page.getByText("Enter exact coordinates").click();
   await page.getByPlaceholder("latitude").fill("64.13");
   await page.getByPlaceholder("longitude").fill("-21.9");
   await page.getByPlaceholder("IANA tz e.g. Europe/Berlin").fill("Atlantic/Reykjavik");

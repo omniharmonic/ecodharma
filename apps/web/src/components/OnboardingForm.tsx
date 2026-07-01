@@ -3,13 +3,22 @@ import { useFormState } from "react-dom";
 import { useState, useEffect } from "react";
 import { SubmitButton } from "./SubmitButton";
 import { ComputeOverlay } from "./ComputeOverlay";
+import { PlaceField } from "./PlaceField";
 
 type ActionState = { error?: string } | null;
 type Action = (prev: ActionState, formData: FormData) => Promise<ActionState>;
 
-export function OnboardingForm({ action, cities }: { action: Action; cities: string[] }) {
+export type OnboardingDefaults = {
+  birth_date?: string;
+  birth_time?: string;
+  unknown_time?: boolean;
+  place?: string;
+  ikigai?: { love?: string; skill?: string; world_need?: string; livelihood?: string };
+};
+
+export function OnboardingForm({ action, defaults }: { action: Action; defaults?: OnboardingDefaults }) {
   const [state, formAction] = useFormState(action, null);
-  const [unknownTime, setUnknownTime] = useState(false);
+  const [unknownTime, setUnknownTime] = useState(!!defaults?.unknown_time);
   const [submitting, setSubmitting] = useState(false);
 
   // On validation error the action returns (no navigation) — drop the overlay.
@@ -33,13 +42,13 @@ export function OnboardingForm({ action, cities }: { action: Action; cities: str
         <div className="grid gap-4 md:grid-cols-2">
           <div>
             <label className="label" htmlFor="birth_date">Birth date</label>
-            <input id="birth_date" name="birth_date" type="date" required className="input" />
+            <input id="birth_date" name="birth_date" type="date" required className="input" defaultValue={defaults?.birth_date} />
           </div>
           <div>
             <label className="label" htmlFor="birth_time">Birth time</label>
             <input
               id="birth_time" name="birth_time" type="time"
-              className="input" disabled={unknownTime}
+              className="input" disabled={unknownTime} defaultValue={defaults?.birth_time}
             />
             <label className="mt-2 flex items-center gap-2 text-sm text-muted">
               <input
@@ -52,16 +61,10 @@ export function OnboardingForm({ action, cities }: { action: Action; cities: str
         </div>
         <div>
           <label className="label" htmlFor="place">Birth place</label>
-          <input id="place" name="place" list="cities" className="input" placeholder="Any city, anywhere — e.g. Reykjavík" />
-          <datalist id="cities">
-            {cities.map((c) => <option key={c} value={c} />)}
-          </datalist>
-          <p className="mt-1 text-xs text-muted/60">
-            Any city on Earth resolves to coordinates &amp; timezone. Or enter exact coordinates below.
-          </p>
+          <PlaceField defaultValue={defaults?.place} />
         </div>
         <details className="text-sm text-muted">
-          <summary className="cursor-pointer">Advanced: exact coordinates</summary>
+          <summary className="cursor-pointer">Can&rsquo;t find your town? Enter exact coordinates</summary>
           <div className="mt-3 grid gap-3 md:grid-cols-3">
             <input name="lat" type="number" step="any" className="input" placeholder="latitude" />
             <input name="lng" type="number" step="any" className="input" placeholder="longitude" />
@@ -79,10 +82,10 @@ export function OnboardingForm({ action, cities }: { action: Action; cities: str
           Four honest sentences. These keep the reading grounded in your own voice.
         </p>
         <div className="grid gap-4">
-          <Field name="love" label="What do you love? What makes you feel alive?" />
-          <Field name="skill" label="What are you genuinely good at?" />
-          <Field name="world_need" label="What does the world (your place, now) most need?" />
-          <Field name="livelihood" label="What could sustain you materially?" />
+          <Field name="love" label="What do you love? What makes you feel alive?" defaultValue={defaults?.ikigai?.love} />
+          <Field name="skill" label="What are you genuinely good at?" defaultValue={defaults?.ikigai?.skill} />
+          <Field name="world_need" label="What does the world (your place, now) most need?" defaultValue={defaults?.ikigai?.world_need} />
+          <Field name="livelihood" label="What could sustain you materially?" defaultValue={defaults?.ikigai?.livelihood} />
         </div>
       </section>
 
@@ -96,11 +99,11 @@ export function OnboardingForm({ action, cities }: { action: Action; cities: str
   );
 }
 
-function Field({ name, label }: { name: string; label: string }) {
+function Field({ name, label, defaultValue }: { name: string; label: string; defaultValue?: string }) {
   return (
     <div>
       <label className="label" htmlFor={name}>{label}</label>
-      <textarea id={name} name={name} required rows={2} className="input" />
+      <textarea id={name} name={name} required rows={2} className="input" defaultValue={defaultValue} />
     </div>
   );
 }

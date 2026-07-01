@@ -117,10 +117,14 @@ export function fixtureCore(framework: Framework, charts: Charts, ikigai: Ikigai
     sig.hdProfile ? `${sig.hdProfile} profile` : null,
   ].filter(Boolean).join(", ");
   const leadName = lead?.name?.replace(/^The /, "") || "the gifts you carry";
+  // Lead from the CHARTS, not the person's own words — reflect their build back to
+  // them; let the ikigai confirm it rather than being recited.
   const recognition =
-    `You love ${frag(ikigai.love, 96)}, you're good at ${frag(ikigai.skill, 88)}, and the world around you — you sense — needs ${frag(ikigai.world_need, 88)}. ` +
-    (chartClause ? `Your chart (${chartClause}) echoes it: ` : `Read together, `) +
-    `your medicine gathers most around the ${leadName} in you — connecting people, tending what matters, and helping good work take root.`;
+    (chartClause
+      ? `You're built like ${chartClause} — and read across all four charts, one shape keeps surfacing: `
+      : `Read across all four charts, one shape keeps surfacing: `) +
+    `your medicine gathers around the ${leadName} in you — connecting people, tending what matters, and helping good work take root. ` +
+    `The way you already move in the world — ${frag(ikigai.skill, 70)} — is that same signature showing through.`;
 
   const narrative =
     `Across the lenses, a consistent shape shows up` +

@@ -142,12 +142,13 @@ const PROFILE_TOOL = {
 } as const;
 
 const V3_DIRECTIVE = `You write EcoDharma's gift readings. This reading goes DEEP and PERSONAL; the framework stays QUIET.
-- LEAD with a short recognition, then a long, warm `+"`portrait`"+` (250–500 words) that genuinely weaves ALL FOUR charts — western tropical, vedic sidereal, Human Design, Gene Keys — with their ikigai, into one plain, specific reflection of who this person is and how they're built.
+- READ FROM THE CHARTS FIRST. The recognition and portrait must reflect who this person IS and how they're BUILT — drawn from their western, vedic, Human Design and Gene Keys placements — back to them. Do NOT open by repeating their ikigai answers; a reader should feel you SAW something in their chart, not that you paraphrased their form responses.
+- LEAD with a short recognition (a chart-grounded insight about them), then a long, warm `+"`portrait`"+` (250–500 words) that genuinely weaves ALL FOUR charts — western tropical, vedic sidereal, Human Design, Gene Keys — into one plain, specific reflection of who this person is and how they're built.
 - Build `+"`chart_threads`"+`: 8–14 bridges across all four lenses, each tying ONE precisely-named placement to how they can take part in the great turning ("because X, that means Y"). Name placements specifically and set `+"`ref`"+` so the drawn chart can attach the note.
 - Name the `+"`gift_constellation`"+`: the 2–3 archetypes most alive in them, and how THEY carry each (not the definition).
 - Write `+"`lens_readings`"+`: THREE deep sections — astrology (western + vedic together), human_design, gene_keys — each 2–3 paragraphs PLUS 4–6 explained placements, reading THIS person's real chart in that lens through the great turning. Go thorough here; this is where the reading earns its depth. Name real placements (signs, houses, aspects, nakshatras; type/authority/profile/centers/channels; the gene-key spheres by gate.line) and explain what each equips them to do. Never reproduce proprietary HD/Gene-Keys prose.
 - The framework is invisible scaffolding: reason WITH it, never recite it. A reader who never heard "trim-tab" or "Great Turning" must still feel deeply seen. At most 1–2 framework terms in the whole reading.
-- Weight their IKIGAI words above chart signals; chart hints are soft priors, never verdicts. If birth time is uncertain, hold the rising sign and Human Design lightly and say so once.
+- Use their IKIGAI answers to CONFIRM and ground the chart reading — a resonance check, woven in lightly — but never recite their answers back to them verbatim. The charts lead; their words quietly corroborate. If birth time is uncertain, hold the rising sign and Human Design lightly and say so once.
 - Original language only. NEVER reproduce proprietary Gene Keys or Human Design descriptive text — positions/structure and your own words only.`;
 
 async function claudeCore(framework: Framework, charts: Charts, ikigai: Ikigai): Promise<CoreProfile> {
