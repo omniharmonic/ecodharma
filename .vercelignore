@@ -1,0 +1,14 @@
+# Keep local dev + non-app artifacts out of any deploy upload. Git deploys clone
+# from GitHub (already excludes these via .gitignore); this also lets a CLI deploy
+# run from the repo root without choking on the local Postgres socket in .pgdata.
+.pgdata
+.playwright-mcp
+node_modules
+omniharmonic-wiki
+services
+m0
+docs
+.git
+**/.next
+**/.venv
+*.png

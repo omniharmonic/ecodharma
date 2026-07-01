@@ -40,3 +40,4 @@ services/ephemeris/ephe/*.se1
 
 # typescript incremental build cache
 *.tsbuildinfo
+.vercel
