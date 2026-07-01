@@ -299,7 +299,7 @@ export default function GeneKeysViz({
         const isHi = highlightSet.has(n.id);
         return (
           <g key={`node-${n.id}`}>
-            <title>{`${n.label} — Gate ${v.gate}, Line ${v.line}`}</title>
+            <title>{`${n.label} (${n.sub}) — Gate ${v.gate}.${v.line} · ${siddhiName(v.gate)}`}</title>
 
             {/* resonance halo for highlighted spheres */}
             {isHi && (
@@ -350,29 +350,18 @@ export default function GeneKeysViz({
               {n.label}
             </text>
 
-            {/* siddhi name (the highest frequency of this gate) below the sphere */}
+            {/* siddhi name (the highest frequency of this gate) below the sphere.
+                The body/role (n.sub) lives in the <title> tooltip to avoid crowding. */}
             <text
               x={n.x}
-              y={n.y + R + 13}
+              y={n.y + R + 14}
               textAnchor="middle"
               className="font-display"
               fill={color}
-              fontSize="10"
+              fontSize="9.5"
               style={{ ...halo }}
             >
               {siddhiName(v.gate)}
-            </text>
-            {/* body / sphere role, quieter, beneath the siddhi */}
-            <text
-              x={n.x}
-              y={n.y + R + 23}
-              textAnchor="middle"
-              className="font-mono"
-              fill="rgb(var(--muted))"
-              fontSize="6.5"
-              style={{ ...halo, letterSpacing: "0.08em" }}
-            >
-              {n.sub}
             </text>
           </g>
         );
