@@ -6,7 +6,8 @@ import { getUser } from "@/lib/auth";
 import { withService, withUser } from "@/lib/db";
 import { findUserByEmail } from "@/lib/auth";
 import { generateConstellationRead, type Member } from "@/lib/interpret-constellation";
-import { assertWithinQuota, PaywallError, userCanUseClaude } from "@/lib/entitlements";
+import { assertWithinQuota, PaywallError } from "@/lib/entitlements";
+import { claudeMode } from "@/lib/config";
 import { frameworkVersion } from "@/lib/framework";
 import type { GiftProfile } from "@/lib/types";
 
@@ -177,8 +178,7 @@ export async function generateReadAction(_prev: unknown, formData: FormData) {
     return { error: "Need at least two consented members (including you) to weave a read." };
   }
 
-  const entitled = await userCanUseClaude(user!.id, user!.email);
-  const read = await generateConstellationRead(members, { entitled });
+  const read = await generateConstellationRead(members, { useClaude: await claudeMode() });
   await withUser(user!.id, (c) =>
     c.query(
       "insert into constellation_reads (constellation_id, framework_version, content_json) values ($1,$2,$3)",

@@ -6,7 +6,8 @@ import { withUser } from "@/lib/db";
 import { generateGiftProfile } from "@/lib/interpret";
 import { frameworkVersion } from "@/lib/framework";
 import { VOICE_VERSION } from "@/lib/voice";
-import { assertWithinQuota, PaywallError, userCanUseClaude } from "@/lib/entitlements";
+import { assertWithinQuota, PaywallError } from "@/lib/entitlements";
+import { claudeMode } from "@/lib/config";
 import type { Charts, Ikigai } from "@/lib/types";
 
 export async function regenerateProfileAction(_prev?: unknown, _formData?: FormData) {
@@ -31,8 +32,7 @@ export async function regenerateProfileAction(_prev?: unknown, _formData?: FormD
     return { charts, ikigai };
   });
 
-  const entitled = await userCanUseClaude(user!.id, user!.email);
-  const profile = await generateGiftProfile(charts, ikigai, { entitled });
+  const profile = await generateGiftProfile(charts, ikigai, { useClaude: await claudeMode() });
   await withUser(user!.id, (c) =>
     c.query(
       `insert into gift_profiles (user_id, framework_version, voice_version, content_json, status)

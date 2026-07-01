@@ -4,6 +4,7 @@ import type { Charts, CoreProfile, Framework, Gift, GiftProfile, Ikigai, Pairing
 import { loadFramework } from "./framework";
 import { loadVoice, VOICE_VERSION } from "./voice";
 import { useClaude } from "./llm";
+import { setInterpreterMode } from "./config";
 import { personalizeTrimTab, resolveTrimTab } from "./trimtabs";
 import { extractHdSignature } from "./hd-relational";
 // Chart signal extraction + the deterministic fixture interpreter live in
@@ -15,6 +16,28 @@ export { useClaude };
 const ENGINE_FIXTURE = "fixture-interpreter@2.0.0";
 const MODEL = "claude-opus-4-8";
 const MAX_PAIRINGS = 3; // a lead + two — not a pile of "highest-leverage" moves
+
+// An Anthropic failure that means "out of credits / quota / rate limit" — the
+// signal to stop hitting a dead API and drop the whole app to the fixture engine.
+function isCreditError(err: unknown): boolean {
+  const e = err as { status?: number; message?: string; error?: { type?: string; message?: string } };
+  const status = e?.status;
+  if (status === 402 || status === 429 || status === 529) return true;
+  const msg = `${e?.message || ""} ${e?.error?.message || ""} ${e?.error?.type || ""}`.toLowerCase();
+  return /credit|quota|billing|balance|insufficient|payment/.test(msg);
+}
+
+// On a credit/quota failure, flip the global mode to fixture so subsequent
+// readings skip the dead API entirely (the admin flips it back after topping up).
+async function tripIfCreditError(err: unknown): Promise<void> {
+  if (!isCreditError(err)) return;
+  try {
+    await setInterpreterMode("fixture");
+    console.error("[interpret] credit/quota error — global mode tripped to 'fixture'.");
+  } catch (e) {
+    console.error("[interpret] failed to trip mode to fixture:", e);
+  }
+}
 
 // ---------- compress the framework so the model reasons with it, not recites it ----------
 function slimFramework(fw: Framework) {
@@ -74,6 +97,33 @@ const PROFILE_TOOL = {
           required: ["gift_id", "how_they_carry"],
         },
       },
+      lens_readings: {
+        type: "array",
+        description: "EXACTLY three deep, chart-specific sections — one for astrology (western + vedic together), one for human_design, one for gene_keys — each explaining THIS person's actual placements through the Great Turning. This is the flagship depth; be thorough and specific to their chart.",
+        items: {
+          type: "object",
+          properties: {
+            lens: { type: "string", enum: ["astrology", "human_design", "gene_keys"] },
+            title: { type: "string", description: "e.g. 'Astrology — Western & Vedic', 'Human Design', 'Gene Keys'." },
+            summary: { type: "string", description: "1–2 sentences orienting the reader to what this lens shows about them." },
+            reading: { type: "string", description: "2–3 substantial paragraphs weaving THIS person's real placements in this lens into how they're built to take part in the Great Turning. Specific, warm, plain. No proprietary HD/Gene-Keys descriptive text — positions/structure + your own words only." },
+            placements: {
+              type: "array",
+              description: "4–6 specific placements from their chart in this lens.",
+              items: {
+                type: "object",
+                properties: {
+                  label: { type: "string", description: "the specific placement, e.g. 'Sun in Scorpio, 8th house', 'Emotional authority', 'Life's Work in Gate 34'." },
+                  meaning: { type: "string", description: "1–2 plain sentences on what this means for them." },
+                  great_turning: { type: "string", description: "how this placement equips them for the Great Turning — causal, warm, non-deterministic." },
+                },
+                required: ["label", "meaning", "great_turning"],
+              },
+            },
+          },
+          required: ["lens", "title", "summary", "reading", "placements"],
+        },
+      },
       unique_gifts: { type: "array", items: { type: "string" }, description: "<=15 words each, second person, how this person carries a gift — NOT the archetype's definition." },
       domains: { type: "array", items: { type: "object", properties: { domain_id: { type: "string" }, why: { type: "string", description: "one plain sentence" } }, required: ["domain_id", "why"] } },
       pairings: { type: "array", description: "gift x domain intersections, most-alive first; use framework ids.", items: { type: "object", properties: { gift_id: { type: "string" }, domain_id: { type: "string" } }, required: ["gift_id", "domain_id"] } },
@@ -81,7 +131,7 @@ const PROFILE_TOOL = {
       shadow: { type: "array", items: { type: "object", properties: { pattern: { type: "string" }, how_to_relate: { type: "string" } } } },
       narrative: { type: "string", description: "a short closing coda (1–3 sentences). May be empty if the portrait says it all." },
     },
-    required: ["recognition", "portrait", "chart_threads", "gift_constellation", "unique_gifts", "domains", "pairings", "narrative"],
+    required: ["recognition", "portrait", "chart_threads", "gift_constellation", "lens_readings", "unique_gifts", "domains", "pairings", "narrative"],
   },
 } as const;
 
@@ -89,6 +139,7 @@ const V3_DIRECTIVE = `You write EcoDharma's gift readings. This reading goes DEE
 - LEAD with a short recognition, then a long, warm `+"`portrait`"+` (250–500 words) that genuinely weaves ALL FOUR charts — western tropical, vedic sidereal, Human Design, Gene Keys — with their ikigai, into one plain, specific reflection of who this person is and how they're built.
 - Build `+"`chart_threads`"+`: 8–14 bridges across all four lenses, each tying ONE precisely-named placement to how they can take part in the great turning ("because X, that means Y"). Name placements specifically and set `+"`ref`"+` so the drawn chart can attach the note.
 - Name the `+"`gift_constellation`"+`: the 2–3 archetypes most alive in them, and how THEY carry each (not the definition).
+- Write `+"`lens_readings`"+`: THREE deep sections — astrology (western + vedic together), human_design, gene_keys — each 2–3 paragraphs PLUS 4–6 explained placements, reading THIS person's real chart in that lens through the great turning. Go thorough here; this is where the reading earns its depth. Name real placements (signs, houses, aspects, nakshatras; type/authority/profile/centers/channels; the gene-key spheres by gate.line) and explain what each equips them to do. Never reproduce proprietary HD/Gene-Keys prose.
 - The framework is invisible scaffolding: reason WITH it, never recite it. A reader who never heard "trim-tab" or "Great Turning" must still feel deeply seen. At most 1–2 framework terms in the whole reading.
 - Weight their IKIGAI words above chart signals; chart hints are soft priors, never verdicts. If birth time is uncertain, hold the rising sign and Human Design lightly and say so once.
 - Original language only. NEVER reproduce proprietary Gene Keys or Human Design descriptive text — positions/structure and your own words only.`;
@@ -97,7 +148,7 @@ async function claudeCore(framework: Framework, charts: Charts, ikigai: Ikigai):
   const anthropic = new Anthropic();
   const msg = await anthropic.messages.create({
     model: MODEL,
-    max_tokens: 12000,
+    max_tokens: 20000, // room for the three deep lens_readings on top of the portrait
     tools: [PROFILE_TOOL as any],
     tool_choice: { type: "tool", name: "gift_profile" },
     system: [
@@ -130,6 +181,7 @@ async function claudeCore(framework: Framework, charts: Charts, ikigai: Ikigai):
   if (!out.shadow) out.shadow = [];
   if (!out.narrative) out.narrative = "";
   if (!out.gift_constellation) out.gift_constellation = [];
+  if (!out.lens_readings) out.lens_readings = [];
   return out;
 }
 
@@ -152,19 +204,21 @@ function dedupePairings(framework: Framework, pairings: Pairing[]): Pairing[] {
 export async function generateGiftProfile(
   charts: Charts,
   ikigai: Ikigai,
-  opts: { entitled?: boolean } = {},
+  opts: { useClaude?: boolean } = {},
 ): Promise<GiftProfile> {
   const framework = loadFramework();
   let core: CoreProfile;
   let engine = ENGINE_FIXTURE;
-  // Claude is gated per-user: only an entitled (code-redeeming) caller burns
-  // tokens; everyone else gets the free, deterministic fixture reading.
-  if (opts.entitled && useClaude()) {
+  // Claude is the DEFAULT engine (the admin can flip the global mode to fixture,
+  // and the env can force it). On any failure — crucially out-of-credits — fall
+  // back to the deterministic reading and trip the mode so we stop hitting a dead API.
+  if (opts.useClaude) {
     try {
       core = await claudeCore(framework, charts, ikigai);
       engine = MODEL;
     } catch (err) {
       console.error("[interpret] Claude path failed, falling back to fixture:", err);
+      await tripIfCreditError(err);
       core = fixtureCore(framework, charts, ikigai);
     }
   } else {

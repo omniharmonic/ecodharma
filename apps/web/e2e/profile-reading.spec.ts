@@ -23,6 +23,14 @@ test("v3 reading renders all four charts, interpretive threads, portrait + gift 
   await expect(page.getByTestId("profile-portrait")).toBeVisible();
   expect((await page.getByTestId("profile-portrait").innerText()).length).toBeGreaterThan(200);
   expect(await page.getByTestId("gift-carry").count()).toBeGreaterThan(0);
+
+  // The flagship depth: three deep per-lens sections, each with explained placements.
+  for (const lens of ["astrology", "human_design", "gene_keys"]) {
+    const section = page.getByTestId(`lens-reading-${lens}`);
+    await expect(section).toBeVisible();
+    expect((await section.innerText()).length).toBeGreaterThan(200);
+    expect(await section.getByTestId("lens-placement").count()).toBeGreaterThan(2);
+  }
 });
 
 test("re-draft regenerates the profile in place (charts intact)", async ({ page }) => {

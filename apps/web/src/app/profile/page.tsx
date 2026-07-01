@@ -47,6 +47,7 @@ export default async function ProfilePage() {
   const threads = gp.chart_threads || [];
   const threadsFor = (m: ChartLens) => threads.filter((t) => t.modality === m);
   const constellation = gp.gift_constellation || [];
+  const lensReadings = gp.lens_readings || [];
 
   return (
     <PageTransition>
@@ -125,6 +126,39 @@ export default async function ProfilePage() {
           <p className="eyebrow mb-4">The reading</p>
           <div className="whitespace-pre-line font-sans text-lg leading-relaxed text-fg" data-testid="profile-portrait">
             {gp.portrait}
+          </div>
+        </SectionReveal>
+      )}
+
+      {/* CHART, LENS BY LENS — deep per-lens readings through the Great Turning */}
+      {lensReadings.length > 0 && (
+        <SectionReveal className="mt-24 max-w-measure" index={2}>
+          <p className="eyebrow mb-2">Your chart, lens by lens</p>
+          <p className="mb-8 text-sm text-muted">
+            Each tradition read in full — your actual placements, and what each one equips you to do in the turning.
+          </p>
+          <div className="space-y-10">
+            {lensReadings.map((lr) => (
+              <div key={lr.lens} className="crt-frame p-6 pt-8" data-title={lr.title} data-testid={`lens-reading-${lr.lens}`}>
+                <div data-testid="lens-reading">
+                  {lr.summary && <p className="font-mono text-2xs uppercase tracking-eyebrow text-accent">{lr.summary}</p>}
+                  <div className="mt-4 whitespace-pre-line font-sans leading-relaxed text-fg/90">{lr.reading}</div>
+                  {lr.placements?.length > 0 && (
+                    <ul className="mt-6 divide-y divide-rule/12 border-t border-rule/12">
+                      {lr.placements.map((p, i) => (
+                        <li key={i} className="py-4" data-testid="lens-placement">
+                          <p className="font-mono text-sm text-accent">{p.label}</p>
+                          <p className="mt-1 text-sm text-fg/90">{p.meaning}</p>
+                          <p className="mt-1 text-sm text-muted">
+                            <span className="text-live">→ </span>{p.great_turning}
+                          </p>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              </div>
+            ))}
           </div>
         </SectionReveal>
       )}

@@ -1,10 +1,11 @@
 import { AuthForm } from "@/components/AuthForm";
-import { signupAction } from "../actions/auth";
+import { signupAction, signupGated } from "../actions/auth";
 
-export default function SignupPage() {
+export default async function SignupPage() {
+  const requirePassword = await signupGated();
   return (
     <div className="pt-12">
-      <AuthForm action={signupAction} mode="signup" />
+      <AuthForm action={signupAction} mode="signup" requirePassword={requirePassword} />
     </div>
   );
 }

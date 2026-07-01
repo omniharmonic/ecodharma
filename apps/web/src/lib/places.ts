@@ -62,6 +62,52 @@ export function resolvePlace(name: string | null): Place | null {
   return CITIES[name] ?? null;
 }
 
+// Split "Cambridge, UK" → { city: "Cambridge", region: "UK" }. Open-Meteo matches
+// on the NAME only, so querying the whole "City, Country" string (which our own
+// datalist format encourages) silently fails for many places — we must query the
+// bare city and use the region to disambiguate.
+function splitPlace(query: string): { city: string; region: string } {
+  const parts = query.split(",").map((s) => s.trim()).filter(Boolean);
+  return { city: parts[0] || query, region: parts.slice(1).join(" ").toLowerCase() };
+}
+
+// Common country shorthands → tokens that actually appear in Open-Meteo results
+// (country_code / country / admin1), so "UK"/"USA" match "GB"/"US".
+const COUNTRY_ALIASES: Record<string, string[]> = {
+  usa: ["us", "united states"], "u.s.": ["us", "united states"], us: ["us", "united states"], america: ["us", "united states"],
+  uk: ["gb", "united kingdom", "england", "scotland", "wales", "northern ireland"], "u.k.": ["gb", "united kingdom"], britain: ["gb", "united kingdom"], england: ["gb", "england"],
+  uae: ["ae", "united arab emirates"], "south korea": ["kr", "south korea"], "north korea": ["kp", "north korea"],
+};
+
+// Does an Open-Meteo result satisfy the user's region hint?
+function regionMatches(
+  r: { country?: string; country_code?: string; admin1?: string; admin2?: string },
+  region: string,
+): boolean {
+  if (!region) return false;
+  const hay = [r.country, r.country_code, r.admin1, r.admin2].filter(Boolean).join(" ").toLowerCase();
+  const needles = [region, ...(COUNTRY_ALIASES[region] || [])];
+  return needles.some((n) => hay.includes(n));
+}
+
+type OpenMeteoResult = {
+  name: string; latitude: number; longitude: number; timezone?: string;
+  admin1?: string; admin2?: string; country?: string; country_code?: string;
+};
+
+async function openMeteo(city: string, region: string): Promise<Place | null> {
+  const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=10&language=en&format=json`;
+  const r = await fetch(url, { signal: AbortSignal.timeout(8000), cache: "no-store" });
+  if (!r.ok) return null;
+  const j = (await r.json()) as { results?: OpenMeteoResult[] };
+  const results = (j.results || []).filter((f) => Number.isFinite(f.latitude) && Number.isFinite(f.longitude));
+  if (results.length === 0) return null;
+  // Prefer a result matching the region hint; otherwise take the top (highest population).
+  const f = results.find((x) => regionMatches(x, region)) || results[0];
+  const label = [f.name, f.admin1, f.country_code].filter(Boolean).join(", ");
+  return { lat: f.latitude, lng: f.longitude, tz: f.timezone || tzFromLng(f.longitude), label };
+}
+
 // The universal resolver. Returns null if a place genuinely can't be resolved
 // (offline + unlisted) so the caller can ask for explicit coordinates.
 export async function geocode(place: string | null): Promise<Place | null> {
@@ -71,12 +117,14 @@ export async function geocode(place: string | null): Promise<Place | null> {
   // 1. exact curated match — instant, offline, deterministic.
   if (CITIES[query]) return { ...CITIES[query], label: query };
 
-  // 2. Mapbox forward geocoding when a key is configured.
+  const { city, region } = splitPlace(query);
+
+  // 2. Mapbox forward geocoding when a key is configured (handles "City, Country").
   const key = process.env.GEOCODING_API_KEY;
   if (key) {
     try {
       const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(query)}.json?limit=1&types=place,locality,region&access_token=${key}`;
-      const r = await fetch(url, { signal: AbortSignal.timeout(4000), cache: "no-store" });
+      const r = await fetch(url, { signal: AbortSignal.timeout(8000), cache: "no-store" });
       if (r.ok) {
         const j = (await r.json()) as { features?: Array<{ center: [number, number]; place_name: string }> };
         const f = j.features?.[0];
@@ -91,21 +139,13 @@ export async function geocode(place: string | null): Promise<Place | null> {
   }
 
   // 3. Open-Meteo — free, keyless, returns the real IANA timezone. The universal path.
+  // Query the BARE city (Open-Meteo matches on name, not "City, Country") and use
+  // the region hint to disambiguate. Retry with the full string only as a fallback.
   try {
-    const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(query)}&count=1&language=en&format=json`;
-    const r = await fetch(url, { signal: AbortSignal.timeout(4000), cache: "no-store" });
-    if (r.ok) {
-      const j = (await r.json()) as {
-        results?: Array<{ name: string; latitude: number; longitude: number; timezone?: string; admin1?: string; country_code?: string }>;
-      };
-      const f = j.results?.[0];
-      if (f && Number.isFinite(f.latitude) && Number.isFinite(f.longitude)) {
-        const label = [f.name, f.admin1, f.country_code].filter(Boolean).join(", ");
-        return { lat: f.latitude, lng: f.longitude, tz: f.timezone || tzFromLng(f.longitude), label };
-      }
-    }
+    const hit = (await openMeteo(city, region)) || (city !== query ? await openMeteo(query, "") : null);
+    if (hit) return hit;
   } catch {
-    /* network down — fall through to the offline gazetteer */
+    /* network down / timeout — fall through to the offline gazetteer */
   }
 
   // 4. offline substring fallback against the curated gazetteer.

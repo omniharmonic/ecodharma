@@ -9,9 +9,11 @@ type Action = (prev: ActionState, formData: FormData) => Promise<ActionState>;
 export function AuthForm({
   action,
   mode,
+  requirePassword = false,
 }: {
   action: Action;
   mode: "login" | "signup";
+  requirePassword?: boolean;
 }) {
   const [state, formAction] = useFormState(action, null);
   const isSignup = mode === "signup";
@@ -31,6 +33,13 @@ export function AuthForm({
         <label className="label" htmlFor="password">Password</label>
         <input id="password" name="password" type="password" required minLength={8} className="input" placeholder="at least 8 characters" />
       </div>
+      {isSignup && requirePassword && (
+        <div>
+          <label className="label" htmlFor="access_password">Access password</label>
+          <input id="access_password" name="access_password" type="password" required className="input" placeholder="the password your steward shared" data-testid="access-password-input" />
+          <p className="mt-1 text-2xs text-muted">EcoDharma is invite-only right now — enter the shared password to begin.</p>
+        </div>
+      )}
       {state?.error && <p className="text-sm text-flag" role="alert">{state.error}</p>}
       <SubmitButton pendingLabel={isSignup ? "Creating…" : "Signing in…"}>
         {isSignup ? "Create account" : "Sign in"}

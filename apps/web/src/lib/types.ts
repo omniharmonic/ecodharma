@@ -108,6 +108,20 @@ export type GiftCarry = {
   evidence?: string[];
 };
 
+// A thorough per-lens reading: the person's ACTUAL chart placements for one lens,
+// explained through the Great Turning. The flagship depth of the reading.
+export type LensReading = {
+  lens: "astrology" | "human_design" | "gene_keys"; // astrology = western + vedic together
+  title: string; // e.g. "Astrology — Western & Vedic"
+  summary: string; // 1–2 sentence orientation to this lens for this person
+  reading: string; // 2–3 paragraphs weaving this chart through the Great Turning
+  placements: {
+    label: string; // the specific placement, e.g. "Sun in Scorpio, 8th house"
+    meaning: string; // plain meaning for this person
+    great_turning: string; // how this placement equips them for the Great Turning
+  }[];
+};
+
 // Core profile from the interpreter (Claude or fixture) — selection + prose.
 // Trim-tabs are resolved separately from the growing library. Recognition leads;
 // the framework recedes to support (no theory recitation).
@@ -122,6 +136,7 @@ export type CoreProfile = {
   portrait: string; // LONG body, 250–500 words, weaves all four charts + ikigai
   chart_threads: ChartThread[]; // 8–14, span all four lenses; powers the interpretive overlays
   gift_constellation: GiftCarry[]; // 2–3 dominant gifts + how this person carries each
+  lens_readings?: LensReading[]; // deep per-lens sections (astrology, human design, gene keys)
   orientations?: string[]; // 3–6 short leaning phrases
   edges?: { pattern: string; how_to_relate: string }[]; // richer shadow; canonical when present
   // Compact, shareable Human Design structure (no birth data) — travels with the

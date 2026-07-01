@@ -169,13 +169,13 @@ async function claudeRead(
 
 export async function generateConstellationRead(
   members: Member[],
-  opts: { entitled?: boolean } = {},
+  opts: { useClaude?: boolean } = {},
 ): Promise<ConstellationRead> {
   const framework = loadFramework();
   const relational = relationalLayer(members);
   let read: ConstellationRead | null = null;
-  // Gated per-owner: only an entitled constellation owner triggers Claude.
-  if (opts.entitled && process.env.ANTHROPIC_API_KEY && process.env.ECODHARMA_INTERPRETER !== "fixture") {
+  // Claude is the default; the caller passes the resolved global mode.
+  if (opts.useClaude) {
     try {
       read = await claudeRead(framework, members, relational);
     } catch (err) {
