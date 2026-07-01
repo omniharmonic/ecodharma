@@ -50,10 +50,12 @@ export const clip = (s: string, n = 60) => (s && s.length > n ? s.slice(0, n).re
 // bringing people together, ..." instead of a capital mid-clause with a doubled dot.
 const DANGLING = /\s+(?:and|or|but|so|the|a|an|to|of|in|on|for|with|that|which|as|at|by|from)$/i;
 export const frag = (s: string, n = 90) => {
+  const wasClipped = !!s && s.length > n;
   let t = clip(s, n).replace(/[….,;:!?\s]+$/, "").trimStart();
-  // A clip can leave a dangling conjunction/preposition ("…hold money and"); drop it
-  // so the embedded clause doesn't read as truncated.
-  while (DANGLING.test(t)) t = t.replace(DANGLING, "");
+  // Only a CLIP can leave a dangling conjunction/preposition ("…hold money and");
+  // drop it so the embedded clause doesn't read as truncated. Never strip the
+  // natural ending of a short sentence ("…where food comes from").
+  if (wasClipped) while (DANGLING.test(t)) t = t.replace(DANGLING, "");
   if (!t) return "";
   const first = t.split(/\s+/)[0] || "";
   if (first === "I" || /^[A-Z]{2,}/.test(first)) return t;
