@@ -24,7 +24,23 @@ export default defineConfig({
         url: `http://127.0.0.1:${PORT}`,
         reuseExistingServer: false,
         timeout: 60_000,
-        env: { ECODHARMA_INTERPRETER: "fixture", ECODHARMA_BOT_TEST: "1" },
+        env: {
+          ECODHARMA_INTERPRETER: "fixture",
+          ECODHARMA_BOT_TEST: "1",
+          // Keep e2e deterministic + hermetic regardless of a developer's
+          // .env.local: force every premium/external integration OFF (empty
+          // string wins because @next/env won't override an already-set key).
+          // Notably this stops tests from firing real Resend emails.
+          STRIPE_SECRET_KEY: "",
+          STRIPE_WEBHOOK_SECRET: "",
+          STRIPE_PRICE_ID: "",
+          TELEGRAM_BOT_TOKEN: "",
+          TELEGRAM_WEBHOOK_SECRET: "",
+          SLACK_BOT_TOKEN: "",
+          SLACK_SIGNING_SECRET: "",
+          RESEND_API_KEY: "",
+          CRON_SECRET: "",
+        },
       },
   projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
 });
