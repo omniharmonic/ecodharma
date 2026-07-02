@@ -5,7 +5,8 @@ import { loadFramework } from "./framework";
 import { loadVoice } from "./voice";
 import { claudeMode } from "./config";
 import { clip } from "./interpret-fixture";
-import { sendEmail, emailEnabled } from "./email";
+import { sendEmail, emailEnabled, htmlEmail } from "./email";
+import { unsubscribeToken } from "./unsubscribe";
 import type { GiftProfile } from "./types";
 
 // Weekly "dharma nudges" — a small, strengths-playing prompt grounded in the
@@ -129,10 +130,13 @@ export async function runWeeklyNudges(): Promise<{ count: number; emailed: numbe
     const body = await generateNudge(m.userId, m.profile);
     await recordNudge(m.userId, body);
     if (emailEnabled()) {
+      const unsub = `${SITE}/api/unsubscribe?u=${await unsubscribeToken(m.userId)}`;
       const ok = await sendEmail({
         to: m.email,
         subject: "Your weekly dharma nudge",
-        text: `${body}\n\n—\nReflect deeper any time: ${SITE}\nManage these emails in your settings.`,
+        text: `${body}\n\n—\nReflect deeper any time: ${SITE}\nUnsubscribe: ${unsub}`,
+        html: htmlEmail({ heading: "Your weekly dharma nudge", body, siteUrl: SITE, unsubscribeUrl: unsub }),
+        listUnsubscribe: unsub,
       });
       if (ok) emailed += 1;
     }
