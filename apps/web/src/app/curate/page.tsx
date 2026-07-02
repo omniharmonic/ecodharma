@@ -6,7 +6,7 @@ import { getConfig } from "@/lib/config";
 import { loadFramework } from "@/lib/framework";
 import { MessageForm } from "@/components/MessageForm";
 import { promoteTrimTabAction, deleteCandidateAction } from "../actions/trimtab";
-import { setModeAction, setPasswordAction } from "../actions/config";
+import { setModeAction, setPasswordAction, compPremiumAction } from "../actions/config";
 
 export default async function CuratePage() {
   const user = await getUser();
@@ -64,6 +64,24 @@ export default async function CuratePage() {
           <p className="label mb-1">Shared access password</p>
           <MessageForm action={setPasswordAction} submitLabel="Save password" pendingLabel="Saving…" className="btn-line">
             <input name="access_password" type="text" className="input" placeholder={config.hasPassword ? "set — type a new one, or blank to clear" : "set a password to gate signup"} aria-label="Access password" data-testid="set-password-input" />
+          </MessageForm>
+        </div>
+      </section>
+
+      <section className="mt-16" data-testid="premium-admin">
+        <p className="eyebrow mb-2">Premium</p>
+        <p className="mb-4 text-sm text-muted">
+          Comp premium to a member by email — no card needed. This is how you gift the reflection
+          bot + weekly nudges to friends (and it works whether or not Stripe is connected).
+        </p>
+        <div className="max-w-sm space-y-3">
+          <MessageForm action={compPremiumAction} submitLabel="Grant premium" pendingLabel="Granting…" className="btn-line">
+            <input name="email" type="email" required className="input" placeholder="member@email.com" aria-label="Member email" data-testid="comp-email" />
+            <input type="hidden" name="action" value="grant" />
+          </MessageForm>
+          <MessageForm action={compPremiumAction} submitLabel="Revoke premium" pendingLabel="Revoking…" className="btn-line">
+            <input name="email" type="email" required className="input" placeholder="member@email.com" aria-label="Revoke member email" />
+            <input type="hidden" name="action" value="revoke" />
           </MessageForm>
         </div>
       </section>
