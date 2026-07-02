@@ -73,7 +73,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                       <NavLink href="/profile">Profile</NavLink>
                       <NavLink href="/constellations">Constellations</NavLink>
                       <NavLink href="/curate">Curate</NavLink>
-                      <NavLink href="/settings">Data</NavLink>
+                      <NavLink href="/settings">Settings</NavLink>
                     </span>
                     <form action={logoutAction}>
                       <button className="font-mono text-2xs uppercase tracking-eyebrow text-muted hover:text-accent" type="submit">

@@ -19,8 +19,15 @@ export default async function OnboardingPage() {
       "select birth_date, birth_time, unknown_time, place_label from birth_data where user_id = $1",
       [user.id],
     )).rows[0];
-    const settings = (await c.query("select settings from profiles where id = $1", [user.id])).rows[0]?.settings;
+    const prof = (await c.query("select settings, display_name from profiles where id = $1", [user.id])).rows[0];
+    const settings = prof?.settings;
+    // Prefill the name — but suppress the legacy email-slug default so returning
+    // users are cleanly prompted for a real first name rather than shown "jane.doe".
+    const emailSlug = user.email.split("@")[0];
+    const displayName = (prof?.display_name as string | null) || "";
+    const firstName = displayName && displayName !== emailSlug ? displayName : undefined;
     return {
+      first_name: firstName,
       birth_date: bd?.birth_date ? new Date(bd.birth_date).toISOString().slice(0, 10) : undefined,
       birth_time: bd?.birth_time ? String(bd.birth_time).slice(0, 5) : undefined,
       unknown_time: !!bd?.unknown_time,

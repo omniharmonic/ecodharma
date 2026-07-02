@@ -26,6 +26,7 @@ const schema = z.object({
   lat: z.coerce.number().optional(),
   lng: z.coerce.number().optional(),
   tz_str: z.string().optional(),
+  first_name: z.string().trim().max(60).optional(),
   love: z.string().min(1),
   skill: z.string().min(1),
   world_need: z.string().optional(),
@@ -95,9 +96,9 @@ export async function createReadingAction(_prev: unknown, formData: FormData) {
     await c.query(
       `update profiles set
          settings = jsonb_set(coalesce(settings,'{}'::jsonb), '{ikigai}', $2::jsonb, true),
-         display_name = coalesce(nullif(display_name, ''), $3)
+         display_name = coalesce(nullif($3, ''), nullif(display_name, ''), $4)
        where id = $1`,
-      [user!.id, JSON.stringify(ikigai), user!.email.split("@")[0]],
+      [user!.id, JSON.stringify(ikigai), f.first_name || "", user!.email.split("@")[0]],
     );
   });
 

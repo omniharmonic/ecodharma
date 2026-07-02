@@ -1,6 +1,24 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
   <rect width="64" height="64" rx="14" fill="#0e1311"/>
-  <circle cx="32" cy="32" r="18" fill="none" stroke="#e9c46a" stroke-width="2"/>
-  <path d="M32 14 L32 50 M14 32 L50 32" stroke="#5c8a6a" stroke-width="2"/>
-  <circle cx="32" cy="32" r="4" fill="#d08c60"/>
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, monospace" xml:space="preserve" style="white-space:pre">
+    <text x="5" y="7.33" textLength="54" lengthAdjust="spacing" font-size="3.64">         <tspan fill="#3f6b52">.</tspan>         </text>
+    <text x="5" y="10.17" textLength="54" lengthAdjust="spacing" font-size="3.64">     <tspan fill="#5c8a6a">.....</tspan><tspan fill="#3f6b52">·</tspan><tspan fill="#5c8a6a">,</tspan><tspan fill="#3f6b52">.</tspan><tspan fill="#5c8a6a">,</tspan>     </text>
+    <text x="5" y="13.01" textLength="54" lengthAdjust="spacing" font-size="3.64">    <tspan fill="#5c8a6a">.....</tspan><tspan fill="#3f6b52">·</tspan><tspan fill="#5c8a6a">,:;</tspan><tspan fill="#3f6b52">,</tspan><tspan fill="#5c8a6a">;</tspan>    </text>
+    <text x="5" y="15.86" textLength="54" lengthAdjust="spacing" font-size="3.64">   <tspan fill="#5c8a6a">.....</tspan><tspan fill="#3f6b52">·</tspan><tspan fill="#5c8a6a">::</tspan><tspan fill="#3f6b52">,,,::</tspan>   </text>
+    <text x="5" y="18.70" textLength="54" lengthAdjust="spacing" font-size="3.64">  <tspan fill="#5c8a6a">.....</tspan><tspan fill="#3f6b52">·.,,,:::::</tspan>  </text>
+    <text x="5" y="21.54" textLength="54" lengthAdjust="spacing" font-size="3.64"> <tspan fill="#5c8a6a">......</tspan><tspan fill="#3f6b52">.,,,:::::;:</tspan> </text>
+    <text x="5" y="24.38" textLength="54" lengthAdjust="spacing" font-size="3.64"> <tspan fill="#5c8a6a">....</tspan><tspan fill="#3f6b52">.·.,,,:::;</tspan><tspan fill="#e9c46a">;;;</tspan> </text>
+    <text x="5" y="27.23" textLength="54" lengthAdjust="spacing" font-size="3.64"> <tspan fill="#5c8a6a">.</tspan><tspan fill="#3f6b52">.</tspan><tspan fill="#5c8a6a">..</tspan><tspan fill="#3f6b52">.</tspan><tspan fill="#5c8a6a">,</tspan><tspan fill="#3f6b52">,,,:::;</tspan><tspan fill="#e9c46a">;;;;</tspan> </text>
+    <text x="5" y="30.07" textLength="54" lengthAdjust="spacing" font-size="3.64"> <tspan fill="#3f6b52">..</tspan><tspan fill="#5c8a6a">..</tspan><tspan fill="#3f6b52">·</tspan><tspan fill="#5c8a6a">:</tspan><tspan fill="#3f6b52">,,,:::</tspan><tspan fill="#e9c46a">;;;;;</tspan> </text>
+    <text x="5" y="32.91" textLength="54" lengthAdjust="spacing" font-size="3.64"><tspan fill="#3f6b52">...</tspan><tspan fill="#5c8a6a">..,:;;ox</tspan><tspan fill="#3f6b52">:;</tspan><tspan fill="#e9c46a">;;;;;;</tspan></text>
+    <text x="5" y="35.75" textLength="54" lengthAdjust="spacing" font-size="3.64"> <tspan fill="#3f6b52">...</tspan><tspan fill="#5c8a6a">.,:;oox</tspan><tspan fill="#3f6b52">:</tspan><tspan fill="#e9c46a">;;;;oo</tspan> </text>
+    <text x="5" y="38.59" textLength="54" lengthAdjust="spacing" font-size="3.64"> <tspan fill="#3f6b52">...·</tspan><tspan fill="#5c8a6a">,:;oxx</tspan><tspan fill="#3f6b52">;</tspan><tspan fill="#e9c46a">;;;ooo</tspan> </text>
+    <text x="5" y="41.44" textLength="54" lengthAdjust="spacing" font-size="3.64"> <tspan fill="#3f6b52">...·</tspan><tspan fill="#5c8a6a">::;ox</tspan><tspan fill="#3f6b52">:;</tspan><tspan fill="#e9c46a">;;;ooo</tspan> </text>
+    <text x="5" y="44.28" textLength="54" lengthAdjust="spacing" font-size="3.64"> <tspan fill="#3f6b52">...·</tspan><tspan fill="#5c8a6a">::;oxx</tspan><tspan fill="#e9c46a">;;;;oo;</tspan> </text>
+    <text x="5" y="47.12" textLength="54" lengthAdjust="spacing" font-size="3.64">  <tspan fill="#3f6b52">..·.</tspan><tspan fill="#5c8a6a">:;oxx</tspan><tspan fill="#e9c46a">;;;;oo</tspan>  </text>
+    <text x="5" y="49.96" textLength="54" lengthAdjust="spacing" font-size="3.64">   <tspan fill="#3f6b52">...,,:</tspan><tspan fill="#5c8a6a">x</tspan><tspan fill="#3f6b52">:;</tspan><tspan fill="#e9c46a">#;;;</tspan>   </text>
+    <text x="5" y="52.80" textLength="54" lengthAdjust="spacing" font-size="3.64">    <tspan fill="#3f6b52">..,,:::;</tspan><tspan fill="#e9c46a">;;;</tspan>    </text>
+    <text x="5" y="55.65" textLength="54" lengthAdjust="spacing" font-size="3.64">     <tspan fill="#5c8a6a">.:;ooxx%</tspan><tspan fill="#3f6b52">;</tspan>     </text>
+    <text x="5" y="58.49" textLength="54" lengthAdjust="spacing" font-size="3.64">         <tspan fill="#5c8a6a">;</tspan>         </text>
+  </g>
 </svg>

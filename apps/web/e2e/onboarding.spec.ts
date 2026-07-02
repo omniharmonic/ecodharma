@@ -6,6 +6,7 @@ import { uniqueEmail, signup } from "./helpers";
 test("unknown birth time still yields a complete reading", async ({ page }) => {
   await signup(page, uniqueEmail("notime"));
 
+  await page.getByLabel("First name").fill("Ren");
   await page.getByLabel("Birth date").fill("1990-06-15");
   await page.getByRole("checkbox").check(); // "I don't know my birth time" — disables the time field
   await page.getByLabel("Birth place").fill("Berlin, Germany");

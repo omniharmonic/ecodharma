@@ -10,15 +10,19 @@ export function AuthForm({
   action,
   mode,
   requirePassword = false,
+  next,
 }: {
   action: Action;
   mode: "login" | "signup";
   requirePassword?: boolean;
+  next?: string;
 }) {
   const [state, formAction] = useFormState(action, null);
   const isSignup = mode === "signup";
+  const q = next ? `?next=${encodeURIComponent(next)}` : "";
   return (
     <form action={formAction} className="mx-auto mt-24 max-w-md space-y-6">
+      {next && <input type="hidden" name="next" value={next} />}
       <header>
         <p className="eyebrow mb-4">{isSignup ? "New here" : "Returning"}</p>
         <h1 className="font-display text-title leading-tight text-fg">
@@ -46,9 +50,9 @@ export function AuthForm({
       </SubmitButton>
       <p className="text-sm text-muted">
         {isSignup ? (
-          <>Already have an account? <Link href="/login" className="text-link underline-offset-4 hover:text-accent hover:underline">Sign in</Link></>
+          <>Already have an account? <Link href={`/login${q}`} className="text-link underline-offset-4 hover:text-accent hover:underline">Sign in</Link></>
         ) : (
-          <>New here? <Link href="/signup" className="text-link underline-offset-4 hover:text-accent hover:underline">Begin</Link></>
+          <>New here? <Link href={`/signup${q}`} className="text-link underline-offset-4 hover:text-accent hover:underline">Begin</Link></>
         )}
       </p>
     </form>

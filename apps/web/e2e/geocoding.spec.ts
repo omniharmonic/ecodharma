@@ -9,6 +9,7 @@ async function fillIkigai(page: Page) {
 // The gazetteer is not a hard-coded handful of cities: any birthplace resolves.
 test("a birthplace NOT in the curated list resolves to a real chart", async ({ page }) => {
   await signup(page, uniqueEmail("geo"));
+  await page.getByLabel("First name").fill("Ren");
   await page.getByLabel("Birth date").fill("1991-04-04");
   await page.getByLabel("Birth time", { exact: true }).fill("08:00");
   await page.getByLabel("Birth place").fill("berlin"); // lowercase — NOT the curated key "Berlin, Germany"
@@ -22,6 +23,7 @@ test("a birthplace NOT in the curated list resolves to a real chart", async ({ p
 // An unresolvable place is surfaced honestly; explicit coordinates then succeed.
 test("an unresolvable place is surfaced, and coordinates are a working fallback", async ({ page }) => {
   await signup(page, uniqueEmail("geo2"));
+  await page.getByLabel("First name").fill("Ren");
   await page.getByLabel("Birth date").fill("1991-04-04");
   await page.getByLabel("Birth time", { exact: true }).fill("08:00");
   await page.getByLabel("Birth place").fill("zzqxnowhereplace12345");
