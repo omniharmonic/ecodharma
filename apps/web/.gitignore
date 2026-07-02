@@ -1,1 +1,5 @@
 .vercel
+
+# share-card render test artifacts
+apps/web/scripts/.og-out/
+scripts/.og-out/
