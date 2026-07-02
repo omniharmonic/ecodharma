@@ -7,7 +7,11 @@ import { MessageForm } from "@/components/MessageForm";
 import { createProjectAction } from "../actions/marketplace";
 import type { ProjectRow } from "@/lib/marketplace";
 
+// Marketplace disabled for launch (see /work). Set to true to re-enable.
+const WORK_ENABLED = false;
+
 export default async function ProjectsPage() {
+  if (!WORK_ENABLED) redirect("/profile");
   const user = await getUser();
   if (!user) redirect("/login");
   const fw = loadFramework();

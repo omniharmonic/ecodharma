@@ -300,7 +300,6 @@ export default async function ProfilePage() {
       {/* FIND YOUR PEOPLE */}
       <section className="mt-16 flex max-w-measure flex-wrap gap-4">
         <Link href="/constellations" className="btn-line">weave a constellation</Link>
-        <Link href="/work" className="btn-line">find aligned work</Link>
       </section>
 
       {/* APPARATUS — offerings + re-draft + telemetry, clearly separated */}

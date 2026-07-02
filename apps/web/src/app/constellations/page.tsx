@@ -101,7 +101,9 @@ export default async function ConstellationsPage() {
           <div className="divide-y divide-rule/12">
             {joined.map((r) => (
               <div key={r.id} className="flex flex-wrap items-center justify-between gap-3 py-4" data-testid="joined-constellation">
-                <span className="font-sans text-fg">{r.name}</span>
+                <Link href={`/constellations/${r.id}`} className="font-sans text-fg hover:text-accent">
+                  {r.name} <span aria-hidden className="text-muted">→</span>
+                </Link>
                 <MessageForm action={revokeConsentAction} submitLabel="Revoke consent" className="btn-line">
                   <input type="hidden" name="constellation_id" value={r.id} />
                 </MessageForm>

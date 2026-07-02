@@ -1,7 +1,9 @@
 import { test, expect } from "@playwright/test";
 import { uniqueEmail, signupAndRead, login } from "./helpers";
 
-test("Journey D — marketplace: project need matches a discoverable person's gifts", async ({ browser }) => {
+// The Work / aligned-projects marketplace is disabled for launch (routes redirect
+// to /profile). Re-enable this journey when the feature is turned back on.
+test.skip("Journey D — marketplace: project need matches a discoverable person's gifts", async ({ browser }) => {
   const stewardEmail = uniqueEmail("steward");
   const seekerEmail = uniqueEmail("seeker");
 

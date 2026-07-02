@@ -43,6 +43,30 @@ export async function createConstellationAction(_prev: unknown, formData: FormDa
   redirect(`/constellations/${id}`);
 }
 
+export async function renameConstellationAction(_prev: unknown, formData: FormData) {
+  const user = await getUser();
+  if (!user) redirect("/login");
+  const constellationId = Number(formData.get("constellation_id"));
+  const name = String(formData.get("name") || "").trim();
+  if (!name) return { error: "Enter a name." };
+  if (name.length > 120) return { error: "That name is too long." };
+
+  // Owner-only. RLS owner_update_constellation enforces this at the DB too;
+  // the update simply affects zero rows for a non-owner.
+  const updated = await withUser(user!.id, async (c) => {
+    const { rowCount } = await c.query(
+      "update constellations set name=$1 where id=$2 and owner_id=$3",
+      [name, constellationId, user!.id],
+    );
+    return rowCount ?? 0;
+  });
+  if (!updated) return { error: "Only the owner can rename this constellation." };
+
+  revalidatePath(`/constellations/${constellationId}`);
+  revalidatePath("/constellations");
+  return { ok: "Renamed." };
+}
+
 export async function inviteMemberAction(_prev: unknown, formData: FormData) {
   const user = await getUser();
   if (!user) redirect("/login");

@@ -5,7 +5,12 @@ import { MessageForm } from "@/components/MessageForm";
 import { isDiscoverable, matchProjectsForUser } from "@/lib/marketplace";
 import { setDiscoverableAction } from "../actions/marketplace";
 
+// The Work / aligned-projects marketplace is disabled for launch — shipping with
+// Profiles + Constellations only. Set to true to re-enable.
+const WORK_ENABLED = false;
+
 export default async function WorkPage() {
+  if (!WORK_ENABLED) redirect("/profile");
   const user = await getUser();
   if (!user) redirect("/login");
   const discoverable = await isDiscoverable(user.id);

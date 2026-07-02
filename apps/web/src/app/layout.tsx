@@ -72,7 +72,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                     <span className="hidden items-center gap-4 md:flex">
                       <NavLink href="/profile">Profile</NavLink>
                       <NavLink href="/constellations">Constellations</NavLink>
-                      <NavLink href="/work">Work</NavLink>
                       <NavLink href="/curate">Curate</NavLink>
                       <NavLink href="/settings">Data</NavLink>
                     </span>

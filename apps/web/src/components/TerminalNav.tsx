@@ -11,7 +11,6 @@ const NAV: Cmd[] = [
   { key: "g", label: "Begin a reading", hint: "compute your charts", run: (r) => r.push("/onboarding") },
   { key: "p", label: "Profile", hint: "your field manual", run: (r) => r.push("/profile") },
   { key: "c", label: "Constellations", hint: "weave with others", run: (r) => r.push("/constellations") },
-  { key: "w", label: "Work", hint: "find aligned projects", run: (r) => r.push("/work") },
   { key: "u", label: "Curate", hint: "the trim-tab commons", run: (r) => r.push("/curate") },
   { key: "d", label: "Data", hint: "export · delete · consent", run: (r) => r.push("/settings") },
 ];

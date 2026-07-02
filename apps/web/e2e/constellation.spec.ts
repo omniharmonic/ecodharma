@@ -21,6 +21,11 @@ test("Journey B — consent-gated constellation: invite → consent → woven re
   await owner.waitForURL("**/constellations/**");
   const url = owner.url();
 
+  // Owner can rename the constellation after creating it.
+  await owner.getByPlaceholder("Constellation name").fill("Renamed Weave");
+  await owner.getByRole("button", { name: "Save name" }).click();
+  await expect(owner.getByRole("heading", { name: "Renamed Weave" })).toBeVisible();
+
   // Owner invites the kin.
   await owner.getByPlaceholder("their@email.com").fill(kinEmail);
   await owner.getByRole("button", { name: "Send invitation" }).click();
@@ -38,6 +43,14 @@ test("Journey B — consent-gated constellation: invite → consent → woven re
   // After consenting, the invite moves from "pending" to "joined".
   await expect(kin.getByTestId("joined-constellation")).toBeVisible();
   await expect(kin.getByTestId("pending-invite")).toHaveCount(0);
+
+  // A joined (non-owner) member can OPEN the constellation and see it.
+  await kin.getByTestId("joined-constellation").getByRole("link").click();
+  await kin.waitForURL("**/constellations/**");
+  await expect(kin.getByRole("heading", { name: "Renamed Weave" })).toBeVisible();
+  await expect(kin.getByTestId("member-row").first()).toBeVisible();
+  // Members are not owners: no invite/generate/rename controls for them.
+  await expect(kin.getByRole("button", { name: "Save name" })).toHaveCount(0);
 
   // Now the owner can weave the read.
   await owner.goto(url);

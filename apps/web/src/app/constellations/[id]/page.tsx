@@ -5,7 +5,7 @@ import { withUser } from "@/lib/db";
 import { MessageForm } from "@/components/MessageForm";
 import { DymaxionMap } from "@/components/DymaxionMap";
 import { ConstellationRelational } from "@/components/ConstellationRelational";
-import { generateReadAction, inviteMemberAction } from "../../actions/constellation";
+import { generateReadAction, inviteMemberAction, renameConstellationAction } from "../../actions/constellation";
 import type { ConstellationRead } from "@/lib/types";
 
 export default async function ConstellationDetail({ params }: { params: { id: string } }) {
@@ -62,6 +62,16 @@ export default async function ConstellationDetail({ params }: { params: { id: st
           ))}
         </ul>
       </section>
+
+      {isOwner && (
+        <section className="mt-16">
+          <p className="eyebrow mb-3">Rename</p>
+          <MessageForm action={renameConstellationAction} submitLabel="Save name" pendingLabel="Saving…" className="btn-line">
+            <input type="hidden" name="constellation_id" value={id} />
+            <input name="name" defaultValue={data.cs.name} required maxLength={120} className="input" placeholder="Constellation name" />
+          </MessageForm>
+        </section>
+      )}
 
       {isOwner && (
         <section className="mt-16">

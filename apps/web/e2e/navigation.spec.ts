@@ -21,9 +21,9 @@ test("single-key nav jumps to a section", async ({ page }) => {
   await expect(page.getByTestId("recognition")).toBeVisible();
 
   await page.getByTestId("recognition").click(); // focus the page, not a field
-  await page.keyboard.press("w"); // → work
-  await page.waitForURL("**/work");
-  await expect(page.getByRole("heading", { name: "Find your work" })).toBeVisible();
+  await page.keyboard.press("c"); // → constellations
+  await page.waitForURL("**/constellations");
+  await expect(page.getByRole("heading", { name: "Constellations" })).toBeVisible();
 });
 
 test("mobile: the floating command-menu button opens the palette", async ({ browser }) => {
