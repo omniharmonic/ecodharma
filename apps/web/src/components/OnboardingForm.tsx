@@ -9,6 +9,7 @@ type ActionState = { error?: string } | null;
 type Action = (prev: ActionState, formData: FormData) => Promise<ActionState>;
 
 export type OnboardingDefaults = {
+  first_name?: string;
   birth_date?: string;
   birth_time?: string;
   unknown_time?: boolean;
@@ -33,6 +34,17 @@ export function OnboardingForm({ action, defaults }: { action: Action; defaults?
         <div>
           <p className="eyebrow mb-2">Step one</p>
           <h2 className="font-display text-fig text-fg">Where &amp; when you arrived</h2>
+        </div>
+        <div>
+          <label className="label" htmlFor="first_name">First name</label>
+          <input
+            id="first_name" name="first_name" type="text" required
+            autoComplete="given-name" maxLength={60}
+            className="input" defaultValue={defaults?.first_name} placeholder="What should we call you?"
+          />
+          <p className="mt-1.5 text-2xs text-muted/70">
+            Just your first name — it&rsquo;s how kin see you in a constellation.
+          </p>
         </div>
         <p className="text-sm text-muted">
           Birth date, time, and place. Time is sensitive — it shapes your rising sign, houses, and

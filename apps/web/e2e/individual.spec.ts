@@ -23,11 +23,6 @@ test("Journey A — the kinship journey: signup → reading → gift profile", a
   const trims = await page.getByTestId("trim-tab").count();
   expect(gifts).toBeGreaterThan(0);
   expect(trims).toBeGreaterThan(0);
-
-  // Save offerings (seeds the marketplace).
-  await page.getByLabel("Skills", { exact: true }).fill("facilitation, systems design");
-  await page.getByRole("button", { name: "Save offerings" }).click();
-  await expect(page.getByText("Offerings saved.")).toBeVisible();
 });
 
 test("two different births yield different narratives (chart-grounded, not a mock)", async ({ page }) => {

@@ -3,10 +3,10 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { getUser } from "@/lib/auth";
 import { withUser } from "@/lib/db";
+import { isPremium } from "@/lib/billing";
 import { generateGiftProfile } from "@/lib/interpret";
 import { frameworkVersion } from "@/lib/framework";
 import { VOICE_VERSION } from "@/lib/voice";
-import { assertWithinQuota, PaywallError } from "@/lib/entitlements";
 import { claudeMode } from "@/lib/config";
 import type { Charts, Ikigai } from "@/lib/types";
 
@@ -14,13 +14,10 @@ export async function regenerateProfileAction(_prev?: unknown, _formData?: FormD
   const user = await getUser();
   if (!user) redirect("/login");
 
-  try {
-    await assertWithinQuota(user!.id, "profile_regen");
-  } catch (e) {
-    if (e instanceof PaywallError) {
-      return { error: "You've used your free regenerations. (Paid tier covers heavier AI compute.)" };
-    }
-    throw e;
+  // Re-drafting re-runs the full AI interpretation — premium-only, so free users
+  // can't spend unbounded compute. The first reading (createReadingAction) stays free.
+  if (!(await isPremium(user!.id))) {
+    return { error: "Re-drafting your profile is a premium feature. Upgrade in Settings to run it again." };
   }
 
   const { charts, ikigai } = await withUser(user!.id, async (c) => {

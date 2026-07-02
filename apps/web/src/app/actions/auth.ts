@@ -15,6 +15,14 @@ const creds = z.object({
   password: z.string().min(8, "Password must be at least 8 characters"),
 });
 
+/** A post-auth redirect target is only honoured if it's a same-origin path
+ *  (starts with a single "/") — never an absolute URL, to avoid open redirects. */
+function safeNext(formData: FormData): string | null {
+  const raw = String(formData.get("next") || "");
+  if (raw.startsWith("/") && !raw.startsWith("//")) return raw;
+  return null;
+}
+
 /** Signup is gated whenever a shared access password is set — the credit gate
  *  (readings require an account). The admin sets it in Claude mode to keep signups
  *  invite-only, and clears it to open the door (e.g. in the free fixture mode). */
@@ -39,7 +47,7 @@ export async function signupAction(_prev: unknown, formData: FormData) {
 
   const user = await createUser(parsed.data.email, parsed.data.password);
   await createSession(user.id);
-  redirect("/onboarding");
+  redirect(safeNext(formData) || "/onboarding");
 }
 
 export async function loginAction(_prev: unknown, formData: FormData) {
@@ -54,7 +62,7 @@ export async function loginAction(_prev: unknown, formData: FormData) {
     return { error: "Invalid email or password." };
   }
   await createSession(user.id);
-  redirect("/profile");
+  redirect(safeNext(formData) || "/profile");
 }
 
 export async function logoutAction() {

@@ -14,6 +14,17 @@ const nextConfig = {
       "/api/og/**": ["./public/fonts/**/*"],
     },
   },
+  // OAuth discovery lives at well-known URLs (RFC 8414 / RFC 9728). Serve the
+  // metadata from normal API routes but keep the canonical /.well-known paths —
+  // MCP clients probe both the bare path and a resource-suffixed variant.
+  async rewrites() {
+    return [
+      { source: "/.well-known/oauth-protected-resource", destination: "/api/oauth/protected-resource" },
+      { source: "/.well-known/oauth-protected-resource/:path*", destination: "/api/oauth/protected-resource" },
+      { source: "/.well-known/oauth-authorization-server", destination: "/api/oauth/authorization-server" },
+      { source: "/.well-known/oauth-authorization-server/:path*", destination: "/api/oauth/authorization-server" },
+    ];
+  },
 };
 
 export default nextConfig;

@@ -16,13 +16,23 @@ export function McpPanel({ hasToken }: { hasToken: boolean }) {
     <div>
       <p className="eyebrow mb-2">Reflect via your own AI tool (MCP)</p>
       <p className="mb-3 max-w-prose text-sm text-muted">
-        Connect any MCP-capable client (Claude and others) to reflect with your reading. Point it at
-        the endpoint below and use your token as a bearer credential.
+        Connect any MCP-capable client to reflect with your reading. Add the endpoint below as a
+        custom connector — <strong className="text-fg">Claude Desktop &amp; claude.ai sign you in
+        automatically</strong> (you&rsquo;ll see a one-tap authorize screen). No token to copy.
       </p>
       <div className="mb-3 flex flex-wrap items-center gap-3">
         <span className="kv">endpoint:</span>
         <code className="border border-rule/30 px-2 py-1 font-mono text-xs text-fg">{endpoint}</code>
       </div>
+      <details className="mb-3 max-w-prose text-sm text-muted">
+        <summary className="cursor-pointer font-mono text-2xs uppercase tracking-eyebrow text-muted hover:text-accent">
+          Using a client without sign-in? Issue a bearer token
+        </summary>
+        <p className="mt-2 text-sm text-muted">
+          Some MCP clients let you paste a static token instead of signing in. Generate one below and
+          use it as a <code className="text-fg">Bearer</code> credential.
+        </p>
+      </details>
       <div className="flex flex-wrap items-center gap-3">
         <form action={issue}>
           <SubmitButton className="btn-line" pendingLabel="Generating…">

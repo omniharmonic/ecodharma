@@ -1,4 +1,5 @@
 import { resolveMcpToken } from "@/lib/mcp-auth";
+import { resolveAccessToken, originFromRequest } from "@/lib/oauth";
 import { isPremium } from "@/lib/billing";
 import { reflectForUser, readingSummaryForUser } from "@/lib/bot";
 import { loadFramework } from "@/lib/framework";
@@ -34,14 +35,48 @@ const TOOLS = [
   },
 ];
 
+const CORS: Record<string, string> = {
+  "access-control-allow-origin": "*",
+  "access-control-allow-methods": "POST, GET, OPTIONS",
+  "access-control-allow-headers": "authorization, content-type, mcp-protocol-version",
+};
+
 function rpcResult(id: unknown, result: unknown) {
-  return Response.json({ jsonrpc: "2.0", id, result });
+  return Response.json({ jsonrpc: "2.0", id, result }, { headers: CORS });
 }
 function rpcError(id: unknown, code: number, message: string, status = 200) {
-  return Response.json({ jsonrpc: "2.0", id, error: { code, message } }, { status });
+  return Response.json({ jsonrpc: "2.0", id, error: { code, message } }, { status, headers: CORS });
 }
 function toolText(text: string) {
   return { content: [{ type: "text", text }] };
+}
+
+/** 401 that points OAuth-capable clients (Claude, etc.) at our resource metadata. */
+function unauthorized(req: Request, id: unknown) {
+  const origin = originFromRequest(req);
+  return Response.json(
+    { jsonrpc: "2.0", id, error: { code: -32001, message: "Unauthorized — connect via OAuth or set your EcoDharma MCP token." } },
+    {
+      status: 401,
+      headers: {
+        ...CORS,
+        "www-authenticate": `Bearer resource_metadata="${origin}/.well-known/oauth-protected-resource"`,
+      },
+    },
+  );
+}
+
+export function OPTIONS() {
+  return new Response(null, { status: 204, headers: CORS });
+}
+
+// Some MCP clients probe GET before authenticating — answer with the 401 breadcrumb.
+export async function GET(req: Request) {
+  const auth = req.headers.get("authorization") || "";
+  const token = auth.startsWith("Bearer ") ? auth.slice(7) : null;
+  const userId = (await resolveAccessToken(token)) || (await resolveMcpToken(token));
+  if (!userId) return unauthorized(req, null);
+  return new Response(null, { status: 405, headers: { ...CORS, allow: "POST" } });
 }
 
 export async function POST(req: Request) {
@@ -60,8 +95,10 @@ export async function POST(req: Request) {
 
   const auth = req.headers.get("authorization") || "";
   const token = auth.startsWith("Bearer ") ? auth.slice(7) : null;
-  const userId = await resolveMcpToken(token);
-  if (!userId) return rpcError(id, -32001, "Unauthorized — set your EcoDharma MCP token as a Bearer credential.", 401);
+  // Accept either an OAuth access token (Claude Desktop / claude.ai) or a legacy
+  // hand-issued bearer token (manual MCP clients).
+  const userId = (await resolveAccessToken(token)) || (await resolveMcpToken(token));
+  if (!userId) return unauthorized(req, id);
   if (!(await isPremium(userId))) return rpcError(id, -32002, "This MCP is a premium companion.", 403);
 
   switch (method) {

@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-import { uniqueEmail, signup, onboard } from "./helpers";
+import { uniqueEmail, signup, onboard, grantPremium } from "./helpers";
 
 // The v3 headline: a comprehensive, chart-grounded reading with real chart
 // visuals and an interpretive layer — not just a recognition + trim-tab.
@@ -34,10 +34,14 @@ test("v3 reading renders all four charts, interpretive threads, portrait + gift 
 });
 
 test("re-draft regenerates the profile in place (charts intact)", async ({ page }) => {
-  await signup(page, uniqueEmail("redraft"));
+  const email = uniqueEmail("redraft");
+  await signup(page, email);
   await onboard(page);
   await expect(page.getByTestId("recognition")).toBeVisible();
 
+  // Re-draft is premium-only now — comp premium, then it appears on the profile.
+  await grantPremium(page, email);
+  await page.goto("/profile");
   await page.getByRole("button", { name: "re-draft profile" }).click();
   await expect(page.getByTestId("recognition")).toBeVisible({ timeout: 45_000 });
   await expect(page.getByTestId("chart-visuals")).toBeVisible();

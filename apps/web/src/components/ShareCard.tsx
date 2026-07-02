@@ -6,14 +6,32 @@ import { ensureShareLinkAction, disableShareLinkAction } from "@/app/actions/sha
 
 // The "Share your reading" surface on /profile. Opt-in: nothing public exists
 // until the user mints a link. Shows a live preview + copy + download + disable.
-export function ShareCard({ token }: { token: string | null }) {
+// When `collapsible`, it carries an inline hide/show toggle (persisted) so it can
+// sit high on the page to encourage sharing without crowding those who ignore it.
+const COLLAPSE_KEY = "eco-share-collapsed";
+
+export function ShareCard({ token, collapsible = false }: { token: string | null; collapsible?: boolean }) {
   const [ensureState, ensure] = useFormState(ensureShareLinkAction, null);
   const [disableState, disable] = useFormState(disableShareLinkAction, null);
   const [copied, setCopied] = useState(false);
   const [origin, setOrigin] = useState("");
+  const [open, setOpen] = useState(true);
 
   // Resolve the origin on the client so the link is correct in dev, e2e, and prod.
   useEffect(() => setOrigin(window.location.origin), []);
+  // Restore the user's last collapse choice (default: open, to invite sharing).
+  useEffect(() => {
+    if (!collapsible) return;
+    try { setOpen(localStorage.getItem(COLLAPSE_KEY) !== "1"); } catch {}
+  }, [collapsible]);
+
+  function toggle() {
+    setOpen((v) => {
+      const next = !v;
+      try { localStorage.setItem(COLLAPSE_KEY, next ? "0" : "1"); } catch {}
+      return next;
+    });
+  }
 
   const shareUrl = token ? `${origin}/r/${token}` : "";
   const img = (size: string) => `/api/og/${token}?size=${size}`;
@@ -30,9 +48,24 @@ export function ShareCard({ token }: { token: string | null }) {
 
   return (
     <div>
-      <p className="eyebrow mb-3">Share your reading</p>
+      {collapsible ? (
+        <button
+          type="button"
+          onClick={toggle}
+          aria-expanded={open}
+          className="mb-3 flex w-full items-center justify-between gap-3 text-left"
+          data-testid="share-toggle"
+        >
+          <span className="eyebrow">Share your reading</span>
+          <span className="font-mono text-2xs uppercase tracking-eyebrow text-muted hover:text-accent">
+            {open ? "hide −" : "show +"}
+          </span>
+        </button>
+      ) : (
+        <p className="eyebrow mb-3">Share your reading</p>
+      )}
 
-      {!token ? (
+      {collapsible && !open ? null : !token ? (
         <form action={ensure} className="space-y-3">
           <p className="max-w-prose text-sm text-muted">
             Create a public link with a downloadable card — your opening reflection and archetypes only,

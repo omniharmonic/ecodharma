@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getUser } from "@/lib/auth";
 import { withUser } from "@/lib/db";
+import { isPremium } from "@/lib/billing";
 import { loadFramework } from "@/lib/framework";
 import { MessageForm } from "@/components/MessageForm";
 import { ShareCard } from "@/components/ShareCard";
@@ -11,7 +12,7 @@ import { NatalWheel } from "@/components/charts/NatalWheel";
 import BodyGraph from "@/components/charts/BodyGraph";
 import GeneKeysViz from "@/components/charts/GeneKeysViz";
 import { TermPane } from "@/components/Terminal";
-import { regenerateProfileAction, saveOfferingsAction } from "../actions/profile";
+import { regenerateProfileAction } from "../actions/profile";
 import type { ChartLens, ChartThread, GiftProfile } from "@/lib/types";
 
 // re-draft's server action calls Claude — give it the full function budget.
@@ -24,19 +25,19 @@ export default async function ProfilePage() {
   const domainName = (id: string) => fw.domains.find((d) => d.id === id)?.name || id;
   const giftName = (id: string) => fw.gifts.find((g) => g.id === id)?.name || id;
 
-  const { profile, offerings, charts, birth, shareToken } = await withUser(user!.id, async (c) => {
+  const { profile, charts, birth, shareToken } = await withUser(user!.id, async (c) => {
     const p = await c.query(
       "select content_json, framework_version, voice_version, generated_at from gift_profiles where user_id=$1 order by generated_at desc limit 1",
       [user!.id],
     );
-    const o = await c.query("select skills, offerings, availability from offerings where user_id=$1", [user!.id]);
     const ch = await c.query("select modality, raw_json from charts where user_id=$1", [user!.id]);
     const bd = await c.query("select to_char(birth_date,'FMDD Mon YYYY') as birth_date, to_char(birth_time,'HH24:MI') as birth_time, unknown_time, place_label, round(lat::numeric,3) as lat, round(lng::numeric,3) as lng, tz_str from birth_data where user_id=$1", [user!.id]);
     const pr = await c.query("select share_token from profiles where id=$1", [user!.id]);
     const chartMap: Record<string, any> = {};
     for (const row of ch.rows) chartMap[row.modality] = row.raw_json;
-    return { profile: p.rows[0], offerings: o.rows[0], charts: chartMap, birth: bd.rows[0], shareToken: (pr.rows[0]?.share_token as string | null) ?? null };
+    return { profile: p.rows[0], charts: chartMap, birth: bd.rows[0], shareToken: (pr.rows[0]?.share_token as string | null) ?? null };
   });
+  const premium = await isPremium(user!.id);
 
   if (!profile) {
     return (
@@ -63,6 +64,11 @@ export default async function ProfilePage() {
         <p className="font-display text-[1.6rem] leading-[1.22] text-fg sm:text-[2.1rem] sm:leading-[1.18] md:text-[2.6rem] md:leading-[1.15]" data-testid="recognition">
           {gp.recognition}
         </p>
+      </section>
+
+      {/* SHARE — surfaced high to encourage sharing; collapsible for those who'd rather not. */}
+      <section className="mt-8 max-w-measure">
+        <ShareCard token={shareToken} collapsible />
       </section>
 
       {/* BIRTH DETAILS — verify these; a wrong city silently breaks every chart. */}
@@ -304,27 +310,26 @@ export default async function ProfilePage() {
         <Link href="/constellations" className="btn-line">weave a constellation</Link>
       </section>
 
-      {/* SHARE */}
-      <section className="mt-16 max-w-measure border-t border-rule/15 pt-8">
-        <ShareCard token={shareToken} />
-      </section>
-
-      {/* APPARATUS — offerings + re-draft + telemetry, clearly separated */}
-      <section className="mt-20 max-w-measure border-t border-rule/15 pt-8 space-y-6">
-        <div>
-          <p className="eyebrow mb-3">What you bring</p>
-          <MessageForm action={saveOfferingsAction} submitLabel="save offerings" pendingLabel="saving…" className="btn-line">
-            <div><label className="label" htmlFor="skills">Skills</label><input id="skills" name="skills" className="input" defaultValue={(offerings?.skills || []).join(", ")} /></div>
-            <div><label className="label" htmlFor="offerings">Offerings</label><input id="offerings" name="offerings" className="input" defaultValue={(offerings?.offerings || []).join(", ")} /></div>
-            <div><label className="label" htmlFor="availability">Availability</label><input id="availability" name="availability" className="input" defaultValue={offerings?.availability || ""} /></div>
-          </MessageForm>
-        </div>
+      {/* APPARATUS — re-draft (premium) + telemetry */}
+      <section className="mt-20 max-w-measure border-t border-rule/15 pt-8">
         <div className="flex flex-wrap items-center gap-4">
-          <MessageForm action={regenerateProfileAction} submitLabel="re-draft profile" pendingLabel="re-drafting…" className="btn-line" />
+          {premium ? (
+            <MessageForm action={regenerateProfileAction} submitLabel="re-draft profile" pendingLabel="re-drafting…" className="btn-line" />
+          ) : (
+            <Link href="/settings" className="btn-line" data-testid="redraft-locked">
+              Re-draft profile → premium
+            </Link>
+          )}
           <span className="font-mono text-2xs text-muted/70" data-testid="profile-version">
             framework v{profile.framework_version} · {profile.voice_version}
           </span>
         </div>
+        {!premium && (
+          <p className="mt-3 max-w-prose text-2xs text-muted/70">
+            Your first reading is yours to keep. Re-drafting runs the full AI interpretation again —
+            available to premium members.
+          </p>
+        )}
       </section>
     </PageTransition>
   );
