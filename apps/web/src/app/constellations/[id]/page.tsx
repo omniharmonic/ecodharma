@@ -5,6 +5,7 @@ import { withUser } from "@/lib/db";
 import { MessageForm } from "@/components/MessageForm";
 import { DymaxionMap } from "@/components/DymaxionMap";
 import { ConstellationRelational } from "@/components/ConstellationRelational";
+import { InviteLink } from "@/components/InviteLink";
 import { generateReadAction, inviteMemberAction, renameConstellationAction } from "../../actions/constellation";
 import type { ConstellationRead } from "@/lib/types";
 
@@ -83,6 +84,10 @@ export default async function ConstellationDetail({ params }: { params: { id: st
             <input type="hidden" name="constellation_id" value={id} />
             <input name="email" type="email" required className="input" placeholder="their@email.com" />
           </MessageForm>
+
+          <div className="mt-8 border-t border-rule/15 pt-6">
+            <InviteLink constellationId={id} />
+          </div>
         </section>
       )}
 

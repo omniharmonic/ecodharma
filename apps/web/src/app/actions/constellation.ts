@@ -9,7 +9,25 @@ import { generateConstellationRead, type Member } from "@/lib/interpret-constell
 import { assertWithinQuota, PaywallError } from "@/lib/entitlements";
 import { claudeMode } from "@/lib/config";
 import { frameworkVersion } from "@/lib/framework";
+import { createInvite } from "@/lib/invites";
+import { sendEmail, emailEnabled } from "@/lib/email";
 import type { GiftProfile } from "@/lib/types";
+
+const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://ecodharma.vercel.app";
+
+async function ownsConstellation(userId: string, constellationId: number): Promise<boolean> {
+  return withUser(userId, async (c) => {
+    const { rows } = await c.query("select 1 from constellations where id=$1 and owner_id=$2", [constellationId, userId]);
+    return rows.length > 0;
+  });
+}
+
+async function constellationName(userId: string, constellationId: number): Promise<string> {
+  return withUser(userId, async (c) => {
+    const { rows } = await c.query("select name from constellations where id=$1", [constellationId]);
+    return (rows[0]?.name as string) || "a constellation";
+  });
+}
 
 export async function createConstellationAction(_prev: unknown, formData: FormData) {
   const user = await getUser();
@@ -75,28 +93,61 @@ export async function inviteMemberAction(_prev: unknown, formData: FormData) {
   if (!email.success) return { error: "Enter a valid email." };
 
   // Must own the constellation.
-  const owns = await withUser(user!.id, async (c) => {
-    const { rows } = await c.query(
-      "select 1 from constellations where id=$1 and owner_id=$2",
-      [constellationId, user!.id],
-    );
-    return rows.length > 0;
-  });
-  if (!owns) return { error: "Only the owner can invite." };
+  if (!(await ownsConstellation(user!.id, constellationId))) return { error: "Only the owner can invite." };
 
   const invitee = await findUserByEmail(email.data);
-  if (!invitee) return { error: "No EcoDharma member with that email yet. Invite them to sign up first." };
-  if (invitee.id === user!.id) return { error: "You're already in your own constellation." };
+  if (invitee?.id === user!.id) return { error: "You're already in your own constellation." };
+  const csName = await constellationName(user!.id, constellationId);
 
-  // Pending membership (consent_id null). The invitee must actively opt in.
-  await withService((c) =>
-    c.query(
-      "insert into constellation_members (constellation_id, user_id, role) values ($1,$2,'member') on conflict do nothing",
-      [constellationId, invitee.id],
-    ),
-  );
+  if (invitee) {
+    // Existing member → pending membership (consent_id null); they must opt in.
+    await withService((c) =>
+      c.query(
+        "insert into constellation_members (constellation_id, user_id, role) values ($1,$2,'member') on conflict do nothing",
+        [constellationId, invitee.id],
+      ),
+    );
+    if (emailEnabled()) {
+      await sendEmail({
+        to: email.data,
+        subject: `You're invited to "${csName}" on EcoDharma`,
+        text: `You've been invited to the constellation "${csName}". Open ${SITE}/constellations to consent and weave your gifts in.`,
+      });
+    }
+    revalidatePath(`/constellations/${constellationId}`);
+    return { ok: "Invitation sent. They'll see it and choose whether to consent." };
+  }
+
+  // Not a member yet → mint a join link and email a sign-up-then-join invite.
+  const token = await createInvite(constellationId, user!.id, 1);
+  const link = `${SITE}/invite/${token}`;
+  const emailed = emailEnabled()
+    ? await sendEmail({
+        to: email.data,
+        subject: `You're invited to "${csName}" on EcoDharma`,
+        text: `You've been invited to the constellation "${csName}". Create your free reading at ${SITE}/signup, then open ${link} to join.`,
+      })
+    : false;
   revalidatePath(`/constellations/${constellationId}`);
-  return { ok: "Invitation sent. They'll see it and choose whether to consent." };
+  return emailed
+    ? { ok: "Invitation emailed — they can sign up and join." }
+    : { ok: `Invite link created — share it with them: ${link}` };
+}
+
+/** Owner: mint a shareable join link (optionally capped by number of uses). */
+export async function createInviteLinkAction(
+  _prev: unknown,
+  formData: FormData,
+): Promise<{ error?: string; ok?: string; token?: string }> {
+  const user = await getUser();
+  if (!user) redirect("/login");
+  const constellationId = Number(formData.get("constellation_id"));
+  if (!(await ownsConstellation(user!.id, constellationId))) return { error: "Only the owner can create invite links." };
+  const raw = String(formData.get("max_uses") || "").trim();
+  const maxUses = raw ? Math.max(1, Math.min(100, parseInt(raw, 10) || 1)) : null;
+  const token = await createInvite(constellationId, user!.id, maxUses);
+  revalidatePath(`/constellations/${constellationId}`);
+  return { ok: "Invite link ready.", token };
 }
 
 export async function respondInviteAction(_prev: unknown, formData: FormData) {
