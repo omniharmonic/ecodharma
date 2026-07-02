@@ -7,6 +7,7 @@ import { loadVoice } from "./voice";
 import { claudeMode } from "./config";
 import { isPremium } from "./billing";
 import { clip } from "./interpret-fixture";
+import { peopleContextFor } from "./bot-people";
 import type { GiftProfile } from "./types";
 
 // The reflection bot's platform-agnostic core. Transports (Telegram now, Slack
@@ -115,7 +116,7 @@ async function loadReading(userId: string): Promise<Reading | null> {
 // --- reflection ---------------------------------------------------------------
 
 const REFLECT_DIRECTIVE =
-  "You are a reflective companion inside EcoDharma. Reflect this specific person back to themselves using THEIR reading below — never generic advice, never a verdict, never a diagnosis. Be warm, brief (2–4 short paragraphs max), and specific to their gifts. Ask at most one good question. Ground everything in who they are; the framework is invisible scaffolding.";
+  "You are a reflective companion inside EcoDharma. Reflect this specific person back to themselves using THEIR reading below — never generic advice, never a verdict, never a diagnosis. Be warm, brief (2–4 short paragraphs max), and specific to their gifts. Ask at most one good question. Ground everything in who they are; the framework is invisible scaffolding. If they ask about relating to a specific person, and that person appears in their constellation kin below, reflect on the relationship through BOTH people's gifts and the relational read — help them meet the other person, never label or diagnose that person.";
 
 function readingContext(r: Reading): string {
   const arche = r.archetypes.map((a) => `${a.name} — ${clip(a.how, 160)}`).join("; ");
@@ -145,17 +146,19 @@ async function generateReflection(
   r: Reading,
   history: { role: "user" | "assistant"; content: string }[],
   text: string,
+  peopleContext = "",
 ): Promise<string> {
   if (!(await claudeMode())) return fixtureReflection(r, text);
   try {
     const anthropic = new Anthropic();
+    const context = peopleContext ? `${readingContext(r)}\n\n${peopleContext}` : readingContext(r);
     const msg = await anthropic.messages.create(
       {
         model: BOT_MODEL,
         max_tokens: 700,
         system: [
           { type: "text", text: loadVoice(), cache_control: { type: "ephemeral" } },
-          { type: "text", text: `${REFLECT_DIRECTIVE}\n\n${readingContext(r)}`, cache_control: { type: "ephemeral" } },
+          { type: "text", text: `${REFLECT_DIRECTIVE}\n\n${context}`, cache_control: { type: "ephemeral" } },
         ] as any,
         messages: [...history, { role: "user" as const, content: text }],
       },
@@ -195,7 +198,14 @@ function extractCode(text: string): string | null {
 export async function reflectForUser(userId: string, text: string): Promise<string> {
   const reading = await loadReading(userId);
   if (!reading) return "No reading found yet — complete one at ecodharma first.";
-  return generateReflection(reading, [], text);
+  const people = await peopleContextFor(userId, reading.profile);
+  return generateReflection(reading, [], text, people);
+}
+
+/** The people a user is woven with (for the MCP `my_constellations` tool), or "". */
+export async function constellationKinForUser(userId: string): Promise<string> {
+  const reading = await loadReading(userId);
+  return peopleContextFor(userId, reading?.profile ?? null);
 }
 
 /** A compact, safe summary of a user's reading (for the MCP `my_reading` tool). */
@@ -243,7 +253,8 @@ export async function handleBotMessage(input: {
   }
 
   const history = await recentHistory(input.platform, input.platformUserId);
-  const reply = await generateReflection(reading, history, text);
+  const people = await peopleContextFor(linked, reading.profile);
+  const reply = await generateReflection(reading, history, text, people);
   await recordMessage(input.platform, input.platformUserId, "user", text);
   await recordMessage(input.platform, input.platformUserId, "assistant", reply);
   return { kind: "reflection", reply };

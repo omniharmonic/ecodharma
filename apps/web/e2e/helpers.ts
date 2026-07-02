@@ -31,10 +31,10 @@ export async function logout(page: Page) {
 /** Complete onboarding (assumes we're already on /onboarding) → lands on /profile. */
 export async function onboard(
   page: Page,
-  opts: { date?: string; time?: string; place?: string; need?: string } = {},
+  opts: { date?: string; time?: string; place?: string; need?: string; name?: string } = {},
 ) {
-  const { date = "1990-06-15", time = "06:30", place = "Berlin, Germany" } = opts;
-  await page.getByLabel("First name").fill("Ren");
+  const { date = "1990-06-15", time = "06:30", place = "Berlin, Germany", name = "Ren" } = opts;
+  await page.getByLabel("First name").fill(name);
   await page.getByLabel("Birth date").fill(date);
   await page.getByLabel("Birth time", { exact: true }).fill(time);
   await page.getByLabel("Birth place").fill(place);

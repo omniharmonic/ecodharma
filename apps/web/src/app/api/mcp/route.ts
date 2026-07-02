@@ -1,7 +1,7 @@
 import { resolveMcpToken } from "@/lib/mcp-auth";
 import { resolveAccessToken, originFromRequest } from "@/lib/oauth";
 import { isPremium } from "@/lib/billing";
-import { reflectForUser, readingSummaryForUser } from "@/lib/bot";
+import { reflectForUser, readingSummaryForUser, constellationKinForUser } from "@/lib/bot";
 import { loadFramework } from "@/lib/framework";
 
 // A minimal hosted MCP endpoint (JSON-RPC 2.0 over HTTP POST). A premium member
@@ -21,12 +21,17 @@ const TOOLS = [
   },
   {
     name: "reflect",
-    description: "Reflect a thought, question, or situation back through the member's own gifts. Returns a warm, specific reflection — never a verdict.",
+    description: "Reflect a thought, question, or situation back through the member's own gifts. Constellation-aware: if they name a person they're woven with (e.g. \"I'm in conflict with Josie — how do I relate to her better?\"), it draws on that person's gifts and the Human Design relational read. Returns a warm, specific reflection — never a verdict.",
     inputSchema: {
       type: "object",
-      properties: { message: { type: "string", description: "What's alive for you, or what you're wrestling with." } },
+      properties: { message: { type: "string", description: "What's alive for you, or who you're trying to relate to." } },
       required: ["message"],
     },
+  },
+  {
+    name: "my_constellations",
+    description: "The people this member is woven with in their EcoDharma constellations — their kin's gifts and the relational (Human Design synastry) read beneath each connection. Consent-gated.",
+    inputSchema: { type: "object", properties: {} },
   },
   {
     name: "get_framework",
@@ -124,6 +129,10 @@ export async function POST(req: Request) {
           const message = String(args.message || "").trim();
           if (!message) return rpcResult(id, toolText("Tell me what's alive for you and I'll reflect it back."));
           return rpcResult(id, toolText(await reflectForUser(userId, message)));
+        }
+        if (name === "my_constellations") {
+          const kin = await constellationKinForUser(userId);
+          return rpcResult(id, toolText(kin || "You're not woven with anyone yet — weave a constellation at ecodharma to reflect on your relationships."));
         }
         if (name === "get_framework") {
           const fw = loadFramework();

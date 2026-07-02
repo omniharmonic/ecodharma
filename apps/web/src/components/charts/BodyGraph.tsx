@@ -292,7 +292,7 @@ export function BodyGraph({
         height={(size * VIEW_H) / VIEW_W}
         role="img"
         aria-label={ariaLabel}
-        style={{ display: "block", maxWidth: "100%", height: "auto" }}
+        style={{ display: "block", maxWidth: "100%", height: "auto", marginInline: "auto" }}
       >
         {/* registration ticks (drafting-table corners) */}
         <g stroke="rgb(var(--rule) / 0.4)" strokeWidth="1" fill="none">
