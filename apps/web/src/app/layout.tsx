@@ -36,13 +36,15 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#EDEEE7",
+  themeColor: "#0A272B",
   width: "device-width",
   initialScale: 1,
 };
 
-// Set the printing before paint (no flash).
-const modeInit = `(function(){try{var m=localStorage.getItem('eco-mode');if(m==='blueprint')document.documentElement.classList.add('mode-blueprint');}catch(e){}})();`;
+// Blueprint (dark) is the default; only users who explicitly chose Newsprint get
+// light. The class is server-rendered (below) so it's dark even before JS; this
+// pre-paint script removes it for the Newsprint opt-outs (no flash).
+const modeInit = `(function(){try{if(localStorage.getItem('eco-mode')==='newsprint')document.documentElement.classList.remove('mode-blueprint');}catch(e){}})();`;
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const user = await getUser();
@@ -51,7 +53,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${fraunces.variable} ${archivo.variable} ${plexMono.variable}`}
+      className={`mode-blueprint ${fraunces.variable} ${archivo.variable} ${plexMono.variable}`}
     >
       <head>
         <script dangerouslySetInnerHTML={{ __html: modeInit }} />
