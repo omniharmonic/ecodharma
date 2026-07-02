@@ -6,6 +6,7 @@ import { isPremium } from "@/lib/billing";
 import { loadFramework } from "@/lib/framework";
 import { MessageForm } from "@/components/MessageForm";
 import { ShareCard } from "@/components/ShareCard";
+import { PremiumInvite } from "@/components/PremiumInvite";
 import { ResonanceButtons } from "@/components/ResonanceButtons";
 import { PageTransition, SectionReveal } from "@/components/PageTransition";
 import { NatalWheel } from "@/components/charts/NatalWheel";
@@ -309,6 +310,9 @@ export default async function ProfilePage() {
       <section className="mt-16 flex max-w-measure flex-wrap gap-4">
         <Link href="/constellations" className="btn-line">weave a constellation</Link>
       </section>
+
+      {/* MEMBERSHIP — a quiet invitation to keep reflecting (or a pointer, if a member) */}
+      <PremiumInvite premium={premium} context="reading" />
 
       {/* APPARATUS — re-draft (premium) + telemetry */}
       <section className="mt-20 max-w-measure border-t border-rule/15 pt-8">

@@ -4,7 +4,8 @@ import { uniqueEmail, signupAndRead } from "./helpers";
 test("social share cards: mint a public link, unfurl it, then disable it", async ({ page, browser }) => {
   await signupAndRead(page, uniqueEmail("share"));
 
-  // Mint the share link from the profile.
+  // The share section is collapsed by default — expand it, then mint the link.
+  await page.getByTestId("share-toggle").click();
   await page.getByRole("button", { name: "Create a share card" }).click();
 
   // The preview image + copyable link appear.

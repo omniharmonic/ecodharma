@@ -78,6 +78,70 @@ export default async function Home() {
           </p>
         )}
       </section>
+
+      {/* HOW IT WORKS — the free core, and the membership that deepens it */}
+      <div className="mt-28"><AsciiDivider /></div>
+      <section className="mt-12">
+        <p className="eyebrow mb-4">How it works</p>
+        <p className="max-w-measure font-sans text-lg leading-relaxed text-fg">
+          Take your reading for free. It stays yours. Membership is for those who want the reading to
+          become an ongoing companion — something you can think with, not just read once.
+        </p>
+
+        <div className="mt-10 grid gap-px border border-rule/15 bg-rule/15 md:grid-cols-2">
+          {/* FREE */}
+          <div className="bg-bg p-7">
+            <div className="flex items-baseline justify-between">
+              <h3 className="font-display text-fig text-fg">The reading</h3>
+              <span className="font-mono text-2xs uppercase tracking-eyebrow text-muted">Free, always</span>
+            </div>
+            <ul className="mt-5 space-y-3 font-sans text-sm text-muted">
+              {[
+                "Your charts across four traditions — Western & Vedic astrology, Human Design, Gene Keys.",
+                "A deep reading of them, lens by lens, mapped to your part in the Great Turning.",
+                "Weave constellations with others — no one is ever included without their active consent.",
+                "A beautiful, shareable card of your reading.",
+              ].map((t, i) => (
+                <li key={i} className="flex gap-3">
+                  <span className="mt-1 text-live" aria-hidden>·</span>
+                  <span>{t}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* MEMBERSHIP */}
+          <div className="bg-bg p-7">
+            <div className="flex items-baseline justify-between">
+              <h3 className="font-display text-fig text-accent">Membership</h3>
+              <span className="font-mono text-2xs uppercase tracking-eyebrow text-accent">$15 / month</span>
+            </div>
+            <ul className="mt-5 space-y-3 font-sans text-sm text-muted">
+              {[
+                "Reflect with your profile any time — over Telegram, or your own AI tool (Claude and others).",
+                "Relational reflection across your constellations — “how do I meet this person well right now?”",
+                "A weekly dharma nudge, tuned to your gifts and the work that is yours.",
+                "Re-draft your reading whenever you’ve grown into a new season.",
+              ].map((t, i) => (
+                <li key={i} className="flex gap-3">
+                  <span className="mt-1 text-accent" aria-hidden>·</span>
+                  <span>{t}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
+          <Link href={user ? "/onboarding" : "/signup"} className="btn-solar">
+            {user ? "Compute your reading" : "Begin — it’s free"}
+          </Link>
+          <Link href="/settings" className="btn-line">See membership</Link>
+        </div>
+        <p className="mt-6 font-mono text-2xs text-muted/70">
+          Your first reading and your four charts are yours to keep, free, forever. Membership sustains the work.
+        </p>
+      </section>
     </div>
   );
 }

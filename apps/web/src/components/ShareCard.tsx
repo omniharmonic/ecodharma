@@ -6,32 +6,21 @@ import { ensureShareLinkAction, disableShareLinkAction } from "@/app/actions/sha
 
 // The "Share your reading" surface on /profile. Opt-in: nothing public exists
 // until the user mints a link. Shows a live preview + copy + download + disable.
-// When `collapsible`, it carries an inline hide/show toggle (persisted) so it can
-// sit high on the page to encourage sharing without crowding those who ignore it.
-const COLLAPSE_KEY = "eco-share-collapsed";
-
+// When `collapsible`, it carries an inline hide/show toggle. It's COLLAPSED by
+// default so the card doesn't dominate the profile on every visit — it opens on
+// tap and stays open while you work with it (server-action revalidation preserves
+// this client state, so a freshly-minted card stays visible).
 export function ShareCard({ token, collapsible = false }: { token: string | null; collapsible?: boolean }) {
   const [ensureState, ensure] = useFormState(ensureShareLinkAction, null);
   const [disableState, disable] = useFormState(disableShareLinkAction, null);
   const [copied, setCopied] = useState(false);
   const [origin, setOrigin] = useState("");
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(!collapsible);
 
   // Resolve the origin on the client so the link is correct in dev, e2e, and prod.
   useEffect(() => setOrigin(window.location.origin), []);
-  // Restore the user's last collapse choice (default: open, to invite sharing).
-  useEffect(() => {
-    if (!collapsible) return;
-    try { setOpen(localStorage.getItem(COLLAPSE_KEY) !== "1"); } catch {}
-  }, [collapsible]);
 
-  function toggle() {
-    setOpen((v) => {
-      const next = !v;
-      try { localStorage.setItem(COLLAPSE_KEY, next ? "0" : "1"); } catch {}
-      return next;
-    });
-  }
+  const toggle = () => setOpen((v) => !v);
 
   const shareUrl = token ? `${origin}/r/${token}` : "";
   const img = (size: string) => `/api/og/${token}?size=${size}`;

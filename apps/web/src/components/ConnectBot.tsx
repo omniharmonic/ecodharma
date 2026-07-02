@@ -12,8 +12,16 @@ export function ConnectBot() {
     <div>
       <p className="eyebrow mb-2">Reflect via Telegram</p>
       <p className="mb-3 max-w-prose text-sm text-muted">
-        Talk with your profile any time. Generate a one-time code, then send it to the EcoDharma bot
-        (or tap the link) to connect this account.
+        Talk with your profile any time, right from Telegram. To connect:
+      </p>
+      <ol className="mb-4 max-w-prose list-decimal space-y-1 pl-5 text-sm text-muted">
+        <li>Generate a one-time code below.</li>
+        <li>Tap <span className="text-fg">Open in Telegram</span> (or message the bot and send <span className="font-mono">/start &lt;code&gt;</span>).</li>
+        <li>Then just write to it — like texting a friend who knows your reading.</li>
+      </ol>
+      <p className="mb-3 max-w-prose text-sm text-muted">
+        Try: <span className="text-fg">“I feel scattered about my work — what does my reading say?”</span> or,
+        about someone in a constellation, <span className="text-fg">“I’m in conflict with Maya — how can I relate to her better?”</span>
       </p>
       <form action={act}>
         <SubmitButton className="btn-line" pendingLabel="Generating…">Connect Telegram</SubmitButton>

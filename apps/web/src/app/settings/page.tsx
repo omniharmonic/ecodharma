@@ -52,7 +52,10 @@ export default async function SettingsPage() {
         {billing.premium ? (
           <div className="space-y-3">
             <p className="max-w-prose text-sm text-muted">
-              You have the reflection bot and weekly dharma nudges. Thank you for sustaining this work.
+              Your companion is live. Reflect with your profile any time — over Telegram or your own AI
+              tool — including relational questions about the people you&rsquo;re woven with (“how do I
+              relate to someone in my constellation?”), plus a weekly dharma nudge. Set each up below.
+              Thank you for sustaining this work.
             </p>
             {billing.stripeEnabled && billing.stripeCustomerId && (
               <MessageForm action={openPortalAction} submitLabel="Manage billing" pendingLabel="Opening…" className="btn-line" />
@@ -87,8 +90,10 @@ export default async function SettingsPage() {
         ) : (
           <div className="space-y-3">
             <p className="max-w-prose text-sm text-muted">
-              Premium unlocks continuous reflection — talk to your profile any time via Telegram —
-              and a weekly dharma nudge that plays to your strengths. Your initial reading stays free.
+              Membership turns your reading into an ongoing companion: reflect with your profile any
+              time over Telegram or your own AI tool, ask how to relate to the people you&rsquo;re woven
+              with, receive a weekly dharma nudge tuned to your gifts, and re-draft your reading as you
+              grow. Your initial reading and charts stay free, always.
             </p>
             {billing.stripeEnabled ? (
               <MessageForm action={startCheckoutAction} submitLabel="Go premium" pendingLabel="Starting…" className="btn-solar" />

@@ -2,7 +2,9 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getUser } from "@/lib/auth";
 import { withUser } from "@/lib/db";
+import { isPremium } from "@/lib/billing";
 import { MessageForm } from "@/components/MessageForm";
+import { PremiumInvite } from "@/components/PremiumInvite";
 import {
   createConstellationAction,
   respondInviteAction,
@@ -36,6 +38,7 @@ export default async function ConstellationsPage() {
   const owned = rows.filter((r) => r.is_owner);
   const joined = rows.filter((r) => !r.is_owner && r.consent_id);
   const pending = rows.filter((r) => !r.is_owner && !r.consent_id);
+  const premium = await isPremium(user!.id);
 
   return (
     <div className="max-w-measure pt-10">
@@ -112,6 +115,9 @@ export default async function ConstellationsPage() {
           </div>
         </section>
       )}
+
+      {/* MEMBERSHIP — quiet nudge toward relational reflection (or a pointer, if a member) */}
+      <PremiumInvite premium={premium} context="constellation" />
     </div>
   );
 }

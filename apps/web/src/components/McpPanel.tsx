@@ -24,6 +24,11 @@ export function McpPanel({ hasToken }: { hasToken: boolean }) {
         <span className="kv">endpoint:</span>
         <code className="border border-rule/30 px-2 py-1 font-mono text-xs text-fg">{endpoint}</code>
       </div>
+      <ol className="mb-3 max-w-prose list-decimal space-y-1 pl-5 text-sm text-muted">
+        <li>In Claude (or another client), add a <span className="text-fg">custom connector</span> and paste the endpoint above.</li>
+        <li>Approve the one-tap sign-in screen when it appears.</li>
+        <li>Then ask it to <span className="font-mono">reflect</span> — e.g. <span className="text-fg">“Reflect with my EcoDharma reading: where should I put my energy this week?”</span> or <span className="text-fg">“Using my constellations, how do I relate to Maya?”</span></li>
+      </ol>
       <details className="mb-3 max-w-prose text-sm text-muted">
         <summary className="cursor-pointer font-mono text-2xs uppercase tracking-eyebrow text-muted hover:text-accent">
           Using a client without sign-in? Issue a bearer token
