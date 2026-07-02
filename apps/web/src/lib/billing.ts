@@ -191,6 +191,13 @@ export async function handleWebhook(rawBody: string, signature: string | null): 
 }
 
 function periodEndOf(sub: Stripe.Subscription): Date | null {
-  const secs = (sub as unknown as { current_period_end?: number }).current_period_end;
-  return secs ? new Date(secs * 1000) : null;
+  // `current_period_end` was top-level on older API versions and moved onto the
+  // subscription items in 2025 versions — check both, take the latest item end.
+  const top = (sub as unknown as { current_period_end?: number }).current_period_end;
+  if (top) return new Date(top * 1000);
+  const itemEnds = (sub.items?.data || [])
+    .map((i) => (i as unknown as { current_period_end?: number }).current_period_end)
+    .filter((n): n is number => typeof n === "number");
+  if (itemEnds.length) return new Date(Math.max(...itemEnds) * 1000);
+  return null;
 }
