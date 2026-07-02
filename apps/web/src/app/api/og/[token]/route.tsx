@@ -58,9 +58,11 @@ export async function GET(req: Request, { params }: { params: { token: string } 
   const { w, h } = SIZES[size] ?? SIZES.og;
   const tall = h >= w; // square / story
 
-  // Per-format tuning so nothing overflows the wide (630h) card.
-  const MAXCHARS: Record<SizeKey, number> = { og: 150, square: 240, story: 320 };
-  const TITLE: Record<SizeKey, number> = { og: 48, square: 70, story: 76 };
+  // Per-format tuning so nothing overflows any card (square is the tightest:
+  // 1080² with header + footer eating the vertical budget).
+  const MAXCHARS: Record<SizeKey, number> = { og: 150, square: 170, story: 320 };
+  const TITLE: Record<SizeKey, number> = { og: 48, square: 52, story: 76 };
+  const PILL: Record<SizeKey, number> = { og: 26, square: 24, story: 30 };
   const recognition = clamp(card.recognition || "A field manual for the work that is only yours.", MAXCHARS[size] ?? 150);
   const archetypes = card.archetypes.length ? card.archetypes : ["Your gifts"];
 
@@ -109,9 +111,9 @@ export async function GET(req: Request, { params }: { params: { token: string } 
         </div>
 
         {/* header eyebrow */}
-        <div style={{ display: "flex", alignItems: "center", gap: 16, color: CYAN, letterSpacing: 6, fontSize: eyebrowSize, textTransform: "uppercase" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 16, color: CYAN, letterSpacing: 4, fontSize: eyebrowSize, textTransform: "uppercase" }}>
           <div style={{ width: 46, height: 2, backgroundColor: SOLAR, display: "flex" }} />
-          <span>EcoDharma · Field manual</span>
+          <span>EcoDharma · The work that is only yours</span>
         </div>
 
         {/* body: recognition line */}
@@ -142,7 +144,7 @@ export async function GET(req: Request, { params }: { params: { token: string } 
                   padding: "12px 22px",
                   border: `1px solid rgba(232,161,58,0.55)`,
                   color: SOLAR,
-                  fontSize: tall ? 30 : 26,
+                  fontSize: PILL[size] ?? 26,
                   textTransform: "uppercase",
                   letterSpacing: 2,
                 }}
@@ -154,14 +156,14 @@ export async function GET(req: Request, { params }: { params: { token: string } 
           </div>
         </div>
 
-        {/* footer */}
+        {/* footer — CTA on the left so its arrow points at the URL on the right */}
         <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between" }}>
-          <div style={{ display: "flex", fontFamily: "Fraunces", color: CHALK, fontSize: tall ? 40 : 34, letterSpacing: -0.5 }}>
-            ecodharma
-          </div>
           <div style={{ display: "flex", alignItems: "center", gap: 14, color: SOLAR, fontSize: tall ? 28 : 24, letterSpacing: 3, textTransform: "uppercase" }}>
             <span>Get your free reading</span>
             <span style={{ display: "flex", color: PHOSPHOR }}>→</span>
+          </div>
+          <div style={{ display: "flex", fontFamily: "Fraunces", color: CHALK, fontSize: tall ? 40 : 34, letterSpacing: -0.5 }}>
+            ecodharma.xyz
           </div>
         </div>
       </div>
