@@ -4,6 +4,7 @@ import { getUser } from "@/lib/auth";
 import { withUser } from "@/lib/db";
 import { loadFramework } from "@/lib/framework";
 import { MessageForm } from "@/components/MessageForm";
+import { ShareCard } from "@/components/ShareCard";
 import { ResonanceButtons } from "@/components/ResonanceButtons";
 import { PageTransition, SectionReveal } from "@/components/PageTransition";
 import { NatalWheel } from "@/components/charts/NatalWheel";
@@ -23,7 +24,7 @@ export default async function ProfilePage() {
   const domainName = (id: string) => fw.domains.find((d) => d.id === id)?.name || id;
   const giftName = (id: string) => fw.gifts.find((g) => g.id === id)?.name || id;
 
-  const { profile, offerings, charts, birth } = await withUser(user!.id, async (c) => {
+  const { profile, offerings, charts, birth, shareToken } = await withUser(user!.id, async (c) => {
     const p = await c.query(
       "select content_json, framework_version, voice_version, generated_at from gift_profiles where user_id=$1 order by generated_at desc limit 1",
       [user!.id],
@@ -31,9 +32,10 @@ export default async function ProfilePage() {
     const o = await c.query("select skills, offerings, availability from offerings where user_id=$1", [user!.id]);
     const ch = await c.query("select modality, raw_json from charts where user_id=$1", [user!.id]);
     const bd = await c.query("select to_char(birth_date,'FMDD Mon YYYY') as birth_date, to_char(birth_time,'HH24:MI') as birth_time, unknown_time, place_label, round(lat::numeric,3) as lat, round(lng::numeric,3) as lng, tz_str from birth_data where user_id=$1", [user!.id]);
+    const pr = await c.query("select share_token from profiles where id=$1", [user!.id]);
     const chartMap: Record<string, any> = {};
     for (const row of ch.rows) chartMap[row.modality] = row.raw_json;
-    return { profile: p.rows[0], offerings: o.rows[0], charts: chartMap, birth: bd.rows[0] };
+    return { profile: p.rows[0], offerings: o.rows[0], charts: chartMap, birth: bd.rows[0], shareToken: (pr.rows[0]?.share_token as string | null) ?? null };
   });
 
   if (!profile) {
@@ -300,6 +302,11 @@ export default async function ProfilePage() {
       {/* FIND YOUR PEOPLE */}
       <section className="mt-16 flex max-w-measure flex-wrap gap-4">
         <Link href="/constellations" className="btn-line">weave a constellation</Link>
+      </section>
+
+      {/* SHARE */}
+      <section className="mt-16 max-w-measure border-t border-rule/15 pt-8">
+        <ShareCard token={shareToken} />
       </section>
 
       {/* APPARATUS — offerings + re-draft + telemetry, clearly separated */}

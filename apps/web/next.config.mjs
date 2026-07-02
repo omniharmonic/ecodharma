@@ -10,6 +10,8 @@ const nextConfig = {
     // bundle — otherwise production silently falls back to the built-in stub.
     outputFileTracingIncludes: {
       "/**": ["./framework/**/*"],
+      // The OG share-card route reads these TTFs off disk at runtime.
+      "/api/og/**": ["./public/fonts/**/*"],
     },
   },
 };
