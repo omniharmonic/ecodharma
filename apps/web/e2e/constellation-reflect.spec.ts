@@ -59,6 +59,19 @@ test("MCP my_constellations surfaces consented kin + relational read", async ({ 
   expect(after).toContain("Josie");
   expect(after).toMatch(/gifts:/i);
 
+  // The reverse direction — a MEMBER can now see the OWNER too (previously the
+  // owner never consented, so members saw them as "awaiting consent" / nothing).
+  await grantPremium(josie, josieEmail);
+  await josie.goto("/settings");
+  await josie.getByRole("button", { name: "Generate MCP token" }).click();
+  const josieToken = (await josie.getByTestId("mcp-token").textContent())?.trim();
+  const josieCall = await josie.request.post("/api/mcp", {
+    headers: { authorization: `Bearer ${josieToken}` },
+    data: { jsonrpc: "2.0", id: 1, method: "tools/call", params: { name: "my_constellations", arguments: {} } },
+  });
+  const josieText = String((await josieCall.json()).result?.content?.[0]?.text || "");
+  expect(josieText).toContain("Maya");
+
   await mayaCtx.close();
   await josieCtx.close();
 });

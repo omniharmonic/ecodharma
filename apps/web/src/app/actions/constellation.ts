@@ -51,13 +51,23 @@ export async function createConstellationAction(_prev: unknown, formData: FormDa
     );
     return rows[0].id as number;
   });
-  // Owner is implicitly a member; self-profile reads need no consent.
-  await withService((c) =>
-    c.query(
-      "insert into constellation_members (constellation_id, user_id, role) values ($1,$2,'owner') on conflict do nothing",
-      [id, user!.id],
-    ),
-  );
+  // Owner is a consented participant by creating + inviting: write their consent
+  // row and mark their membership consented, so members can see them (and each
+  // other) — not just the owner seeing everyone. Revocable like any consent.
+  await withService(async (c) => {
+    const { rows } = await c.query(
+      `insert into consents (granter_id, grantee_id, constellation_id, scope)
+       values ($1, null, $2, 'constellation') returning id`,
+      [user!.id, id],
+    );
+    const consentId = rows[0].id as number;
+    await c.query(
+      `insert into constellation_members (constellation_id, user_id, role, consent_id)
+       values ($1,$2,'owner',$3)
+       on conflict (constellation_id, user_id) do update set consent_id = excluded.consent_id`,
+      [id, user!.id, consentId],
+    );
+  });
   redirect(`/constellations/${id}`);
 }
 
