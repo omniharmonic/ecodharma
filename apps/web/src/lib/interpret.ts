@@ -1,6 +1,6 @@
 import "server-only";
 import Anthropic from "@anthropic-ai/sdk";
-import type { Charts, CoreProfile, Framework, Gift, GiftProfile, Ikigai, Pairing } from "./types";
+import type { Charts, CoreProfile, Framework, Gift, GiftProfile, Ikigai, LensReading, Pairing } from "./types";
 import { loadFramework } from "./framework";
 import { loadVoice, VOICE_VERSION } from "./voice";
 import { useClaude } from "./llm";
@@ -194,7 +194,10 @@ async function claudeCore(framework: Framework, charts: Charts, ikigai: Ikigai):
   );
   const block = msg.content.find((b) => b.type === "tool_use") as any;
   const out = block?.input as CoreProfile;
-  if (!out?.recognition || !out?.portrait || !out?.pairings?.length || !out?.chart_threads?.length) {
+  // Only the heart of the reading is irreplaceable — if recognition or portrait
+  // is missing, discard and fall back to the full fixture. Everything else is
+  // backfilled section-by-section (see repairCore), so we keep Claude's richness.
+  if (!out?.recognition?.trim() || !out?.portrait?.trim()) {
     throw new Error(`incomplete Claude profile (stop_reason=${msg.stop_reason})`);
   }
   // normalize note (the viz reads `note`) from great_turning_link, and back-compat fields
@@ -231,6 +234,58 @@ function dedupePairings(framework: Framework, pairings: Pairing[]): Pairing[] {
   return out;
 }
 
+// Guarantee a COMPLETE reading: backfill any missing or thin section from the
+// deterministic fixture (grounded in the SAME charts + framework), so we never
+// deliver a reading with content omitted. The fixture is computed lazily — only
+// touched if there's an actual gap — so a full Claude reading pays nothing.
+// Returns the names of the sections that were repaired (for logging/telemetry).
+function repairCore(
+  core: CoreProfile,
+  framework: Framework,
+  charts: Charts,
+  ikigai: Ikigai,
+): { core: CoreProfile; repaired: string[] } {
+  let fx: CoreProfile | null = null;
+  const fixture = () => (fx ??= fixtureCore(framework, charts, ikigai));
+  const repaired: string[] = [];
+  const out: CoreProfile = { ...core };
+  const thin = (arr: unknown, min = 1) => !Array.isArray(arr) || arr.length < min;
+
+  // The flagship depth: guarantee three SUBSTANTIVE lenses (astrology, human
+  // design, gene keys) — each with a real reading and at least one placement.
+  const LENSES: LensReading["lens"][] = ["astrology", "human_design", "gene_keys"];
+  const lensOk = (l: LensReading | undefined): l is LensReading =>
+    !!l && typeof l.reading === "string" && l.reading.trim().length > 0 && Array.isArray(l.placements) && l.placements.length >= 1;
+  const current = Array.isArray(out.lens_readings) ? out.lens_readings : [];
+  const fixedLenses = LENSES.map((name) => {
+    const c = current.find((x) => x?.lens === name);
+    if (lensOk(c)) return c;
+    const f = fixture().lens_readings?.find((x) => x.lens === name);
+    if (f) { repaired.push(`lens:${name}`); return f; }
+    return c;
+  }).filter((l): l is LensReading => !!l);
+  out.lens_readings = fixedLenses;
+
+  if (thin(out.chart_threads, 4)) { out.chart_threads = fixture().chart_threads; repaired.push("chart_threads"); }
+  if (thin(out.gift_constellation)) { out.gift_constellation = fixture().gift_constellation; repaired.push("gift_constellation"); }
+  if (thin(out.unique_gifts)) { out.unique_gifts = fixture().unique_gifts; repaired.push("unique_gifts"); }
+  if (thin(out.domains)) { out.domains = fixture().domains; repaired.push("domains"); }
+  if (thin(out.pairings)) { out.pairings = fixture().pairings; repaired.push("pairings"); }
+  if (thin(out.orientations)) { out.orientations = fixture().orientations; repaired.push("orientations"); }
+  if (thin(out.shadow) && thin(out.edges)) {
+    out.shadow = fixture().shadow;
+    out.edges = fixture().edges;
+    repaired.push("shadow");
+  }
+  if (typeof out.narrative !== "string") out.narrative = "";
+
+  // The chart viz reads `note`; ensure every thread has one (fixture-backfilled
+  // threads bypass claudeCore's normalization).
+  out.chart_threads = (out.chart_threads || []).map((t) => ({ ...t, note: (t as any).note || clip(t.great_turning_link, 96) }));
+
+  return { core: out, repaired };
+}
+
 export async function generateGiftProfile(
   charts: Charts,
   ikigai: Ikigai,
@@ -245,7 +300,12 @@ export async function generateGiftProfile(
   if (opts.useClaude) {
     try {
       core = await claudeCore(framework, charts, ikigai);
-      engine = MODEL;
+      // Backfill any thin/missing section from the fixture so the reading is
+      // always complete — never omit content just because the model skimped.
+      const rep = repairCore(core, framework, charts, ikigai);
+      core = rep.core;
+      engine = rep.repaired.length ? `${MODEL}+repair` : MODEL;
+      if (rep.repaired.length) console.warn(`[interpret] repaired ${rep.repaired.join(", ")} from fixture`);
     } catch (err) {
       console.error("[interpret] Claude path failed, falling back to fixture:", err);
       await tripIfCreditError(err);
