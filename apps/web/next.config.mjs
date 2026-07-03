@@ -19,6 +19,8 @@ const nextConfig = {
   // MCP clients probe both the bare path and a resource-suffixed variant.
   async rewrites() {
     return [
+      // Browsers auto-probe /favicon.ico; serve the app's SVG icon so it 200s.
+      { source: "/favicon.ico", destination: "/icon.svg" },
       { source: "/.well-known/oauth-protected-resource", destination: "/api/oauth/protected-resource" },
       { source: "/.well-known/oauth-protected-resource/:path*", destination: "/api/oauth/protected-resource" },
       { source: "/.well-known/oauth-authorization-server", destination: "/api/oauth/authorization-server" },

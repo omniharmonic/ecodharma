@@ -13,7 +13,7 @@ const STEPS = [
   "DERIVING GENE-KEY SEQUENCES…",
   "LOADING FRAMEWORK v1.1.0…",
   "INTERPRETING THROUGH THE GREAT TURNING…",
-  "DRAFTING YOUR PATENT…",
+  "DRAFTING YOUR PROFILE…",
 ];
 
 export function ComputeOverlay({ show }: { show: boolean }) {

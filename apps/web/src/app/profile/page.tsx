@@ -228,16 +228,18 @@ export default async function ProfilePage() {
       )}
 
       {/* WHAT'S UNIQUELY YOURS — short phrases, quiet */}
-      <section className="mt-16 max-w-measure">
-        <p className="eyebrow mb-4">What&rsquo;s uniquely yours</p>
-        <ul className="divide-y divide-rule/12">
-          {gp.unique_gifts.map((g, i) => (
-            <li key={i} className="py-3 font-sans text-fg" data-testid="gift-item">
-              {g}
-            </li>
-          ))}
-        </ul>
-      </section>
+      {Array.isArray(gp.unique_gifts) && gp.unique_gifts.length > 0 && (
+        <section className="mt-16 max-w-measure">
+          <p className="eyebrow mb-4">What&rsquo;s uniquely yours</p>
+          <ul className="divide-y divide-rule/12">
+            {gp.unique_gifts.map((g, i) => (
+              <li key={i} className="py-3 font-sans text-fg" data-testid="gift-item">
+                {g}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       {/* MORE MOVES */}
       {more.length > 0 && (
@@ -275,7 +277,7 @@ export default async function ProfilePage() {
       <section className="mt-16 max-w-measure space-y-1">
         <Disclosure label="Where this fits the bigger work">
           <ul className="divide-y divide-rule/12">
-            {gp.domains.map((d, i) => (
+            {(Array.isArray(gp.domains) ? gp.domains : []).map((d, i) => (
               <li key={i} className="py-3" data-testid="domain-item">
                 <span className="font-sans text-fg">{domainName(d.domain_id)}</span>
                 <span className="font-sans text-muted"> — {d.why}</span>

@@ -202,12 +202,16 @@ async function claudeCore(framework: Framework, charts: Charts, ikigai: Ikigai):
     ...t,
     note: (t as any).note || clip(t.great_turning_link, 96),
   }));
-  if (!out.unique_gifts?.length) out.unique_gifts = (out.gift_constellation || []).map((g) => clip(g.how_they_carry, 90));
-  if (!out.domains) out.domains = [];
-  if (!out.shadow) out.shadow = [];
-  if (!out.narrative) out.narrative = "";
-  if (!out.gift_constellation) out.gift_constellation = [];
-  if (!out.lens_readings) out.lens_readings = [];
+  // Normalize every array field to a real array — a model can occasionally return
+  // a required "array" field as null/object, which would crash the profile render.
+  if (!Array.isArray(out.gift_constellation)) out.gift_constellation = [];
+  if (!Array.isArray(out.unique_gifts) || !out.unique_gifts.length) {
+    out.unique_gifts = out.gift_constellation.map((g) => clip(g.how_they_carry, 90));
+  }
+  if (!Array.isArray(out.domains)) out.domains = [];
+  if (!Array.isArray(out.shadow)) out.shadow = [];
+  if (!Array.isArray(out.lens_readings)) out.lens_readings = [];
+  if (typeof out.narrative !== "string") out.narrative = "";
   return out;
 }
 
