@@ -2,6 +2,7 @@ import "server-only";
 import { randomBytes } from "node:crypto";
 import { withUser, withService } from "./db";
 import { loadFramework } from "./framework";
+import { normalizeReading } from "./normalize-reading";
 import type { GiftProfile } from "./types";
 
 // Social share cards — the privacy boundary for public sharing.
@@ -72,8 +73,9 @@ export async function loadPublicCard(token: string): Promise<PublicCard | null> 
 
   const fw = loadFramework();
   const giftName = (id: string) => fw.gifts.find((g) => g.id === id)?.name || id;
-  const content = row.content_json;
-  const archetypes = (content.gift_constellation || [])
+  // Stored readings can be malformed — normalize so a bad row can't crash the card.
+  const content = normalizeReading(row.content_json);
+  const archetypes = content.gift_constellation
     .map((g) => giftName(g.gift_id))
     .filter(Boolean)
     .slice(0, 3);

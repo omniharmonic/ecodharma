@@ -5,6 +5,7 @@ import { loadFramework } from "./framework";
 import { loadVoice } from "./voice";
 import { claudeMode } from "./config";
 import { clip } from "./interpret-fixture";
+import { normalizeReading } from "./normalize-reading";
 import { sendEmail, emailEnabled, htmlEmail } from "./email";
 import { unsubscribeToken } from "./unsubscribe";
 import type { GiftProfile } from "./types";
@@ -117,7 +118,8 @@ async function nudgeCohort(): Promise<CohortMember[]> {
           and (p.current_period_end is null or p.current_period_end > now())
           and coalesce(p.settings->>'nudges', 'on') <> 'off'`,
     );
-    return rows.map((r) => ({ userId: r.user_id as string, email: r.email as string, profile: r.content_json as GiftProfile }));
+    // Stored readings can be malformed — normalize so a bad row can't crash the weekly job.
+    return rows.map((r) => ({ userId: r.user_id as string, email: r.email as string, profile: normalizeReading(r.content_json) }));
   });
 }
 

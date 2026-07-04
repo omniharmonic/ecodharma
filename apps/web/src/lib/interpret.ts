@@ -1,6 +1,6 @@
 import "server-only";
 import Anthropic from "@anthropic-ai/sdk";
-import type { Charts, CoreProfile, Framework, Gift, GiftProfile, Ikigai, LensReading, Pairing } from "./types";
+import type { Charts, CoreProfile, Framework, GiftProfile, Ikigai } from "./types";
 import { loadFramework } from "./framework";
 import { loadVoice, VOICE_VERSION } from "./voice";
 import { useClaude } from "./llm";
@@ -9,7 +9,8 @@ import { personalizeTrimTab, resolveTrimTab } from "./trimtabs";
 import { extractHdSignature } from "./hd-relational";
 // Chart signal extraction + the deterministic fixture interpreter live in
 // interpret-fixture.ts (pure, no `server-only`) so the MCP server can reuse them.
-import { fixtureCore, clip } from "./interpret-fixture";
+import { fixtureCore, clip, dedupePairings, repairCore } from "./interpret-fixture";
+import { normalizeReading, healReadingCore } from "./normalize-reading";
 import { GENE_KEYS } from "./gene-keys";
 
 // The shadow→gift→siddhi names for THIS person's gene-key gates — so Claude can
@@ -28,6 +29,8 @@ function geneKeyNames(charts: Charts): string {
 export { useClaude };
 
 const ENGINE_FIXTURE = "fixture-interpreter@2.0.0";
+// section-level repair + pairing dedupe live in interpret-fixture.ts (pure), so
+// the read-time healer and its unit tests can exercise them without `server-only`.
 // Opus for maximum depth. A full reading runs ~90–120s, which fits the serverless
 // budget on Fluid Compute (the routes set maxDuration=300). Set ECODHARMA_PROFILE_MODEL=
 // claude-sonnet-4-6 for a faster (~50–70s), slightly lighter reading if preferred.
@@ -35,7 +38,6 @@ const MODEL = process.env.ECODHARMA_PROFILE_MODEL || "claude-opus-4-8";
 // Safety net: abort well before the function's own limit so a genuinely hung call
 // still falls back to the (rich, deterministic) fixture instead of a blank profile.
 const CLAUDE_TIMEOUT_MS = Number(process.env.ECODHARMA_CLAUDE_TIMEOUT_MS || 240_000);
-const MAX_PAIRINGS = 3; // a lead + two — not a pile of "highest-leverage" moves
 
 // An Anthropic failure that means "out of credits / quota / rate limit" — the
 // signal to stop hitting a dead API and drop the whole app to the fixture engine.
@@ -193,97 +195,23 @@ async function claudeCore(framework: Framework, charts: Charts, ikigai: Ikigai):
     { signal: AbortSignal.timeout(CLAUDE_TIMEOUT_MS) },
   );
   const block = msg.content.find((b) => b.type === "tool_use") as any;
-  const out = block?.input as CoreProfile;
+  // Coerce the tool payload into a structurally valid profile FIRST — the model
+  // can return ANY field with the wrong shape (arrays as strings/objects, junk
+  // items inside arrays), and nothing downstream may ever crash on it. Sections
+  // that come back empty here are backfilled from the fixture by repairCore.
+  const out: CoreProfile = normalizeReading(block?.input);
   // Only the heart of the reading is irreplaceable — if recognition or portrait
   // is missing, discard and fall back to the full fixture. Everything else is
   // backfilled section-by-section (see repairCore), so we keep Claude's richness.
-  if (!out?.recognition?.trim() || !out?.portrait?.trim()) {
+  if (!out.recognition.trim() || !out.portrait.trim()) {
     throw new Error(`incomplete Claude profile (stop_reason=${msg.stop_reason})`);
   }
-  // normalize note (the viz reads `note`) from great_turning_link, and back-compat fields
-  out.chart_threads = (out.chart_threads || []).map((t) => ({
-    ...t,
-    note: (t as any).note || clip(t.great_turning_link, 96),
-  }));
-  // Normalize every array field to a real array — a model can occasionally return
-  // a required "array" field as null/object, which would crash the profile render.
-  if (!Array.isArray(out.gift_constellation)) out.gift_constellation = [];
-  if (!Array.isArray(out.unique_gifts) || !out.unique_gifts.length) {
-    out.unique_gifts = out.gift_constellation.map((g) => clip(g.how_they_carry, 90));
-  }
-  if (!Array.isArray(out.domains)) out.domains = [];
-  if (!Array.isArray(out.shadow)) out.shadow = [];
-  if (!Array.isArray(out.lens_readings)) out.lens_readings = [];
-  if (typeof out.narrative !== "string") out.narrative = "";
-  return out;
-}
-
-function dedupePairings(framework: Framework, pairings: Pairing[]): Pairing[] {
-  const gids = new Set(framework.gifts.map((g) => g.id));
-  const dids = new Set(framework.domains.map((d) => d.id));
-  const seen = new Set<string>();
-  const out: Pairing[] = [];
-  for (const p of pairings) {
-    if (!gids.has(p.gift_id) || !dids.has(p.domain_id)) continue;
-    const key = `${p.gift_id}|${p.domain_id}`;
-    if (seen.has(key)) continue;
-    seen.add(key);
-    out.push(p);
-    if (out.length >= MAX_PAIRINGS) break;
+  // Prefer a Claude-derived unique_gifts fallback (more personal than the
+  // fixture's) before repairCore reaches for the fixture.
+  if (!out.unique_gifts.length) {
+    out.unique_gifts = out.gift_constellation.map((g) => clip(g.how_they_carry, 90)).filter(Boolean);
   }
   return out;
-}
-
-// Guarantee a COMPLETE reading: backfill any missing or thin section from the
-// deterministic fixture (grounded in the SAME charts + framework), so we never
-// deliver a reading with content omitted. The fixture is computed lazily — only
-// touched if there's an actual gap — so a full Claude reading pays nothing.
-// Returns the names of the sections that were repaired (for logging/telemetry).
-function repairCore(
-  core: CoreProfile,
-  framework: Framework,
-  charts: Charts,
-  ikigai: Ikigai,
-): { core: CoreProfile; repaired: string[] } {
-  let fx: CoreProfile | null = null;
-  const fixture = () => (fx ??= fixtureCore(framework, charts, ikigai));
-  const repaired: string[] = [];
-  const out: CoreProfile = { ...core };
-  const thin = (arr: unknown, min = 1) => !Array.isArray(arr) || arr.length < min;
-
-  // The flagship depth: guarantee three SUBSTANTIVE lenses (astrology, human
-  // design, gene keys) — each with a real reading and at least one placement.
-  const LENSES: LensReading["lens"][] = ["astrology", "human_design", "gene_keys"];
-  const lensOk = (l: LensReading | undefined): l is LensReading =>
-    !!l && typeof l.reading === "string" && l.reading.trim().length > 0 && Array.isArray(l.placements) && l.placements.length >= 1;
-  const current = Array.isArray(out.lens_readings) ? out.lens_readings : [];
-  const fixedLenses = LENSES.map((name) => {
-    const c = current.find((x) => x?.lens === name);
-    if (lensOk(c)) return c;
-    const f = fixture().lens_readings?.find((x) => x.lens === name);
-    if (f) { repaired.push(`lens:${name}`); return f; }
-    return c;
-  }).filter((l): l is LensReading => !!l);
-  out.lens_readings = fixedLenses;
-
-  if (thin(out.chart_threads, 4)) { out.chart_threads = fixture().chart_threads; repaired.push("chart_threads"); }
-  if (thin(out.gift_constellation)) { out.gift_constellation = fixture().gift_constellation; repaired.push("gift_constellation"); }
-  if (thin(out.unique_gifts)) { out.unique_gifts = fixture().unique_gifts; repaired.push("unique_gifts"); }
-  if (thin(out.domains)) { out.domains = fixture().domains; repaired.push("domains"); }
-  if (thin(out.pairings)) { out.pairings = fixture().pairings; repaired.push("pairings"); }
-  if (thin(out.orientations)) { out.orientations = fixture().orientations; repaired.push("orientations"); }
-  if (thin(out.shadow) && thin(out.edges)) {
-    out.shadow = fixture().shadow;
-    out.edges = fixture().edges;
-    repaired.push("shadow");
-  }
-  if (typeof out.narrative !== "string") out.narrative = "";
-
-  // The chart viz reads `note`; ensure every thread has one (fixture-backfilled
-  // threads bypass claudeCore's normalization).
-  out.chart_threads = (out.chart_threads || []).map((t) => ({ ...t, note: (t as any).note || clip(t.great_turning_link, 96) }));
-
-  return { core: out, repaired };
 }
 
 export async function generateGiftProfile(
@@ -330,10 +258,56 @@ export async function generateGiftProfile(
   // ever touching the owner-only raw chart.
   const hd_signature = extractHdSignature(charts["human_design"]) ?? undefined;
 
-  return {
+  // Final write-time guarantee: whatever engine produced the core, the object
+  // we persist is structurally valid. Reads normalize too (see healStoredReading),
+  // but no row written from here on should ever need it.
+  return normalizeReading({
     ...core,
     hd_signature,
     trim_tabs,
     meta: { engine, framework_version: framework.framework_version, voice_version: VOICE_VERSION },
-  };
+  });
+}
+
+/**
+ * Read-time healing for STORED readings. Rows written before write-time
+ * hardening existed (or by an older engine) can be malformed — a required array
+ * stored as a string/object — or missing whole sections, and they will stay
+ * that way in the DB no matter how good generation gets. This gives reads the
+ * same guarantee generation has: normalize (can never crash), then backfill
+ * every gap from the deterministic fixture computed from the person's own
+ * charts. Healing is best-effort — if the fixture can't run, the normalized
+ * reading is still returned and is safe to render. Callers should persist the
+ * healed profile when `healed` is non-empty so the row converges to complete.
+ */
+export async function healStoredReading(
+  raw: unknown,
+  charts: Charts,
+  ikigai: Ikigai,
+): Promise<{ profile: GiftProfile; healed: string[] }> {
+  const framework = loadFramework();
+  // The pure structural heal (normalize + fixture backfill) — never throws.
+  const { profile: gp, healed } = healReadingCore(raw, framework, charts, ikigai);
+  // Trim-tabs come from the library (DB), so they're rebuilt here, not in the core.
+  try {
+    if (!gp.trim_tabs.length && gp.pairings.length) {
+      const nameOf = (id: string, kind: "gift" | "domain") =>
+        (kind === "gift" ? framework.gifts : framework.domains).find((x) => x.id === id)?.name || id;
+      for (const p of gp.pairings) {
+        const row = await resolveTrimTab(p.gift_id, p.domain_id);
+        gp.trim_tabs.push(personalizeTrimTab(row, nameOf(p.gift_id, "gift"), nameOf(p.domain_id, "domain"), ikigai));
+      }
+      healed.push("trim_tabs");
+    }
+  } catch (err) {
+    console.error("[interpret] trim-tab heal failed (reading is still complete without them):", err);
+  }
+  if (healed.length) {
+    gp.meta = {
+      engine: `${gp.meta?.engine || "unknown"}+heal`,
+      framework_version: gp.meta?.framework_version || framework.framework_version,
+      voice_version: gp.meta?.voice_version || VOICE_VERSION,
+    };
+  }
+  return { profile: gp, healed };
 }

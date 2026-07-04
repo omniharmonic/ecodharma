@@ -3,6 +3,7 @@ import { withUser } from "./db";
 import { loadFramework } from "./framework";
 import { compareHumanDesign } from "./hd-relational";
 import { clip } from "./interpret-fixture";
+import { normalizeReading } from "./normalize-reading";
 import type { GiftProfile } from "./types";
 
 // "People you're woven with" context for the reflection bot / MCP, so a member can
@@ -44,7 +45,7 @@ export async function peopleContextFor(userId: string, selfProfile: GiftProfile 
     );
     return rows
       .filter((r) => r.content_json) // consent gate: only kin whose reading we can see
-      .map((r) => ({ name: (r.display_name as string) || "A kin", profile: r.content_json as GiftProfile }))
+      .map((r) => ({ name: (r.display_name as string) || "A kin", profile: normalizeReading(r.content_json) }))
       .slice(0, MAX_PEOPLE);
   });
   if (!people.length) return "";

@@ -7,6 +7,7 @@ import { loadVoice } from "./voice";
 import { claudeMode } from "./config";
 import { isPremium } from "./billing";
 import { clip } from "./interpret-fixture";
+import { normalizeReading } from "./normalize-reading";
 import { peopleContextFor } from "./bot-people";
 import type { GiftProfile } from "./types";
 
@@ -105,8 +106,9 @@ async function loadReading(userId: string): Promise<Reading | null> {
   if (!row) return null;
   const fw = loadFramework();
   const giftName = (id: string) => fw.gifts.find((g) => g.id === id)?.name || id;
-  const p = row.content_json;
-  const archetypes = (p.gift_constellation || []).slice(0, 3).map((g) => ({
+  // Stored readings can be malformed — normalize so a bad row can't crash the bot.
+  const p = normalizeReading(row.content_json);
+  const archetypes = p.gift_constellation.slice(0, 3).map((g) => ({
     name: giftName(g.gift_id),
     how: g.how_they_carry || "",
   }));
@@ -120,7 +122,7 @@ const REFLECT_DIRECTIVE =
 
 function readingContext(r: Reading): string {
   const arche = r.archetypes.map((a) => `${a.name} — ${clip(a.how, 160)}`).join("; ");
-  const shadow = (r.profile.shadow || []).slice(0, 3).join("; ");
+  const shadow = (r.profile.shadow || []).slice(0, 3).map((s) => s.pattern).filter(Boolean).join("; ");
   return [
     "THEIR READING (reflect from this):",
     `Recognition: ${clip(r.recognition, 400)}`,

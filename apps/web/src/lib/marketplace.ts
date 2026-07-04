@@ -1,6 +1,7 @@
 import "server-only";
 import { withService, withUser } from "./db";
 import { loadFramework } from "./framework";
+import { normalizeReading } from "./normalize-reading";
 import type { GiftProfile } from "./types";
 
 export type ProjectRow = {
@@ -73,7 +74,7 @@ export async function matchPeopleForProject(project: ProjectRow): Promise<Person
 
   const matches: PersonMatch[] = [];
   for (const r of rows) {
-    const sig = signatureOf(r.content_json as GiftProfile);
+    const sig = signatureOf(normalizeReading(r.content_json));
     const s = score(sig, project.needed_gifts, project.needed_domains);
     if (s.value <= 0) continue;
     matches.push({
@@ -96,7 +97,7 @@ export async function matchProjectsForUser(userId: string): Promise<ProjectMatch
       "select content_json from gift_profiles where user_id=$1 order by generated_at desc limit 1",
       [userId],
     );
-    return (rows[0]?.content_json as GiftProfile) || null;
+    return rows[0] ? normalizeReading(rows[0].content_json) : null;
   });
   if (!profile) return [];
   const sig = signatureOf(profile);

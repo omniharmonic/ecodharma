@@ -14,7 +14,8 @@ import BodyGraph from "@/components/charts/BodyGraph";
 import GeneKeysViz from "@/components/charts/GeneKeysViz";
 import { TermPane } from "@/components/Terminal";
 import { regenerateProfileAction } from "../actions/profile";
-import type { ChartLens, ChartThread, GiftProfile } from "@/lib/types";
+import { healStoredReading } from "@/lib/interpret";
+import type { ChartLens, ChartThread, Ikigai } from "@/lib/types";
 
 // re-draft's server action calls Claude — give it the full function budget.
 export const maxDuration = 300;
@@ -26,17 +27,23 @@ export default async function ProfilePage() {
   const domainName = (id: string) => fw.domains.find((d) => d.id === id)?.name || id;
   const giftName = (id: string) => fw.gifts.find((g) => g.id === id)?.name || id;
 
-  const { profile, charts, birth, shareToken } = await withUser(user!.id, async (c) => {
+  const { profile, charts, birth, shareToken, ikigai } = await withUser(user!.id, async (c) => {
     const p = await c.query(
-      "select content_json, framework_version, voice_version, generated_at from gift_profiles where user_id=$1 order by generated_at desc limit 1",
+      "select id, content_json, framework_version, voice_version, generated_at from gift_profiles where user_id=$1 order by generated_at desc limit 1",
       [user!.id],
     );
     const ch = await c.query("select modality, raw_json from charts where user_id=$1", [user!.id]);
     const bd = await c.query("select to_char(birth_date,'FMDD Mon YYYY') as birth_date, to_char(birth_time,'HH24:MI') as birth_time, unknown_time, place_label, round(lat::numeric,3) as lat, round(lng::numeric,3) as lng, tz_str from birth_data where user_id=$1", [user!.id]);
-    const pr = await c.query("select share_token from profiles where id=$1", [user!.id]);
+    const pr = await c.query("select share_token, settings from profiles where id=$1", [user!.id]);
     const chartMap: Record<string, any> = {};
     for (const row of ch.rows) chartMap[row.modality] = row.raw_json;
-    return { profile: p.rows[0], charts: chartMap, birth: bd.rows[0], shareToken: (pr.rows[0]?.share_token as string | null) ?? null };
+    return {
+      profile: p.rows[0],
+      charts: chartMap,
+      birth: bd.rows[0],
+      shareToken: (pr.rows[0]?.share_token as string | null) ?? null,
+      ikigai: (pr.rows[0]?.settings?.ikigai || {}) as Ikigai,
+    };
   });
   const premium = await isPremium(user!.id);
 
@@ -50,11 +57,27 @@ export default async function ProfilePage() {
     );
   }
 
-  const gp = profile.content_json as GiftProfile;
-  const [lead, ...more] = gp.trim_tabs || [];
-  const threads = gp.chart_threads || [];
+  // NEVER render content_json raw. Stored readings can be malformed (a model
+  // returned an array field as a string/object; rows predating write-time
+  // hardening) — heal normalizes every field to a safe shape and backfills any
+  // missing section from the fixture engine, so this page cannot crash on data.
+  const { profile: gp, healed } = await healStoredReading(profile.content_json, charts, ikigai);
+  if (healed.length) {
+    console.warn(`[profile] healed stored reading (${healed.join(", ")}) for user ${user!.id}`);
+    // Persist the healed reading (owner-update RLS) so the row converges to
+    // complete; if this fails we still render the healed copy from memory.
+    try {
+      await withUser(user!.id, (c) =>
+        c.query("update gift_profiles set content_json=$2 where id=$1 and user_id=$3", [profile.id, JSON.stringify(gp), user!.id]),
+      );
+    } catch (err) {
+      console.error("[profile] failed to persist healed reading:", err);
+    }
+  }
+  const [lead, ...more] = gp.trim_tabs;
+  const threads = gp.chart_threads;
   const threadsFor = (m: ChartLens) => threads.filter((t) => t.modality === m);
-  const constellation = gp.gift_constellation || [];
+  const constellation = gp.gift_constellation;
   const lensReadings = gp.lens_readings || [];
 
   return (

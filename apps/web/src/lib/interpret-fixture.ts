@@ -457,3 +457,99 @@ const ordinal = (n: number) => {
   return `${n}${s[(v - 20) % 10] || s[v] || s[0]}`;
 };
 const signQuality = (sign: string) => (SIGN_MEANING[sign] || "quality").split("—")[0].split(",")[0].trim();
+
+// ---------- section-level repair (pure; shared by interpret.ts + the read-time healer) ----------
+
+/** Keep only pairings whose ids exist in the framework, deduped, capped at the lead + two. */
+export function dedupePairings(framework: Framework, pairings: Pairing[]): Pairing[] {
+  const gids = new Set(framework.gifts.map((g) => g.id));
+  const dids = new Set(framework.domains.map((d) => d.id));
+  const seen = new Set<string>();
+  const out: Pairing[] = [];
+  for (const p of Array.isArray(pairings) ? pairings : []) {
+    if (!gids.has(p.gift_id) || !dids.has(p.domain_id)) continue;
+    const key = `${p.gift_id}|${p.domain_id}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    out.push(p);
+    if (out.length >= MAX_PAIRINGS) break;
+  }
+  return out;
+}
+
+// Guarantee a COMPLETE reading: backfill any missing or thin section from the
+// deterministic fixture (grounded in the SAME charts + framework), so we never
+// deliver a reading with content omitted. The fixture is computed lazily — only
+// touched if there's an actual gap — so a full reading pays nothing.
+// Returns the names of the sections that were repaired (for logging/telemetry).
+export function repairCore(
+  core: CoreProfile,
+  framework: Framework,
+  charts: Charts,
+  ikigai: Ikigai,
+): { core: CoreProfile; repaired: string[] } {
+  let fx: CoreProfile | null = null;
+  const fixture = () => (fx ??= fixtureCore(framework, charts, ikigai));
+  const repaired: string[] = [];
+  const out: CoreProfile = { ...core };
+  const thin = (arr: unknown, min = 1) => !Array.isArray(arr) || arr.length < min;
+
+  // The flagship depth: guarantee three SUBSTANTIVE lenses (astrology, human
+  // design, gene keys) — each with a real reading and at least one placement.
+  const LENSES: LensReading["lens"][] = ["astrology", "human_design", "gene_keys"];
+  const lensOk = (l: LensReading | undefined): l is LensReading =>
+    !!l && typeof l.reading === "string" && l.reading.trim().length > 0 && Array.isArray(l.placements) && l.placements.length >= 1;
+  const current = Array.isArray(out.lens_readings) ? out.lens_readings : [];
+  const fixedLenses = LENSES.map((name) => {
+    const c = current.find((x) => x?.lens === name);
+    if (lensOk(c)) return c;
+    const f = fixture().lens_readings?.find((x) => x.lens === name);
+    // Only swap in the fixture's lens when it's substantive itself (or there is
+    // nothing at all to keep) — repair must never make a reading worse.
+    if (f && (lensOk(f) || !c)) { repaired.push(`lens:${name}`); return f; }
+    return c;
+  }).filter((l): l is LensReading => !!l);
+  out.lens_readings = fixedLenses;
+
+  // Swap a thin/missing section for the fixture's ONLY when the fixture actually
+  // has more to offer (with sparse charts some fixture sections can be empty —
+  // repair is monotone, never a downgrade). Always leaves a real array behind.
+  const swapIfBetter = (
+    key: "chart_threads" | "gift_constellation" | "unique_gifts" | "domains" | "pairings" | "orientations",
+    min = 1,
+  ) => {
+    const cur = out[key];
+    if (!thin(cur, min)) return;
+    const have = Array.isArray(cur) ? cur : [];
+    const fix = fixture()[key];
+    if (Array.isArray(fix) && fix.length > have.length) {
+      (out[key] as unknown[]) = fix;
+      repaired.push(key);
+    } else {
+      (out[key] as unknown[]) = have;
+    }
+  };
+  swapIfBetter("chart_threads", 4);
+  swapIfBetter("gift_constellation");
+  swapIfBetter("unique_gifts");
+  swapIfBetter("domains");
+  swapIfBetter("pairings");
+  swapIfBetter("orientations");
+  if (thin(out.shadow) && thin(out.edges)) {
+    const f = fixture();
+    if ((f.shadow?.length || 0) + (f.edges?.length || 0) > 0) {
+      out.shadow = f.shadow;
+      out.edges = f.edges;
+      repaired.push("shadow");
+    } else {
+      out.shadow = Array.isArray(out.shadow) ? out.shadow : [];
+    }
+  }
+  if (typeof out.narrative !== "string") out.narrative = "";
+
+  // The chart viz reads `note`; ensure every thread has one (fixture-backfilled
+  // threads bypass the write-time normalization).
+  out.chart_threads = (out.chart_threads || []).map((t) => ({ ...t, note: (t as any).note || clip(t.great_turning_link, 96) }));
+
+  return { core: out, repaired };
+}

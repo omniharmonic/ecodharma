@@ -11,7 +11,7 @@ import { claudeMode } from "@/lib/config";
 import { frameworkVersion } from "@/lib/framework";
 import { createInvite } from "@/lib/invites";
 import { sendEmail, emailEnabled } from "@/lib/email";
-import type { GiftProfile } from "@/lib/types";
+import { normalizeReading } from "@/lib/normalize-reading";
 
 const SITE = process.env.NEXT_PUBLIC_SITE_URL || "https://ecodharma.vercel.app";
 
@@ -255,7 +255,9 @@ export async function generateReadAction(_prev: unknown, formData: FormData) {
       .filter((r) => r.content_json) // only members whose profile we can actually see (consented or self)
       .map((r) => ({
         display_name: r.display_name || "A kin",
-        profile: r.content_json as GiftProfile,
+        // Stored readings can be malformed — normalize so one member's bad row
+        // can't crash the whole constellation read.
+        profile: normalizeReading(r.content_json),
       }));
   });
 
