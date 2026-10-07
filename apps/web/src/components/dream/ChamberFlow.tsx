@@ -21,8 +21,10 @@ export function ChamberFlow({ chamber, title, numeral, glyph, essence, questions
     <form action={action} className="mx-auto flex min-h-[78vh] max-w-2xl flex-col justify-center" data-testid="chamber-flow">
       <input type="hidden" name="chamber" value={chamber} />
       {questions.map((x) => <input key={x.id} type="hidden" name={x.id} value={vals[x.id] || ""} />)}
-      <p className="whisper text-center">Chamber {numeral} · {title} <span className="glyph">{glyph}</span></p>
-      <p className="mx-auto mt-2 max-w-md text-center text-2xs text-[#9fb4c8]">{essence}</p>
+      <div className="chamber-head mx-auto max-w-md px-5 py-3">
+        <p className="whisper text-center">Chamber {numeral} · {title} <span className="glyph">{glyph}</span></p>
+        <p className="mx-auto mt-1.5 text-center text-2xs text-[#d6e0ee]">{essence}</p>
+      </div>
       <div key={q.id} className="veil mt-8 p-6 animate-rise md:p-8">
         <label htmlFor={`f-${q.id}`} className="invocation block text-[1.6rem] leading-snug md:text-[2rem]">{q.q}</label>
         {q.hint && <p className="mt-2 text-2xs text-[#9fb4c8]">{q.hint}</p>}

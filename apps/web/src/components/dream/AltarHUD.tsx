@@ -39,7 +39,7 @@ export function AltarHUD({ snap }: { snap: Snapshot }) {
         <Telemetry snap={snap} />
       </div>
 
-      <div className="fixed bottom-6 left-1/2 z-20 flex -translate-x-1/2 gap-2" data-testid="lens-dock">
+      <div className="fixed bottom-20 left-1/2 z-20 flex -translate-x-1/2 gap-2 md:bottom-6" data-testid="lens-dock">
         {LENSES.map((l) => (
           <button key={l.id} type="button" title={l.hint} onClick={() => setLens(l.id)} data-testid={`view-${l.id}`}
             className="veil flex items-center gap-2 px-4 py-2 font-mono text-2xs uppercase tracking-eyebrow text-[#e8f0ff] hover:text-[#ffd9a0]">

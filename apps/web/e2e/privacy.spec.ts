@@ -30,7 +30,7 @@ test("data-ownership: export, revoke-all, and delete account", async ({ page }) 
   await page.getByLabel("Type DELETE to confirm").fill("DELETE");
   await page.getByRole("button", { name: "Delete my account" }).click();
   await page.waitForURL(/deleted=1/);
-  await expect(page.getByRole("link", { name: "Begin", exact: true })).toBeVisible(); // logged out
+  await expect(page.getByTestId("cta-begin")).toBeVisible(); // logged out
 
   // The account is truly gone — login fails.
   await page.goto("/login");

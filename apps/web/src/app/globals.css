@@ -585,7 +585,7 @@ body::after {
    ============================================================ */
 html { background: #02070c; }
 body { background: transparent !important; }
-.dreamscape { position: fixed; inset: 0; z-index: 0; }
+.dreamscape { position: fixed; inset: 0; z-index: 0; overflow: hidden; }
 .dreamscape canvas { display: block; }
 .dream-tooltip {
   position: fixed; left: 50%; bottom: 7vh; transform: translateX(-50%); pointer-events: none;
@@ -639,6 +639,7 @@ html[data-immersive="0"] .dream-main::before {
   background: radial-gradient(ellipse 70% 90% at 50% 45%, rgba(2, 7, 12, 0.82), rgba(2, 7, 12, 0.55) 70%, rgba(2, 7, 12, 0.25));
   backdrop-filter: blur(3px);
 }
+.dream-main { overflow-x: clip; }
 html[data-immersive="1"] .dream-main { pointer-events: none; }
 html[data-immersive="1"] .dream-main :where(a, button, input, textarea, select, label, summary, details, form, .veil, [data-interactive]) { pointer-events: auto; }
 .dream-footer { position: relative; z-index: 1; text-align: center; padding: 2rem 1rem 3rem; font-family: var(--font-plex-mono), monospace;
@@ -670,3 +671,7 @@ body::before, body::after, .mode-blueprint body::before, .mode-blueprint body::a
 .hero-hush { position: relative; }
 .hero-hush::before { content: ""; position: absolute; inset: -12% -18%; z-index: -1; pointer-events: none;
   background: radial-gradient(ellipse 50% 46% at 50% 58%, rgba(2, 7, 12, 0.72), rgba(2, 7, 12, 0.35) 55%, transparent 75%); filter: blur(8px); }
+
+/* legible whispers over bright stars: a small pool of night behind the chamber's name */
+.chamber-head { background: radial-gradient(ellipse at center, rgba(2, 7, 12, 0.82) 0%, rgba(2, 7, 12, 0.55) 55%, transparent 80%);
+  text-shadow: 0 0 10px #02070c, 0 1px 2px #000; }

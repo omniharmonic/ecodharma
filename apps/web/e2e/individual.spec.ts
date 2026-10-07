@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-import { uniqueEmail, signup, onboard } from "./helpers";
+import { uniqueEmail, signup, onboard, signOut } from "./helpers";
 
 test("Journey A — the kinship journey: signup → reading → gift profile", async ({ page }) => {
   const email = uniqueEmail("solo");
@@ -32,8 +32,7 @@ test("two different births yield different narratives (chart-grounded, not a moc
   const recA = await page.getByTestId("recognition").innerText();
 
   await page.goto("/profile");
-  await page.getByRole("button", { name: "Sign out" }).click();
-  await page.waitForURL("**/");
+  await signOut(page);
 
   const b = uniqueEmail("b");
   await signup(page, b);

@@ -1,11 +1,10 @@
 import { test, expect } from "@playwright/test";
-import { uniqueEmail, signup } from "./helpers";
+import { uniqueEmail, signup, signOut } from "./helpers";
 
 test("login rejects a wrong password", async ({ page }) => {
   const email = uniqueEmail("auth");
   await signup(page, email); // creates account → lands on /onboarding (logged in)
-  await page.getByRole("button", { name: "Sign out" }).click();
-  await page.waitForURL("**/");
+  await signOut(page);
 
   await page.goto("/login");
   await page.getByLabel("Email").fill(email);
@@ -17,8 +16,7 @@ test("login rejects a wrong password", async ({ page }) => {
 test("signup rejects a duplicate email", async ({ page }) => {
   const email = uniqueEmail("dup");
   await signup(page, email);
-  await page.getByRole("button", { name: "Sign out" }).click();
-  await page.waitForURL("**/");
+  await signOut(page);
 
   await page.goto("/signup");
   await page.getByLabel("Email").fill(email);

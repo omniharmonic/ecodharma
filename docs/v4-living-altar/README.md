@@ -33,6 +33,19 @@ The v4 transition turns a one-time reading into an ongoing practice of aligning 
 - **Telegram**: replying to an invitation is reflecting. Commands: `/reflect` `/ritual` `/prayer` `/inquiry` `/pulse`.
 - **Dharma Constellations**: roles, shared prayer and works, offered reflections (revocable excerpt copies), witness notes, and accountability partners (who see ritual completions, never content). All of it is consent-gated in Postgres.
 
+**v4.1: the Dreamscape, the Dharma Inquiry, and the Journey** (see `DHARMA_JOURNEY_AND_DREAMSCAPE.md`).
+- **One persistent 3D world** behind every page:
+  - a starfield and nebula, floating sacred geometry (Flower of Life, Metatron's Cube, Sri Yantra, torus);
+  - the prayer-star, the gift constellation and works in orbit, the natal ecliptic, the Moon in its true phase;
+  - a dark **reflective lake** that mirrors the sky. Reflections ripple across it, and roots glow beneath it.
+  - The camera moves by route: home, altar, inquiry, journey, depths.
+  - The world falls back to a still night on reduced motion, without WebGL, or in automated browsers. Set `localStorage eco-dream=live` to force the live world.
+- **The glyph compass** (top-right) replaces the masthead. Pages float as veils over the world.
+- **`/inquiry`: the Dharma Inquiry.** Seven chambers after Daniel Schmachtenberger's structure (Values, Propensities, Capacities, Karma, Issues & Gifts, Opportunities, Devotion), one question at a time. Answers are sealed at rest. Each chamber has a mirror and proposes seeds for the altar.
+- **`/inquiry/vow`**: the Prayer, drafted from the person's own words.
+- **`/journey`**: seven stages to develop the practice (Inquiry, Vow, Roots, Paths, Practice, Becoming, Witness), with altar elements sorted by being, doing, and becoming.
+- Screens: `screens/dream-*.png`.
+
 ## Run & test locally
 
 ```bash

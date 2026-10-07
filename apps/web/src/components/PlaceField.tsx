@@ -110,7 +110,7 @@ export function PlaceField({ defaultValue = "" }: { defaultValue?: string }) {
         </ul>
       )}
       {open && !loading && results.length === 0 && q.trim().length >= 2 && (
-        <p className="absolute z-40 mt-1 w-full border border-rule/30 bg-bg px-3 py-2 text-sm text-muted">
+        <p className="pointer-events-none absolute z-40 mt-1 w-full border border-rule/30 bg-bg px-3 py-2 text-sm text-muted">
           No match — type a bit more, or add exact coordinates below.
         </p>
       )}

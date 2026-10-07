@@ -152,7 +152,7 @@ export default async function AltarPage({ searchParams }: { searchParams: { kind
       </div>
 
       {/* JOURNAL STRIP */}
-      <section className="veil relative z-10 mt-[30vh] p-5" data-testid="journal-strip">
+      <section className="veil relative z-10 mb-28 mt-[30vh] p-5" data-testid="journal-strip">
         <div className="flex items-baseline justify-between">
           <p className="eyebrow">Recent reflections</p>
           <Link href="/journal" className="telemetry hover:text-accent">the whole journal →</Link>

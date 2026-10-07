@@ -22,10 +22,16 @@ export async function login(page: Page, email: string, password = "regenerate123
   await page.waitForURL("**/profile");
 }
 
-export async function logout(page: Page) {
-  await page.goto("/profile");
+/** Sign out lives in the glyph compass (the radial menu in the corner). */
+export async function signOut(page: Page) {
+  await page.getByTestId("compass").click();
   await page.getByRole("button", { name: "Sign out" }).click();
   await page.waitForURL("**/");
+}
+
+export async function logout(page: Page) {
+  await page.goto("/profile");
+  await signOut(page);
 }
 
 /** Complete onboarding (assumes we're already on /onboarding) → lands on /profile. */

@@ -11,7 +11,7 @@ export default async function Home() {
     <div className="-mt-10">
       <section className="hero-hush flex min-h-[94vh] flex-col items-center justify-end pb-[10vh] text-center">
         <p className="whisper animate-rise">EcoDharma · a living altar for the life you are offering</p>
-        <h1 className="invocation mt-6 max-w-4xl text-[2.6rem] leading-[1.05] sm:text-[4rem] md:text-[5.2rem] animate-rise">
+        <h1 className="invocation mt-6 max-w-4xl text-[2.15rem] [overflow-wrap:anywhere] leading-[1.05] sm:text-[4rem] md:text-[5.2rem] animate-rise">
           Your soul is a constellation.
           <span className="block text-[#ffd9a0]">Come see it.</span>
         </h1>

@@ -100,3 +100,14 @@ It's Jung's map made walkable:
 3. The **Dharma Inquiry** flow (`/inquiry`): seven chambers, sealed answers, a mirror per chamber, proposed elements, write-your-own Prayer. Kindling routes through it.
 4. The **Dharma Journey** (`/journey`): stage tracking, a page per stage.
 5. Schema: `dharma_inquiry` (sealed answers), `journey_progress`, element `mode` and root `scope` facets, a new `capacity` element kind.
+
+### As built (v4.1)
+
+All five steps above shipped on `v4-living-altar`:
+- 40/40 Playwright end-to-end tests and every unit suite pass.
+- `e2e/inquiry.spec.ts` walks all seven chambers, seals the answers, takes the vow, and completes the journey.
+- Polish from reviewing the live renders:
+  - The home page bloom and exposure are hushed.
+  - Small chamber type sits on a pool of night so it reads over bright gift-stars.
+  - The lens dock clears the journal strip and the mobile menu.
+  - Wide hero type no longer zooms phones out.
