@@ -72,7 +72,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                   <>
                     {/* primary links — collapse into the command menu (⌘ menu) on phones */}
                     <span className="hidden items-center gap-4 md:flex">
-                      <NavLink href="/profile">Profile</NavLink>
+                      <NavLink href="/altar">Altar</NavLink>
+                      <NavLink href="/journal">Journal</NavLink>
+                      <NavLink href="/profile">Reading</NavLink>
                       <NavLink href="/constellations">Constellations</NavLink>
                       <NavLink href="/curate">Curate</NavLink>
                       <NavLink href="/settings">Settings</NavLink>

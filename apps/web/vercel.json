@@ -1,5 +1,6 @@
 {
   "crons": [
-    { "path": "/api/cron/nudges", "schedule": "0 15 * * 1" }
+    { "path": "/api/cron/nudges", "schedule": "0 15 * * 1" },
+    { "path": "/api/cron/rituals", "schedule": "7 * * * *" }
   ]
 }

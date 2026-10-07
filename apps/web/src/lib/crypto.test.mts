@@ -14,7 +14,7 @@ for (const s of ["", "a", "My prayer: may the commons heal 🌱 — ¿sí?", "x"
   if (!s) { assert.equal(decrypt(null), ""); continue; }
   const e = encrypt(s);
   assert.equal(decrypt(e), s);
-  assert.ok(!e.includes(Buffer.from(s.slice(0, 8))), "ciphertext must not contain plaintext");
+  if (s.length >= 8) assert.ok(!e.includes(Buffer.from(s.slice(0, 8))), "ciphertext must not contain plaintext");
 }
 // Random IV: same plaintext → different envelopes.
 assert.notDeepEqual(encrypt("same"), encrypt("same"));

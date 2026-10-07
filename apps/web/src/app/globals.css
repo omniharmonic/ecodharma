@@ -498,3 +498,83 @@ body::after {
   75% { transform: translate(-2%, -3%); }
   100% { transform: translate(0, 0); }
 }
+
+/* ============================================================
+   v4 · THE LIVING ALTAR — immanent metaphysics × cybernetic living systems.
+   Tokens for Sky (light, stars) and Soil (mycelium, roots); motion that
+   breathes rather than blinks. Every animation has a still fallback.
+   ============================================================ */
+:root {
+  --sky-deep: 236 238 232;
+  --nebula-warm: 214 140 40;    /* radiant charge */
+  --nebula-cool: 108 92 168;    /* contracted charge */
+  --hypha: 120 98 62;           /* mycelial thread on vellum */
+  --root-held: 160 112 40;
+  --root-questioning: 120 96 180;
+  --root-composting: 110 92 74;
+  --root-renewed: 40 130 90;
+  --console-grid: 21 25 27;
+  --halo: 232 161 58;
+}
+.mode-blueprint {
+  --sky-deep: 5 18 24;
+  --nebula-warm: 246 184 92;
+  --nebula-cool: 150 132 236;
+  --hypha: 196 170 120;
+  --root-held: 232 161 58;
+  --root-questioning: 170 150 255;
+  --root-composting: 150 128 104;
+  --root-renewed: 155 232 176;
+  --console-grid: 79 163 184;
+  --halo: 255 200 120;
+}
+
+@keyframes altar-breathe { 0%, 100% { transform: scale(1); opacity: 0.86; } 50% { transform: scale(1.045); opacity: 1; } }
+@keyframes altar-spin { to { transform: rotate(360deg); } }
+@keyframes altar-pulse-ring { 0% { transform: scale(0.6); opacity: 0.9; } 100% { transform: scale(2.4); opacity: 0; } }
+@keyframes altar-shimmer { 0%, 100% { opacity: 0.35; } 50% { opacity: 0.85; } }
+@keyframes altar-flow { to { stroke-dashoffset: -60; } }
+@keyframes altar-germinate { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+@layer components {
+  .altar-breathe { animation: altar-breathe 5.5s ease-in-out infinite; transform-origin: center; transform-box: fill-box; }
+  .altar-spin-slow { animation: altar-spin 240s linear infinite; transform-origin: center; transform-box: fill-box; }
+  .altar-spin-rev { animation: altar-spin 360s linear infinite reverse; transform-origin: center; transform-box: fill-box; }
+  .altar-shimmer { animation: altar-shimmer 4s ease-in-out infinite; }
+  .altar-flow { stroke-dasharray: 3 9; animation: altar-flow 6s linear infinite; }
+  .altar-germinate { animation: altar-germinate 1.6s cubic-bezier(.2,.8,.2,1) both; transform-origin: center; transform-box: fill-box; }
+  .altar-pulse-ring { animation: altar-pulse-ring 3.2s ease-out infinite; transform-origin: center; transform-box: fill-box; }
+
+  /* The console: a mission-control frame for a soul. */
+  .console {
+    position: relative;
+    border: 1px solid rgb(var(--console-grid) / 0.28);
+    background:
+      linear-gradient(rgb(var(--console-grid) / 0.05) 1px, transparent 1px) 0 0 / 24px 24px,
+      linear-gradient(90deg, rgb(var(--console-grid) / 0.05) 1px, transparent 1px) 0 0 / 24px 24px,
+      rgb(var(--sky-deep) / 0.55);
+  }
+  .console::before, .console::after {
+    content: ""; position: absolute; width: 14px; height: 14px; border-color: rgb(var(--accent) / 0.8); pointer-events: none;
+  }
+  .console::before { top: -1px; left: -1px; border-top: 1px solid; border-left: 1px solid; }
+  .console::after { bottom: -1px; right: -1px; border-bottom: 1px solid; border-right: 1px solid; }
+  .telemetry { @apply font-mono text-2xs uppercase tracking-eyebrow text-muted; }
+  .telemetry b { @apply font-medium text-fg; }
+  .glyph { font-family: "Segoe UI Symbol", "Noto Sans Symbols 2", "Apple Symbols", var(--font-plex-mono), serif; }
+  .illuminated::first-letter {
+    float: left; font-family: var(--font-fraunces), Georgia, serif; font-size: 3.4em; line-height: 0.85;
+    padding: 0.06em 0.12em 0 0; color: rgb(var(--accent));
+    text-shadow: 0 0 18px rgb(var(--halo) / 0.45);
+  }
+  .strand-chip {
+    @apply inline-flex items-center gap-1 border px-1.5 py-0.5 font-mono text-2xs uppercase tracking-eyebrow;
+  }
+  .charge-pos { color: rgb(var(--nebula-warm)); border-color: rgb(var(--nebula-warm) / 0.5); }
+  .charge-neg { color: rgb(var(--nebula-cool)); border-color: rgb(var(--nebula-cool) / 0.5); }
+  .charge-zero { color: rgb(var(--muted)); border-color: rgb(var(--rule) / 0.3); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .altar-breathe, .altar-spin-slow, .altar-spin-rev, .altar-shimmer, .altar-flow, .altar-germinate, .altar-pulse-ring { animation: none; }
+}

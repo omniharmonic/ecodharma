@@ -124,6 +124,16 @@ export default async function ProfilePage() {
         </section>
       )}
 
+      {/* THE LIVING ALTAR — from reading to practice */}
+      <section className="mt-8 max-w-measure console p-5" data-testid="altar-cta">
+        <p className="telemetry text-accent">☉ From reading to practice</p>
+        <p className="mt-2 text-sm text-fg">
+          Your reading shows how you are made. The Living Altar is where you say what your life is <em>for</em> — and return to it,
+          week by week and season by season, to see how you are becoming.
+        </p>
+        <Link href="/altar" className="btn-solar mt-3 inline-block">Go to your altar →</Link>
+      </section>
+
       {/* SHARE — surfaced high to encourage sharing; collapsible for those who'd rather not. */}
       <section className="mt-8 max-w-measure">
         <ShareCard token={shareToken} collapsible />

@@ -29,6 +29,9 @@ export default defineConfig({
         timeout: 60_000,
         env: {
           ECODHARMA_INTERPRETER: "fixture",
+          ALTAR_ACCESS: "open",
+          // Deterministic TEST-ONLY journal key (production requires real JOURNAL_KEYS).
+          JOURNAL_KEYS: "1:FYrlIcCPBMLn3++M2F/ll350xytMpQGrvLmOR4ia9b4=",
           ECODHARMA_BOT_TEST: "1",
           // Keep e2e deterministic + hermetic regardless of a developer's
           // .env.local: force every premium/external integration OFF (empty

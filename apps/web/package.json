@@ -11,10 +11,13 @@
     "test:e2e": "playwright test",
     "mcp": "npx tsx src/mcp/server.ts",
     "mcp:smoke": "npx tsx src/mcp/smoke.mts",
-    "sync:framework": "node -e \"const fs=require('fs');fs.mkdirSync('framework/voice',{recursive:true});fs.copyFileSync('../../framework/framework.json','framework/framework.json');fs.copyFileSync('../../framework/voice/ecodharma-voice@2.0.0.md','framework/voice/ecodharma-voice@2.0.0.md');console.log('synced repo-root framework/ into apps/web/framework for deploy bundling')\""
+    "sync:framework": "node -e \"const fs=require('fs');fs.mkdirSync('framework/voice',{recursive:true});fs.copyFileSync('../../framework/framework.json','framework/framework.json');fs.copyFileSync('../../framework/voice/ecodharma-voice@2.0.0.md','framework/voice/ecodharma-voice@2.0.0.md');console.log('synced repo-root framework/ into apps/web/framework for deploy bundling')\"",
+    "test:unit": "for t in src/lib/*.test.mts src/lib/altar/*.test.mts; do tsx $t || exit 1; done"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.32.1",
+    "@react-three/fiber": "8.17.10",
+    "d3-force": "3.0.0",
     "jose": "^5.9.6",
     "next": "14.2.15",
     "pg": "^8.13.1",
@@ -22,15 +25,18 @@
     "react-dom": "18.3.1",
     "resend": "^6.16.0",
     "stripe": "^22.3.0",
+    "three": "0.169.0",
     "zod": "^3.23.8"
   },
   "devDependencies": {
     "@modelcontextprotocol/sdk": "^1.29.0",
     "@playwright/test": "^1.48.2",
+    "@types/d3-force": "3.0.10",
     "@types/node": "^20.16.13",
     "@types/pg": "^8.11.10",
     "@types/react": "18.3.11",
     "@types/react-dom": "18.3.1",
+    "@types/three": "0.169.0",
     "autoprefixer": "^10.4.20",
     "postcss": "^8.4.47",
     "tailwindcss": "^3.4.14",

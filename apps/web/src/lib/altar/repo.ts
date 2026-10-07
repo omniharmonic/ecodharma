@@ -341,11 +341,11 @@ export async function setRitualPrefs(userId: string, p: Partial<RitualPrefs>) {
   await withUser(userId, (c) =>
     c.query(
       `insert into ritual_prefs (user_id, weekly_dow, local_hour, tz, channels, lunar, hemisphere)
-       values ($1, coalesce($2,0), coalesce($3,18), coalesce($4,'UTC'), coalesce($5,'{email}'), coalesce($6,false), coalesce($7,'N'))
+       values ($1, coalesce($2::smallint,0), coalesce($3::smallint,18), coalesce($4::text,'UTC'), coalesce($5::text[],'{email}'), coalesce($6::boolean,false), coalesce($7::text,'N'))
        on conflict (user_id) do update set
-         weekly_dow = coalesce($2, ritual_prefs.weekly_dow), local_hour = coalesce($3, ritual_prefs.local_hour),
-         tz = coalesce($4, ritual_prefs.tz), channels = coalesce($5, ritual_prefs.channels),
-         lunar = coalesce($6, ritual_prefs.lunar), hemisphere = coalesce($7, ritual_prefs.hemisphere), updated_at = now()`,
+         weekly_dow = coalesce($2::smallint, ritual_prefs.weekly_dow), local_hour = coalesce($3::smallint, ritual_prefs.local_hour),
+         tz = coalesce($4::text, ritual_prefs.tz), channels = coalesce($5::text[], ritual_prefs.channels),
+         lunar = coalesce($6::boolean, ritual_prefs.lunar), hemisphere = coalesce($7::text, ritual_prefs.hemisphere), updated_at = now()`,
       [userId, p.weekly_dow ?? null, p.local_hour ?? null, p.tz ?? null, p.channels ?? null, p.lunar ?? null, p.hemisphere ?? null],
     ));
 }
