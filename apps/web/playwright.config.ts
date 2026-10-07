@@ -16,6 +16,9 @@ export default defineConfig({
   use: {
     baseURL: process.env.E2E_BASE_URL || `http://127.0.0.1:${PORT}`,
     trace: "retain-on-failure",
+    // Cloud/CI sandboxes may ship a different pre-installed Chromium than this
+    // Playwright version expects — point at it instead of downloading.
+    ...(process.env.PW_CHROMIUM_PATH ? { launchOptions: { executablePath: process.env.PW_CHROMIUM_PATH } } : {}),
   },
   webServer: process.env.E2E_BASE_URL
     ? undefined

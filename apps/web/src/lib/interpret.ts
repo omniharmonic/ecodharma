@@ -12,6 +12,33 @@ import { extractHdSignature } from "./hd-relational";
 import { fixtureCore, clip, dedupePairings, repairCore } from "./interpret-fixture";
 import { normalizeReading, healReadingCore } from "./normalize-reading";
 import { GENE_KEYS } from "./gene-keys";
+import { guardReading } from "./guard";
+
+// A compact, VERIFIED fact sheet of this person's placements. The model reads the
+// raw chart JSON too, but this list is what it may name — and the guard enforces it.
+export function factSheet(charts: Charts): string {
+  const lines: string[] = [];
+  const w = (charts["western"] as any) || {};
+  const pos = (p: any) => Object.entries<any>(p || {}).map(([b, v]) => `${b} ${v.sign} ${Number(v.deg_in_sign ?? 0).toFixed(1)}°`).join(", ");
+  if (w.positions) lines.push(`WESTERN (tropical): ${pos(w.positions)}; Ascendant ${w.houses?.ascendant?.sign}; Midheaven ${w.houses?.midheaven?.sign}`);
+  const j = ((charts["vedic"] as any) || {}).jyotish;
+  if (j) {
+    const g = Object.entries<any>(j.grahas || {}).map(([b, v]) => `${b} ${v.sign} (house ${v.house}, ${v.nakshatra?.name} pada ${v.nakshatra?.pada})`).join(", ");
+    lines.push(`VEDIC (sidereal Lahiri, whole-sign houses): Lagna ${j.lagna?.sign} (${j.lagna?.nakshatra?.name}); ${g}`);
+  } else {
+    lines.push("VEDIC: nakshatras were NOT computed for this chart — do not name any nakshatra.");
+  }
+  const hd = (charts["human_design"] as any) || {};
+  if (hd.type) {
+    lines.push(`HUMAN DESIGN: ${hd.type}, ${hd.authority_detail || hd.authority} authority, ${hd.profile} profile, ${hd.definition} definition; defined centers ${(hd.defined_centers || []).join(", ")}; channels ${(hd.channels || []).map((c: any) => c.gates.join("-")).join(", ") || "none"}`);
+    if ((hd.sensitive_activations || []).length) lines.push(`HOLD LIGHTLY (within 5′ of a boundary): ${hd.sensitive_activations.join(", ")}`);
+    if ((hd.time_sensitive_fields || []).length) lines.push(`TIME-SENSITIVE (changes within ±10 min of birth time): ${hd.time_sensitive_fields.join(", ")}`);
+  }
+  const gk = (charts["gene_keys"] as any) || {};
+  const sph = (seq: any) => Object.entries<any>(seq || {}).filter(([, v]) => v?.gate).map(([k, v]) => `${k} ${v.gate}.${v.line}`).join(", ");
+  if (gk.activation_sequence) lines.push(`GENE KEYS: ${sph(gk.activation_sequence)}; ${sph(gk.venus_sequence)}; ${sph(gk.pearl_sequence)}`);
+  return lines.join("\n");
+}
 
 // The shadow→gift→siddhi names for THIS person's gene-key gates — so Claude can
 // name them exactly (the names aren't proprietary; the descriptive prose is).
@@ -96,7 +123,7 @@ const PROFILE_TOOL = {
           type: "object",
           properties: {
             modality: { type: "string", enum: ["western", "vedic", "human_design", "gene_keys"] },
-            ref: { type: "string", description: "anchor the chart resolves. western/vedic: a body ('Sun','Moon','Venus','North_Node') or angle ('Ascendant','Midheaven'). human_design: a center ('Sacral'), a channel ('34-20'), or a gate ('34'). gene_keys: a sphere id ('lifes_work','evolution','radiance','purpose','attraction','iq','eq','sq','vocation','culture','brand')." },
+            ref: { type: "string", description: "anchor the chart resolves. western/vedic: a body ('Sun','Moon','Venus','North_Node') or angle ('Ascendant','Midheaven'). human_design: a center ('Sacral'), a channel ('34-20'), or a gate ('34'). gene_keys: a sphere id ('lifes_work','evolution','radiance','purpose','attraction','iq','eq','sq','core','vocation','culture','brand','pearl')." },
             placement: { type: "string", description: "human-readable, e.g. 'Sun in Scorpio in the 8th house' or 'Channel 37-40, Throat to Solar Plexus'." },
             plain_meaning: { type: "string", description: "1–2 plain sentences about the person (no jargon)." },
             great_turning_link: { type: "string", description: "the bridge: 'because this placement, that means … for how you take part'. Causal, warm, non-deterministic." },
@@ -162,7 +189,7 @@ const V3_DIRECTIVE = `You write EcoDharma's gift readings. This reading goes DEE
 - LEAD with a short recognition (a chart-grounded insight about them), then a long, warm `+"`portrait`"+` (250–500 words) that genuinely weaves ALL FOUR charts — western tropical, vedic sidereal, Human Design, Gene Keys — into one plain, specific reflection of who this person is and how they're built.
 - Build `+"`chart_threads`"+`: 8–14 bridges across all four lenses, each tying ONE precisely-named placement to how they can take part in the great turning ("because X, that means Y"). Name placements specifically and set `+"`ref`"+` so the drawn chart can attach the note.
 - Name the `+"`gift_constellation`"+`: the 2–3 archetypes most alive in them, and how THEY carry each (not the definition).
-- Write `+"`lens_readings`"+`: THREE deep sections — astrology (western + vedic together), human_design, gene_keys — each 2–3 paragraphs PLUS 4–6 explained placements, reading THIS person's real chart in that lens through the great turning. Go thorough here; this is where the reading earns its depth. Name real placements (signs, houses, aspects, nakshatras; type/authority/profile/centers/channels; the gene-key spheres by gate.line) and explain what each equips them to do. Never reproduce proprietary HD/Gene-Keys prose.
+- Write `+"`lens_readings`"+`: THREE deep sections — astrology (western + vedic together), human_design, gene_keys — each 2–3 paragraphs PLUS 4–6 explained placements, reading THIS person's real chart in that lens through the great turning. Go thorough here; this is where the reading earns its depth. Name real placements ONLY from the VERIFIED PLACEMENTS sheet (signs, houses, aspects, nakshatras; type/authority/profile/centers/channels; the gene-key spheres by gate.line) and explain what each equips them to do. Never name a placement, nakshatra, gate, or channel that is not on the sheet — an automated guard removes any that are. Never reproduce proprietary HD/Gene-Keys prose.
 - The framework is invisible scaffolding: reason WITH it, never recite it. A reader who never heard "trim-tab" or "Great Turning" must still feel deeply seen. At most 1–2 framework terms in the whole reading.
 - Use their IKIGAI answers to CONFIRM and ground the chart reading — a resonance check, woven in lightly — but never recite their answers back to them verbatim. The charts lead; their words quietly corroborate. If birth time is uncertain, hold the rising sign and Human Design lightly and say so once.
 - Original language only. You MAY name a Gene Key's Shadow / Gift / Siddhi (the single-word names provided) and any computed HD structure, but NEVER reproduce proprietary Gene Keys or Human Design descriptive PROSE — the paragraphs of meaning must be your own words.`;
@@ -186,6 +213,7 @@ async function claudeCore(framework: Framework, charts: Charts, ikigai: Ikigai):
           content:
             "Reflect this specific person back to themselves: a short recognition, then a deep, chart-grounded portrait, the interpretive chart_threads, and their gift constellation. " +
             "Choose the gift x domain `pairings` (framework ids), most-alive first.\n\n" +
+            `VERIFIED PLACEMENTS (the only placements you may name):\n${factSheet(charts)}\n\n` +
             `CHARTS:\n${JSON.stringify(charts)}\n\nIKIGAI:\n${JSON.stringify(ikigai)}\n\n` +
             `GENE KEY NAMES (shadow → gift → siddhi for this person's gates — use these EXACT names in the gene_keys lens):\n${geneKeyNames(charts)}`,
         },
@@ -241,6 +269,15 @@ export async function generateGiftProfile(
     }
   } else {
     core = fixtureCore(framework, charts, ikigai);
+  }
+
+  // The interpretation guard: correct or remove any placement claim the charts
+  // don't support (wrong sign, invented nakshatra, phantom gate/channel…).
+  const guarded = guardReading(core, charts);
+  core = guarded.core;
+  if (guarded.report.fixed || guarded.report.removed) {
+    engine = `${engine}+guard`;
+    console.warn(`[interpret] guard fixed ${guarded.report.fixed}, removed ${guarded.report.removed}: ${guarded.report.notes.slice(0, 8).join("; ")}`);
   }
 
   const pairings = dedupePairings(framework, core.pairings);

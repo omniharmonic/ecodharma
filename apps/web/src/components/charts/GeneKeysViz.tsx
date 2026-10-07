@@ -29,10 +29,14 @@ export type GeneKeys = {
     iq: GKSphere;
     eq: GKSphere;
     sq: GKSphere;
+    /** v0.2+: the Core (Design Mars). Absent on charts computed before the fix. */
+    core?: GKSphere;
   };
   pearl_sequence: {
     vocation: GKSphere;
     culture: GKSphere;
+    /** v0.2+: the Pearl (Personality Jupiter). */
+    pearl?: GKSphere;
     brand: GKSphere;
   };
   note?: string;
@@ -58,8 +62,10 @@ type SphereId =
   | "iq"
   | "eq"
   | "sq"
+  | "core"
   | "vocation"
   | "culture"
+  | "pearl"
   | "brand";
 
 type SeqKey = "activation" | "venus" | "pearl";
@@ -98,22 +104,24 @@ const GK_LAYOUT: LayoutNode[] = [
   { id: "evolution", x: 240, y: 278, seq: "activation", label: "EVOLUTION", sub: "Earth · challenge" },
   { id: "radiance", x: 240, y: 184, seq: "activation", label: "RADIANCE", sub: "Design Sun · vitality" },
   { id: "purpose", x: 240, y: 90, seq: "activation", label: "PURPOSE", sub: "Design Earth · core" },
-  // LEFT column — Venus
-  { id: "attraction", x: 96, y: 360, seq: "venus", label: "ATTRACTION", sub: "relational" },
-  { id: "iq", x: 96, y: 268, seq: "venus", label: "IQ", sub: "mental" },
-  { id: "eq", x: 96, y: 176, seq: "venus", label: "EQ", sub: "emotional" },
-  { id: "sq", x: 96, y: 84, seq: "venus", label: "SQ", sub: "spiritual" },
-  // RIGHT column — Pearl
-  { id: "vocation", x: 384, y: 340, seq: "pearl", label: "VOCATION", sub: "vocational" },
-  { id: "culture", x: 384, y: 215, seq: "pearl", label: "CULTURE", sub: "collective" },
-  { id: "brand", x: 384, y: 90, seq: "pearl", label: "BRAND", sub: "expression" },
+  // LEFT column — Venus (Attraction → IQ → EQ → SQ → Core)
+  { id: "attraction", x: 96, y: 372, seq: "venus", label: "ATTRACTION", sub: "Design Moon" },
+  { id: "iq", x: 96, y: 300, seq: "venus", label: "IQ", sub: "Venus · mental" },
+  { id: "eq", x: 96, y: 228, seq: "venus", label: "EQ", sub: "Mars · emotional" },
+  { id: "sq", x: 96, y: 156, seq: "venus", label: "SQ", sub: "Design Venus · spirit" },
+  { id: "core", x: 96, y: 84, seq: "venus", label: "CORE", sub: "Design Mars · heart" },
+  // RIGHT column — Pearl (Vocation → Culture → Brand → Pearl)
+  { id: "vocation", x: 384, y: 360, seq: "pearl", label: "VOCATION", sub: "Design Mars" },
+  { id: "culture", x: 384, y: 270, seq: "pearl", label: "CULTURE", sub: "Design Jupiter" },
+  { id: "brand", x: 384, y: 180, seq: "pearl", label: "BRAND", sub: "Sun · expression" },
+  { id: "pearl", x: 384, y: 90, seq: "pearl", label: "PEARL", sub: "Jupiter · prosperity" },
 ];
 
 // flow order within each sequence (bottom -> top)
 const SEQ_FLOW: Record<SeqKey, SphereId[]> = {
   activation: ["lifes_work", "evolution", "radiance", "purpose"],
-  venus: ["attraction", "iq", "eq", "sq"],
-  pearl: ["vocation", "culture", "brand"],
+  venus: ["attraction", "iq", "eq", "sq", "core"],
+  pearl: ["vocation", "culture", "brand", "pearl"],
 };
 
 // Gene Keys convention: Activation green, Venus red, Pearl blue.
@@ -146,7 +154,7 @@ const NODE_BY_ID: Record<SphereId, LayoutNode> = GK_LAYOUT.reduce(
   {} as Record<SphereId, LayoutNode>,
 );
 
-function sphereLookup(gk: GeneKeys): Record<SphereId, GKSphere> {
+function sphereLookup(gk: GeneKeys): Partial<Record<SphereId, GKSphere>> {
   return {
     lifes_work: gk.activation_sequence.lifes_work,
     evolution: gk.activation_sequence.evolution,
@@ -156,8 +164,10 @@ function sphereLookup(gk: GeneKeys): Record<SphereId, GKSphere> {
     iq: gk.venus_sequence.iq,
     eq: gk.venus_sequence.eq,
     sq: gk.venus_sequence.sq,
+    core: gk.venus_sequence.core,
     vocation: gk.pearl_sequence.vocation,
     culture: gk.pearl_sequence.culture,
+    pearl: gk.pearl_sequence.pearl,
     brand: gk.pearl_sequence.brand,
   };
 }
@@ -177,6 +187,9 @@ export default function GeneKeysViz({
   className,
 }: GeneKeysVizProps) {
   const values = sphereLookup(geneKeys);
+  // Charts computed before v0.2 lack Core/Pearl — draw only spheres we have.
+  const layout = GK_LAYOUT.filter((n) => values[n.id]);
+  const has = (id: SphereId) => Boolean(values[id]);
   const highlightSet = new Set(highlight);
 
   // interpretive threads we can draw: gene_keys modality, anchored to a sphere
@@ -187,14 +200,14 @@ export default function GeneKeysViz({
   // numbered solar marker + <title>. Parent renders the full numbered legend.
   const leaderCount = Math.min(threads.length, 4);
 
-  const fmt = (s: GKSphere) => `${s.gate}.${s.line}`;
+  const fmt = (s?: GKSphere) => (s ? `${s.gate}.${s.line}` : "—");
   const ariaLabel =
     "Gene Keys profile. " +
     `Activation — Life's Work ${fmt(values.lifes_work)}, Evolution ${fmt(values.evolution)}, ` +
     `Radiance ${fmt(values.radiance)}, Purpose ${fmt(values.purpose)}. ` +
     `Venus — Attraction ${fmt(values.attraction)}, IQ ${fmt(values.iq)}, ` +
-    `EQ ${fmt(values.eq)}, SQ ${fmt(values.sq)}. ` +
-    `Pearl — Vocation ${fmt(values.vocation)}, Culture ${fmt(values.culture)}, Brand ${fmt(values.brand)}.`;
+    `EQ ${fmt(values.eq)}, SQ ${fmt(values.sq)}, Core ${fmt(values.core)}. ` +
+    `Pearl — Vocation ${fmt(values.vocation)}, Culture ${fmt(values.culture)}, Brand ${fmt(values.brand)}, Pearl ${fmt(values.pearl)}.`;
 
   const halo: CSSProperties = {
     stroke: "rgb(var(--bg))",
@@ -253,7 +266,7 @@ export default function GeneKeysViz({
 
       {/* flow paths within each sequence (bottom -> top) with ascending chevrons */}
       {(Object.keys(SEQ_FLOW) as SeqKey[]).map((seq) => {
-        const order = SEQ_FLOW[seq];
+        const order = SEQ_FLOW[seq].filter(has);
         const color = `rgb(var(${GK_SEQ_COLOR[seq]}) / 0.4)`;
         return (
           <g key={`flow-${seq}`} fill="none">
@@ -293,8 +306,8 @@ export default function GeneKeysViz({
       })}
 
       {/* spheres */}
-      {GK_LAYOUT.map((n) => {
-        const v = values[n.id];
+      {layout.map((n) => {
+        const v = values[n.id]!;
         const color = `rgb(var(${GK_SEQ_COLOR[n.seq]}))`;
         const isHi = highlightSet.has(n.id);
         return (
