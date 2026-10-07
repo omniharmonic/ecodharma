@@ -3,6 +3,7 @@ import { withUser } from "../db";
 import { loadFramework } from "../framework";
 import { normalizeReading } from "../normalize-reading";
 import type { SnapAlignment, SnapElement, SnapReflection, SnapStrand } from "./becoming";
+import { kinFor } from "./constellations";
 
 // One round-trip for everything the Soul's Becoming dashboard draws. Contains
 // NO private text (no bodies, no quotes) — titles, statuses, numbers, dates —
@@ -26,6 +27,7 @@ export type Snapshot = {
 
 export async function loadSnapshot(userId: string): Promise<Snapshot> {
   const fw = loadFramework();
+  const kin = await kinFor(userId).catch(() => []);
   return withUser(userId, async (c) => {
     const q = async (sql: string, args: unknown[] = []) => (await c.query(sql, args)).rows;
     const els = await q("select lineage_id, kind, title, status, version, created_at, retired_at from altar_elements where user_id = auth.uid() and superseded_at is null order by created_at");
@@ -62,7 +64,7 @@ export async function loadSnapshot(userId: string): Promise<Snapshot> {
         id: g.gift_id, name: fw.gifts.find((x) => x.id === g.gift_id)?.name || g.gift_id, prominence: g.prominence ?? 1 - i * 0.2,
       })),
       hd: hd ? { type: hd.type, authority: hd.authority, profile: hd.profile, defined: hd.defined_centers || [] } : null,
-      kin: [],
+      kin,
       thresholds: th.map((t) => ({ label: t.label, at: iso(t.at), kind: t.kind })),
     };
   });
