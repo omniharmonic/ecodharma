@@ -108,7 +108,7 @@ export function Orrery({ snap, onSelect, selected }: { snap: Snapshot; onSelect?
         <circle key={r.version} cx={CX} cy={CY} r={30 + i * 4} fill="none" stroke="rgb(var(--accent) / 0.5)" strokeWidth={0.6} />
       ))}
       {prayer && (
-        <text x={CX} y={CY - 84} textAnchor="middle" className="font-display" fontSize="15" fill="rgb(var(--fg))" stroke="rgb(var(--sky-deep))" strokeWidth={4} paintOrder="stroke">
+        <text x={CX} y={34} textAnchor="middle" className="font-display" fontSize="15" fill="rgb(var(--fg))" stroke="rgb(var(--sky-deep))" strokeWidth={4} paintOrder="stroke">
           {prayer.title.length > 64 ? `${prayer.title.slice(0, 62)}…` : prayer.title}
         </text>
       )}

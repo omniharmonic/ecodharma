@@ -25,7 +25,14 @@ const STRATEGY_Q: Record<string, string> = {
   Reflector: "What did the month's turning reveal that a quick decision would have missed?",
 };
 
-export function ritualSpec(cadence: Cadence, label: string, ctx: PromptCtx): RitualSpec {
+const PRETTY: Record<Cadence, string> = {
+  weekly: "Weekly reflection", lunar: "Lunar reflection", monthly: "Monthly reflection",
+  quarterly: "Quarterly reflection", seasonal: "Threshold of the year", solar_return: "Solar return",
+};
+const unpunct = (s?: string) => (s || "").trim().replace(/[.!?…]+$/, "");
+
+export function ritualSpec(cadence: Cadence, rawLabel: string, ctx: PromptCtx): RitualSpec {
+  const label = !rawLabel || rawLabel === cadence ? PRETTY[cadence] : rawLabel;
   const work = ctx.works?.[0];
   const strategy = (ctx.hdType && STRATEGY_Q[ctx.hdType]) || "Where did you move with your design — and where against it?";
   switch (cadence) {
@@ -91,7 +98,7 @@ export function ritualSpec(cadence: Cadence, label: string, ctx: PromptCtx): Rit
       return {
         title: label, depth: 3, revisePrayer: true, reviewRoots: true,
         opening: "Triple loop — the prayer itself, and the roots it stands on. Read your prayer aloud before you begin.",
-        steps: [...steps[season], { id: "prayer", q: ctx.prayer ? `Your prayer: “${ctx.prayer}”. Is it still true? What would you change?` : "Is your prayer still true?" }],
+        steps: [...steps[season], { id: "prayer", q: ctx.prayer ? `Your prayer: “${unpunct(ctx.prayer)}.” Is it still true? What would you change?` : "Is your prayer still true?" }],
       };
     }
     case "solar_return":
