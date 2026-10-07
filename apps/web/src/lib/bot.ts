@@ -22,7 +22,7 @@ const LINK_TTL_MIN = 30;
 const HISTORY_TURNS = 8;
 const BOT_TIMEOUT_MS = 30_000;
 
-export type BotReplyKind = "linked" | "needs_link" | "upsell" | "reflection" | "help" | "no_reading";
+export type BotReplyKind = "linked" | "needs_link" | "upsell" | "reflection" | "help" | "no_reading" | "altar";
 export type BotReply = { kind: BotReplyKind; reply: string };
 
 type Reading = {
@@ -224,6 +224,8 @@ export async function handleBotMessage(input: {
   platform: string;
   platformUserId: string;
   text: string;
+  /** The platform message this one replies to (reply-to-reflect on invitations). */
+  replyToMessageId?: string | null;
 }): Promise<BotReply> {
   const text = (input.text || "").trim();
   const linked = await userIdForBotAccount(input.platform, input.platformUserId);
@@ -250,8 +252,15 @@ export async function handleBotMessage(input: {
     return { kind: "no_reading", reply: `I can't find your reading yet — complete one at ${SITE}, then come back.` };
   }
 
+  // The Living Altar: reply-to-reflect + /reflect /ritual /prayer /inquiry /pulse.
+  const { handleAltarMessage, ALTAR_HELP } = await import("./altar/bot-altar");
+  if (!/^\/(start|help)\b/.test(text) && text) {
+    const altarReply = await handleAltarMessage({ userId: linked, platformUserId: input.platformUserId, text, replyToMessageId: input.replyToMessageId });
+    if (altarReply) return { kind: "altar", reply: altarReply };
+  }
+
   if (/^\/(start|help)\b/.test(text) || !text) {
-    return { kind: "help", reply: helpMsg(reading) };
+    return { kind: "help", reply: `${helpMsg(reading)}\n\n${ALTAR_HELP}` };
   }
 
   const history = await recentHistory(input.platform, input.platformUserId);

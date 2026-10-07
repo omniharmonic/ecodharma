@@ -42,15 +42,23 @@ export async function POST(req: Request) {
   const msg = update?.message ?? update?.edited_message;
   const fromId = msg?.from?.id;
   const chatId = msg?.chat?.id;
-  const text: string = msg?.text ?? "";
+  const text: string = msg?.text ?? msg?.caption ?? "";
+  const replyTo = msg?.reply_to_message?.message_id != null ? String(msg.reply_to_message.message_id) : null;
   if (fromId == null || chatId == null) {
     return Response.json({ ok: true, skipped: "no message" });
+  }
+
+  if (!text && msg?.voice) {
+    const note = "I can't hear voice notes yet — type your reflection (or reply to the invitation in text) and I'll keep it in your journal.";
+    if (TOKEN) await sendTelegram(chatId, note);
+    return Response.json(TEST ? { ok: true, kind: "voice_unsupported", reply: note } : { ok: true });
   }
 
   const result = await handleBotMessage({
     platform: "telegram",
     platformUserId: String(fromId),
     text,
+    replyToMessageId: replyTo,
   });
 
   if (TOKEN) await sendTelegram(chatId, result.reply);

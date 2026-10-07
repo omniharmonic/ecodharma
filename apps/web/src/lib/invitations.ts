@@ -241,7 +241,9 @@ export async function inviteUser(
     } else if (channel === "telegram") {
       const chat = await telegramChatFor(userId);
       if (chat) {
-        platformId = await sendTelegram(chat, inv.body);
+        // Test seam: no live bot in e2e — record a synthetic message id so
+        // reply-to-reflect can be exercised end to end.
+        platformId = !TELEGRAM_TOKEN && process.env.ECODHARMA_BOT_TEST === "1" ? `test-${Date.now()}` : await sendTelegram(chat, inv.body);
         ok = !!platformId;
       }
     }
