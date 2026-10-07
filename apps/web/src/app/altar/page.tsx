@@ -7,10 +7,9 @@ import { loadSnapshot } from "@/lib/altar/snapshot";
 import { strainedRoots } from "@/lib/altar/becoming";
 import { KIND_META, altarElements } from "@/lib/altar/model";
 import { latestInvitation } from "@/lib/invitations";
-import { SoulConsole } from "@/components/altar/SoulConsole";
+import { AltarHUD } from "@/components/dream/AltarHUD";
 import { StrandChip } from "@/components/altar/StrandChip";
 import { MessageForm } from "@/components/MessageForm";
-import { PageTransition } from "@/components/PageTransition";
 import { decideProposalAction, inquireRootAction, setStatusAction } from "../actions/altar";
 import { refreshThreads } from "@/lib/altar/repo";
 import { detectThreads } from "@/lib/altar/threads";
@@ -23,7 +22,7 @@ export default async function AltarPage({ searchParams }: { searchParams: { kind
   if (!user) redirect("/login");
   if (!(await canUseAltar(user!.id))) redirect("/settings?altar=locked");
   const altar = await getAltar(user!.id);
-  if (!altar.prayer) redirect("/altar/kindle");
+  if (!altar.prayer) redirect("/inquiry");
 
   const [snap, proposals, recent, invitation, due] = await Promise.all([
     loadSnapshot(user!.id),
@@ -44,35 +43,13 @@ export default async function AltarPage({ searchParams }: { searchParams: { kind
   const facets = altar.prayer.facets || {};
 
   return (
-    <PageTransition>
-      <section className="mt-8 flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <p className="eyebrow">Soul&apos;s Becoming · your living altar</p>
-          <h1 className="mt-2 font-display text-[2rem] leading-tight text-fg md:text-[2.6rem]">The altar of your life</h1>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          {due && (
-            <Link href={`/ritual/${due.cadence}?r=${due.id}`} className="btn-solar" data-testid="begin-ritual">
-              Begin {due.label}
-            </Link>
-          )}
-          <Link href="/journal" className={due ? "btn-line" : "btn-solar"} data-testid="reflect-now">Reflect now</Link>
-          <Link href="/altar/edit" className="btn-line">Tend the altar</Link>
-        </div>
-      </section>
-      {searchParams.kindled && (
-        <p className="mt-4 border-l-2 border-accent pl-3 text-sm text-fg" data-testid="kindled">
-          Your altar is lit. Return to it each week; it will grow with you.
-        </p>
-      )}
-
-      <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
-        <SoulConsole snap={snap} />
-
-        <aside className="space-y-5">
-          <div className="console p-4" data-testid="prayer-panel">
-            <p className="telemetry text-accent">☉ The Prayer · ring {altar.prayer.version}</p>
-            <p className="illuminated mt-3 font-display text-lg leading-snug text-fg" data-testid="prayer-text">{altar.prayer.title}</p>
+    <>
+      <AltarHUD snap={snap} />
+      <div className="relative z-10 grid min-h-[calc(100vh-7rem)] gap-6 pt-14 lg:grid-cols-[22rem_minmax(0,1fr)]">
+        <aside className="space-y-4">
+          <div className="veil veil-gold p-5" data-testid="prayer-panel">
+            <p className="whisper">☉ The Prayer · ring {altar.prayer.version}</p>
+            <p className="illuminated mt-3 font-display text-xl leading-snug text-fg" data-testid="prayer-text">{altar.prayer.title}</p>
             {(facets.for_whom || facets.toward_what || facets.through_what) && (
               <dl className="mt-3 space-y-1 text-2xs text-muted">
                 {facets.for_whom && <div><dt className="inline telemetry">for · </dt><dd className="inline">{facets.for_whom}</dd></div>}
@@ -80,10 +57,19 @@ export default async function AltarPage({ searchParams }: { searchParams: { kind
                 {facets.through_what && <div><dt className="inline telemetry">through · </dt><dd className="inline">{facets.through_what}</dd></div>}
               </dl>
             )}
+            <div className="mt-4 flex flex-wrap gap-2">
+              {due && (
+                <Link href={`/ritual/${due.cadence}?r=${due.id}`} className="dream-btn !px-3 !py-2" data-testid="begin-ritual">⟲ {due.label}</Link>
+              )}
+              <Link href="/journal" className={due ? "dream-btn-ghost !px-3 !py-2" : "dream-btn !px-3 !py-2"} data-testid="reflect-now">☽ Reflect</Link>
+              <Link href="/altar/edit" className="dream-btn-ghost !px-3 !py-2">⟡ Tend</Link>
+            </div>
           </div>
-
+          {searchParams.kindled && (
+            <p className="veil p-4 text-sm text-fg" data-testid="kindled">Your altar is lit. Return to it each week; it will grow with you.</p>
+          )}
           {proposals.length > 0 && (
-            <div className="border border-accent/50 p-4" data-testid="proposals">
+            <div className="veil veil-gold p-4" data-testid="proposals">
               <p className="telemetry text-accent">Proposed by Claude · you hold the pen</p>
               <ul className="mt-2 space-y-3">
                 {proposals.map((p) => (
@@ -107,7 +93,7 @@ export default async function AltarPage({ searchParams }: { searchParams: { kind
             </div>
           )}
 
-          <div className="border border-rule/20 p-4">
+          <div className="veil p-4">
             <p className="telemetry">? Living questions</p>
             {altar.inquiries.filter((q) => q.status !== "integrated").length === 0 && questioning.length === 0 && strained.length === 0 ? (
               <p className="mt-2 text-2xs text-muted">No open inquiries. When a belief starts to strain, one will appear here.</p>
@@ -128,7 +114,7 @@ export default async function AltarPage({ searchParams }: { searchParams: { kind
           </div>
 
           {proposedThreads.length > 0 && (
-            <div className="border border-rule/20 p-4" data-testid="threads">
+            <div className="veil p-4" data-testid="threads">
               <p className="telemetry">≋ Threads noticed — true for you?</p>
               <ul className="mt-2 space-y-3">
                 {proposedThreads.map((t) => (
@@ -149,23 +135,24 @@ export default async function AltarPage({ searchParams }: { searchParams: { kind
             </div>
           )}
 
-          <div className="border border-rule/20 p-4">
+          <div className="veil p-4">
             <p className="telemetry">❦ The story so far</p>
             <p className="mt-1 text-2xs text-muted">Your season, your year — in your own words.</p>
             <Link href="/altar/story" className="mt-2 inline-block telemetry text-accent hover:underline" data-testid="story-link">read your story →</Link>
           </div>
 
           {invitation && (
-            <div className="border border-rule/20 p-4">
+            <div className="veil p-4">
               <p className="telemetry">✉ Latest invitation</p>
               <p className="mt-2 whitespace-pre-line text-2xs leading-relaxed text-muted">{invitation.body.length > 420 ? `${invitation.body.slice(0, 418)}…` : invitation.body}</p>
             </div>
           )}
         </aside>
+        <div aria-hidden />
       </div>
 
       {/* JOURNAL STRIP */}
-      <section className="mt-8" data-testid="journal-strip">
+      <section className="veil relative z-10 mt-[30vh] p-5" data-testid="journal-strip">
         <div className="flex items-baseline justify-between">
           <p className="eyebrow">Recent reflections</p>
           <Link href="/journal" className="telemetry hover:text-accent">the whole journal →</Link>
@@ -188,6 +175,6 @@ export default async function AltarPage({ searchParams }: { searchParams: { kind
           </ul>
         )}
       </section>
-    </PageTransition>
+    </>
   );
 }

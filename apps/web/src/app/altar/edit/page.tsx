@@ -69,7 +69,7 @@ export default async function AltarEditPage() {
   if (!user) redirect("/login");
   if (!(await canUseAltar(user!.id))) redirect("/settings?altar=locked");
   const altar = await getAltar(user!.id);
-  if (!altar.prayer) redirect("/altar/kindle");
+  if (!altar.prayer) redirect("/inquiry");
   const prefs = await getRitualPrefs(user!.id);
   const groups: { kind: ElementKind; items: AltarElement[] }[] = [
     { kind: "prayer", items: [altar.prayer] },

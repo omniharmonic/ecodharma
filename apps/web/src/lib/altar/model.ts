@@ -2,7 +2,7 @@
 // docs/v4-living-altar/VISION_AND_TAXONOMY.md §3.
 // Pure (no server-only): shared by server actions, MCP, the bot, and tests.
 
-export const ELEMENT_KINDS = ["prayer", "devotion", "root", "work", "practice", "measure", "inquiry", "thread"] as const;
+export const ELEMENT_KINDS = ["prayer", "devotion", "root", "work", "practice", "measure", "inquiry", "thread", "capacity"] as const;
 export type ElementKind = (typeof ELEMENT_KINDS)[number];
 
 export const RELATIONS = ["embodies", "strains", "questions", "evidences", "nourishes", "releases", "discovers"] as const;
@@ -69,6 +69,7 @@ export type Altar = {
   measures: AltarElement[];
   inquiries: AltarElement[];
   threads: AltarElement[];
+  capacities: AltarElement[];
   composted: AltarElement[];
 };
 
@@ -81,7 +82,23 @@ export const KIND_META: Record<ElementKind, { label: string; plural: string; gly
   measure: { label: "Measure", plural: "Measures", glyph: "◎", layer: "both", prompt: "How will you know you're aligned?" },
   inquiry: { label: "Inquiry", plural: "Inquiries", glyph: "?", layer: "soil", prompt: "What question are you living?" },
   thread: { label: "Thread", plural: "Threads", glyph: "≋", layer: "both", prompt: "What pattern keeps returning?" },
+  capacity: { label: "Capacity", plural: "Capacities", glyph: "△", layer: "sky", prompt: "What capacity are you growing into — your becoming?" },
 };
+
+/** Schmachtenberger's three modes of dharma: being, doing, becoming. */
+export const MODES = ["being", "doing", "becoming"] as const;
+export type Mode = (typeof MODES)[number];
+export const MODE_META: Record<Mode, { glyph: string; label: string; meaning: string }> = {
+  being: { glyph: "○", label: "Being", meaning: "receiving the beauty of reality as it is — presence, connection, clarity of values" },
+  doing: { glyph: "◈", label: "Doing", meaning: "adding to the beauty of reality — protecting what is, creating what could be" },
+  becoming: { glyph: "△", label: "Becoming", meaning: "developing yourself in both being and doing" },
+};
+/** The default mode of each kind (an element's facets.mode overrides). */
+export const KIND_MODE: Partial<Record<ElementKind, Mode>> = {
+  practice: "being", measure: "being", work: "doing", devotion: "doing", capacity: "becoming", inquiry: "becoming",
+};
+export const modeOf = (e: { kind: ElementKind; facets?: Record<string, string> }): Mode | null =>
+  ((e.facets?.mode as Mode) || KIND_MODE[e.kind]) ?? null;
 
 export const LENS_META: Record<Lens, { label: string; question: string }> = {
   aliveness: { label: "Aliveness", question: "Does this make me more alive — or drain me?" },
@@ -144,6 +161,7 @@ export function groupAltar(rows: AltarElement[], allPrayerVersions: AltarElement
     measures: by("measure"),
     inquiries: by("inquiry"),
     threads: by("thread"),
+    capacities: by("capacity"),
     composted: rows.filter((r) => r.retired_at),
   };
 }
@@ -151,7 +169,7 @@ export function groupAltar(rows: AltarElement[], allPrayerVersions: AltarElement
 export function altarElements(a: Altar): AltarElement[] {
   return [
     ...(a.prayer ? [a.prayer] : []), ...a.devotions, ...a.roots, ...a.works, ...a.practices,
-    ...a.measures, ...a.inquiries, ...a.threads,
+    ...a.measures, ...a.inquiries, ...a.threads, ...a.capacities,
   ];
 }
 

@@ -21,7 +21,7 @@ export default async function RitualPage({ params, searchParams }: { params: { c
   if (!(await canUseAltar(user!.id))) redirect("/settings?altar=locked");
   if (!CADENCES.includes(params.cadence)) notFound();
   const altar = await getAltar(user!.id);
-  if (!altar.prayer) redirect("/altar/kindle");
+  if (!altar.prayer) redirect("/inquiry");
   const ritual = searchParams.r ? await getRitual(user!.id, Number(searchParams.r)) : null;
   const hd = await withUser(user!.id, async (c) => (await c.query("select raw_json from charts where user_id=$1 and modality='human_design'", [user!.id])).rows[0]?.raw_json);
   const spec = ritualSpec(params.cadence as any, ritual?.label || params.cadence, {

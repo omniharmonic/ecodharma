@@ -76,8 +76,7 @@ test("dharma constellation: shared prayer, offering, witness, revocation", async
 
   // Kin appear in the Sky snapshot (consented co-member).
   await a.goto("/altar");
-  await a.getByTestId("view-sky").click();
-  await expect(a.getByTestId("sky-view").or(a.getByTestId("orrery"))).toBeVisible();
+  await expect(a.getByTestId("prayer-panel")).toBeVisible();
 
   // REVOCATION: B revokes consent → A no longer sees B's offering.
   await b.goto("/constellations");

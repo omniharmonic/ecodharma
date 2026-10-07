@@ -131,7 +131,10 @@ export default async function ProfilePage() {
           Your reading shows how you are made. The Living Altar is where you say what your life is <em>for</em> — and return to it,
           week by week and season by season, to see how you are becoming.
         </p>
-        <Link href="/altar" className="btn-solar mt-3 inline-block">Go to your altar →</Link>
+        <div className="mt-3 flex flex-wrap gap-2">
+          <Link href="/inquiry" className="dream-btn !px-4 !py-2">◈ Begin the Dharma Inquiry</Link>
+          <Link href="/altar" className="dream-btn-ghost !px-4 !py-2">☉ Your altar</Link>
+        </div>
       </section>
 
       {/* SHARE — surfaced high to encourage sharing; collapsible for those who'd rather not. */}

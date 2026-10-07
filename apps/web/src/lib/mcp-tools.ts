@@ -30,7 +30,7 @@ const fmtDate = (s: string) => new Date(s).toISOString().slice(0, 10);
 
 async function altarText(userId: string): Promise<string> {
   const a = await getAltar(userId);
-  if (!a.prayer) return "This person hasn't kindled their altar yet. Invite them to visit /altar/kindle and write their prayer in their own words — do not write it for them.";
+  if (!a.prayer) return "This person hasn't kindled their altar yet. Invite them into the Dharma Inquiry at /inquiry (seven chambers, after Daniel Schmachtenberger) and then to write their prayer in their own words — do not write it for them.";
   const sec = (k: ElementKind, items: { lineage_id: number; title: string; status: string; body?: string }[]) =>
     items.length ? `\n${KIND_META[k].plural.toUpperCase()}:\n${items.map((e) => `- [${e.lineage_id}] ${e.title}${e.status !== "active" ? ` (${e.status})` : ""}${e.body ? ` — ${e.body.slice(0, 200)}` : ""}`).join("\n")}` : "";
   const f = a.prayer.facets || {};

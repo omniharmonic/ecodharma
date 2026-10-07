@@ -6,6 +6,7 @@ import { getAltar, listReflections } from "@/lib/altar/repo";
 import { altarElements, CADENCES, KIND_META, LENS_META, LENSES, RELATIONS, RELATION_META } from "@/lib/altar/model";
 import { MessageForm } from "@/components/MessageForm";
 import { StrandChip } from "@/components/altar/StrandChip";
+import { DreamPulse } from "@/components/dream/DreamPulse";
 import { PageTransition } from "@/components/PageTransition";
 import { reflectAction, reviewStrandsAction } from "../actions/altar";
 import { offerAction } from "../actions/dharma";
@@ -18,7 +19,7 @@ export default async function JournalPage({ searchParams }: { searchParams: { r?
   if (!user) redirect("/login");
   if (!(await canUseAltar(user!.id))) redirect("/settings?altar=locked");
   const altar = await getAltar(user!.id);
-  if (!altar.prayer) redirect("/altar/kindle");
+  if (!altar.prayer) redirect("/inquiry");
   const elements = altarElements(altar);
   const titleOf = new Map(elements.map((e) => [e.lineage_id, e]));
   const filterEl = searchParams.el ? Number(searchParams.el) : undefined;
@@ -37,6 +38,7 @@ export default async function JournalPage({ searchParams }: { searchParams: { r?
         <Link href="/altar" className="btn-line">← the altar</Link>
       </section>
 
+      {focus && <DreamPulse />}
       {/* STRAND REVIEW for the reflection just written */}
       {focus && pending.length > 0 && (
         <section className="console mt-6 p-5" data-testid="strand-review">

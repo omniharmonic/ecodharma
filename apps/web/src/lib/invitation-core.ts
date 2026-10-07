@@ -14,7 +14,7 @@ export type Cadence = "weekly" | "lunar" | "monthly" | "quarterly" | "seasonal" 
 /** One thing from the person's own world an invitation can be grounded in. */
 export type PacketItem = {
   ref: string; // stable id, e.g. "gift:weaver", "work:12", "hd:authority"
-  kind: "prayer" | "gift" | "work" | "practice" | "root" | "measure" | "inquiry" | "devotion" | "thread" | "hd" | "astro" | "gk" | "ikigai" | "trimtab";
+  kind: "prayer" | "gift" | "work" | "practice" | "root" | "measure" | "inquiry" | "devotion" | "thread" | "capacity" | "hd" | "astro" | "gk" | "ikigai" | "trimtab";
   label: string; // human words for it ("the Weaver", "Building EcoDharma", "Sacral authority")
   detail?: string; // a sentence of context (how they carry it, the action…)
   anchors: string[]; // phrases whose presence in the output proves it was used
@@ -218,6 +218,7 @@ function composeOne(packet: Packet, first: PacketItem | undefined, second: Packe
       case "measure": return `Check your sign of alignment: ${it.label}.`;
       case "inquiry": return `Keep living the question: ${it.label}`;
       case "devotion": return `Remember who this is for: ${it.label}.`;
+      case "capacity": return `Your becoming: ${it.label}. What one step grew it this week?`;
       case "hd": return `${it.detail || `Trust your ${it.label}.`}`;
       case "trimtab": return lead ? `One small lever: ${it.detail || it.label}` : `A small lever, if it calls you: ${it.detail || it.label}`;
       case "astro":

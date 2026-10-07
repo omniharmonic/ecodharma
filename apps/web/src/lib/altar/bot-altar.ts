@@ -71,7 +71,7 @@ export async function handleAltarMessage(input: {
       return arg ? saveReflection(userId, arg) : "Write it after the command, e.g. /reflect Today the land walk cleared my head.";
     case "/prayer": {
       const a = await getAltar(userId);
-      return a.prayer ? `☉ Your prayer (ring ${a.prayer.version}):\n\n“${a.prayer.title}”` : `You haven't lit your altar yet: ${SITE}/altar/kindle`;
+      return a.prayer ? `☉ Your prayer (ring ${a.prayer.version}):\n\n“${a.prayer.title}”` : `You haven't lit your altar yet — begin the Dharma Inquiry: ${SITE}/inquiry`;
     }
     case "/inquiry": {
       if (!arg) return "Write the question after the command, e.g. /inquiry What would it mean to rest without guilt?";

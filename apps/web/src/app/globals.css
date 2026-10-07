@@ -578,3 +578,95 @@ body::after {
 @media (prefers-reduced-motion: reduce) {
   .altar-breathe, .altar-spin-slow, .altar-spin-rev, .altar-shimmer, .altar-flow, .altar-germinate, .altar-pulse-ring { animation: none; }
 }
+
+/* ============================================================
+   v4.1 · THE DREAMSCAPE — one world beneath every page.
+   Pages are translucent veils over the night; the chrome is a glyph.
+   ============================================================ */
+html { background: #02070c; }
+body { background: transparent !important; }
+.dreamscape { position: fixed; inset: 0; z-index: 0; }
+.dreamscape canvas { display: block; }
+.dream-tooltip {
+  position: fixed; left: 50%; bottom: 7vh; transform: translateX(-50%); pointer-events: none;
+  padding: 0.7rem 1.1rem; text-align: center; max-width: min(80vw, 34rem);
+  background: rgba(2, 7, 12, 0.6); border: 1px solid rgba(232, 161, 58, 0.35); backdrop-filter: blur(10px);
+  animation: rise 0.4s ease-out both;
+}
+
+/* still night — reduced motion / no WebGL / first paint */
+.dreamscape-still { background: radial-gradient(ellipse at 50% 32%, #0f1b2c 0%, #050c16 45%, #02070c 80%); }
+.still-stars { position: absolute; inset: 0; opacity: 0.8;
+  background-image:
+    radial-gradient(1px 1px at 12% 18%, #fff, transparent), radial-gradient(1px 1px at 72% 11%, #ffd27a, transparent),
+    radial-gradient(1.5px 1.5px at 33% 42%, #e8f0ff, transparent), radial-gradient(1px 1px at 88% 36%, #7fd3e6, transparent),
+    radial-gradient(1px 1px at 54% 8%, #fff, transparent), radial-gradient(1px 1px at 22% 58%, #fff, transparent),
+    radial-gradient(1.5px 1.5px at 64% 52%, #ffd27a, transparent), radial-gradient(1px 1px at 8% 34%, #e8f0ff, transparent),
+    radial-gradient(1px 1px at 92% 62%, #fff, transparent), radial-gradient(1px 1px at 42% 24%, #e58fb0, transparent);
+  background-size: 420px 420px; }
+.still-lake { position: absolute; left: 0; right: 0; bottom: 0; height: 34vh;
+  background: linear-gradient(to bottom, rgba(255, 200, 120, 0.06), rgba(2, 7, 12, 0.95) 40%); border-top: 1px solid rgba(255, 200, 120, 0.12); }
+.still-star { position: absolute; left: 50%; top: 38%; width: 18px; height: 18px; margin: -9px; border-radius: 50%;
+  background: #ffc878; box-shadow: 0 0 40px 14px rgba(255, 200, 120, 0.55), 0 0 140px 50px rgba(232, 161, 58, 0.2); }
+
+/* chrome */
+.dream-chrome { position: fixed; inset: 0 0 auto 0; z-index: 40; display: flex; align-items: center; justify-content: space-between;
+  padding: 1.1rem 1.4rem; pointer-events: none; }
+.dream-wordmark { pointer-events: auto; font-family: var(--font-fraunces), Georgia, serif; font-size: 1.15rem; letter-spacing: 0.02em;
+  color: rgba(232, 240, 255, 0.85); text-shadow: 0 0 18px rgba(255, 200, 120, 0.35); }
+.dream-compass { pointer-events: auto; display: grid; place-items: center; width: 48px; height: 48px; border-radius: 999px;
+  background: rgba(2, 7, 12, 0.35); border: 1px solid rgba(232, 161, 58, 0.35); backdrop-filter: blur(8px);
+  transition: box-shadow 0.4s, transform 0.4s; }
+.dream-compass:hover { box-shadow: 0 0 24px rgba(255, 200, 120, 0.4); transform: scale(1.06); }
+.compass-overlay { position: fixed; inset: 0; z-index: 50; background: radial-gradient(circle at 50% 50%, rgba(2, 7, 12, 0.55), rgba(2, 7, 12, 0.88));
+  backdrop-filter: blur(6px); animation: rise 0.35s ease-out both; }
+.compass-ring { position: absolute; left: 50%; top: 50%; width: 0; height: 0; }
+.compass-center { position: absolute; transform: translate(-50%, -50%) scale(2.4); opacity: 0.8; }
+.compass-node { position: absolute; display: flex; flex-direction: column; align-items: center; gap: 0.15rem; width: 9rem; text-align: center;
+  animation: compass-in 0.6s cubic-bezier(.2,.8,.2,1) both; }
+.compass-glyph { font-size: 2rem; line-height: 1; color: #ffc878; text-shadow: 0 0 22px rgba(255, 200, 120, 0.7);
+  font-family: "Segoe UI Symbol", "Noto Sans Symbols 2", "Apple Symbols", serif; transition: transform 0.3s; }
+.compass-node:hover .compass-glyph, .compass-node.is-active .compass-glyph { transform: scale(1.25); color: #fff1d6; }
+.compass-label { font-family: var(--font-fraunces), Georgia, serif; font-size: 1.05rem; color: #e8f0ff; }
+.compass-hint { font-family: var(--font-plex-mono), monospace; font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(142, 178, 178, 0.85); }
+.compass-foot { position: absolute; left: 50%; bottom: 8vh; transform: translateX(-50%); }
+@keyframes compass-in { from { opacity: 0; filter: blur(6px); } to { opacity: 1; filter: none; } }
+
+/* main: a veil of night over the world, or the world itself on immersive routes */
+.dream-main { position: relative; margin: 0 auto; max-width: 72rem; padding: 5.5rem 1.25rem 3rem; min-height: 100vh; }
+html[data-immersive="0"] .dream-main::before {
+  content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background: radial-gradient(ellipse 70% 90% at 50% 45%, rgba(2, 7, 12, 0.82), rgba(2, 7, 12, 0.55) 70%, rgba(2, 7, 12, 0.25));
+  backdrop-filter: blur(3px);
+}
+html[data-immersive="1"] .dream-main { pointer-events: none; }
+html[data-immersive="1"] .dream-main :where(a, button, input, textarea, select, label, summary, details, form, .veil, [data-interactive]) { pointer-events: auto; }
+.dream-footer { position: relative; z-index: 1; text-align: center; padding: 2rem 1rem 3rem; font-family: var(--font-plex-mono), monospace;
+  font-size: 0.62rem; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(142, 178, 178, 0.55); }
+html[data-immersive="1"] .dream-footer { display: none; }
+
+/* veils — the panels that float in the dream */
+.veil { position: relative; background: linear-gradient(160deg, rgba(8, 18, 28, 0.62), rgba(2, 7, 12, 0.5)); backdrop-filter: blur(14px) saturate(1.2);
+  border: 1px solid rgba(127, 211, 230, 0.16); box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.04); }
+.veil-gold { border-color: rgba(255, 200, 120, 0.32); box-shadow: 0 0 40px rgba(255, 200, 120, 0.08), 0 20px 60px rgba(0, 0, 0, 0.35); }
+.invocation { font-family: var(--font-fraunces), Georgia, serif; font-weight: 300; letter-spacing: -0.01em; color: #f2f5ff;
+  text-shadow: 0 0 40px rgba(255, 200, 120, 0.25), 0 2px 30px rgba(0, 0, 0, 0.6); }
+.whisper { font-family: var(--font-plex-mono), monospace; font-size: 0.68rem; letter-spacing: 0.24em; text-transform: uppercase; color: rgba(255, 200, 120, 0.85); }
+.dream-btn { display: inline-flex; align-items: center; gap: 0.6rem; padding: 0.85rem 1.5rem; font-family: var(--font-plex-mono), monospace;
+  font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase; color: #02070c; background: linear-gradient(135deg, #ffd9a0, #e8a13a);
+  box-shadow: 0 0 30px rgba(255, 200, 120, 0.35); transition: box-shadow 0.3s, transform 0.3s; }
+.dream-btn:hover { box-shadow: 0 0 50px rgba(255, 200, 120, 0.6); transform: translateY(-1px); }
+.dream-btn-ghost { display: inline-flex; align-items: center; gap: 0.6rem; padding: 0.85rem 1.5rem; font-family: var(--font-plex-mono), monospace;
+  font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase; color: #e8f0ff; border: 1px solid rgba(232, 240, 255, 0.25);
+  background: rgba(2, 7, 12, 0.35); backdrop-filter: blur(8px); transition: border-color 0.3s, color 0.3s; }
+.dream-btn-ghost:hover { border-color: rgba(255, 200, 120, 0.7); color: #ffd9a0; }
+
+/* existing components re-skinned as veils in the dream */
+.console { background: linear-gradient(160deg, rgba(8, 18, 28, 0.6), rgba(2, 7, 12, 0.45)) !important; backdrop-filter: blur(12px); }
+.input { background: rgba(2, 7, 12, 0.45) !important; }
+@media (prefers-reduced-motion: reduce) { .compass-node, .compass-overlay { animation: none; } }
+/* the dreamscape has no CRT grain or scanlines */
+body::before, body::after, .mode-blueprint body::before, .mode-blueprint body::after { display: none !important; }
+.hero-hush { position: relative; }
+.hero-hush::before { content: ""; position: absolute; inset: -12% -18%; z-index: -1; pointer-events: none;
+  background: radial-gradient(ellipse 50% 46% at 50% 58%, rgba(2, 7, 12, 0.72), rgba(2, 7, 12, 0.35) 55%, transparent 75%); filter: blur(8px); }

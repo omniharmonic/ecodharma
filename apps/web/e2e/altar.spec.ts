@@ -14,6 +14,8 @@ test("kindle the altar, reflect, weave strands, and see it alive", async ({ page
   // From the reading to the practice.
   await expect(page.getByTestId("altar-cta")).toBeVisible();
   await page.goto("/altar");
+  await page.waitForURL("**/inquiry");
+  await page.getByTestId("quick-kindle").click();
   await page.waitForURL("**/altar/kindle");
   await expect(page.getByTestId("prayer-prompts")).toBeVisible();
 
@@ -30,20 +32,19 @@ test("kindle the altar, reflect, weave strands, and see it alive", async ({ page
   await page.waitForURL("**/altar?kindled=1");
   await expect(page.getByTestId("kindled")).toBeVisible();
   await expect(page.getByTestId("prayer-text")).toContainText("weave the commons");
-  await expect(page.getByTestId("soul-console")).toBeVisible();
-  await expect(page.getByTestId("telemetry")).toBeVisible();
+  // The world is the sky; the lenses open over it.
+  await expect(page.getByTestId("dreamscape").or(page.getByTestId("dreamscape-still")).first()).toBeAttached();
+  await expect(page.getByTestId("lens-dock")).toBeVisible();
+  await page.getByTestId("view-orrery").click();
   await expect(page.getByTestId("orrery")).toBeVisible();
   await expect(page.getByTestId("orrery-work")).toHaveCount(2);
   await expect(page.getByTestId("orrery-root")).toHaveCount(1);
-
-  // Every view renders.
-  await page.getByTestId("view-soil").click();
+  await page.getByTestId("lens-overlay").getByRole("button", { name: /Depths/ }).click();
   await expect(page.getByTestId("soil-view")).toBeVisible();
-  await page.getByTestId("view-becoming").click();
+  await page.getByTestId("lens-overlay").getByRole("button", { name: /Becoming/ }).click();
   await expect(page.getByTestId("becoming-view")).toBeVisible();
-  await page.getByTestId("view-sky").click();
-  await expect(page.getByTestId("sky-view").or(page.getByTestId("orrery"))).toBeVisible();
-  await page.getByTestId("view-orrery").click();
+  await page.keyboard.press("Escape");
+  await expect(page.getByTestId("lens-overlay")).toHaveCount(0);
 
   // Reflect.
   await page.getByTestId("reflect-now").click();
