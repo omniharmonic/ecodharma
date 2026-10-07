@@ -12,6 +12,8 @@ export type PromptCtx = {
   roots?: string[];
   measures?: string[];
   hemisphere?: "N" | "S";
+  /** One Dharma Inquiry question to return to ("an ongoing and unending inquiry"). */
+  inquiry?: { id: string; q: string; prior?: string };
 };
 
 export type RitualStep = { id: string; q: string; hint?: string };
@@ -32,6 +34,15 @@ const PRETTY: Record<Cadence, string> = {
 const unpunct = (s?: string) => (s || "").trim().replace(/[.!?…]+$/, "");
 
 export function ritualSpec(cadence: Cadence, rawLabel: string, ctx: PromptCtx): RitualSpec {
+  const spec = baseSpec(cadence, rawLabel, ctx);
+  if (spec.depth >= 2 && cadence !== "monthly" && ctx.inquiry) {
+    const prior = ctx.inquiry.prior ? `Last time you wrote: “${unpunct(ctx.inquiry.prior).slice(0, 220)}.” What is true now?` : "Return to the Dharma Inquiry with this one.";
+    spec.steps.push({ id: "return", q: ctx.inquiry.q, hint: prior });
+  }
+  return spec;
+}
+
+function baseSpec(cadence: Cadence, rawLabel: string, ctx: PromptCtx): RitualSpec {
   const label = !rawLabel || rawLabel === cadence ? PRETTY[cadence] : rawLabel;
   const work = ctx.works?.[0];
   const strategy = (ctx.hdType && STRATEGY_Q[ctx.hdType]) || "Where did you move with your design — and where against it?";

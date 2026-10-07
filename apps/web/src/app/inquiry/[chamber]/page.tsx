@@ -23,7 +23,7 @@ export default async function ChamberPage({ params, searchParams }: { params: { 
   const next = nextChamber(ch.id);
 
   if (!searchParams.mirror) {
-    return <ChamberFlow chamber={ch.id} title={ch.title} numeral={ch.numeral} glyph={ch.glyph} essence={ch.essence} questions={ch.questions.map(({ id, q, hint }) => ({ id, q, hint }))} initial={mine} />;
+    return <ChamberFlow chamber={ch.id} title={ch.title} numeral={ch.numeral} glyph={ch.glyph} essence={ch.essence} questions={ch.questions.map(({ id, q, hint, deep }) => ({ id, q, hint, deep }))} initial={mine} ladder={!!ch.ladder} />;
   }
 
   const reflection = await mirror(user!.id, ch.id, mine);

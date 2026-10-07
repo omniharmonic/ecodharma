@@ -229,7 +229,9 @@ export async function ritualAction(_prev: State, f: FormData): Promise<State> {
   const ritual = ritualId ? await getRitual(userId, ritualId) : null;
   const cadence = (ritual?.cadence || str(f, "cadence") || "weekly") as any;
   const altar = await getAltar(userId);
-  const spec = ritualSpec(cadence, ritual?.label || cadence, { prayer: altar.prayer?.title });
+  const { QUESTION } = await import("@/lib/altar/inquiry");
+  const rq = QUESTION.get(str(f, "return_qid"));
+  const spec = ritualSpec(cadence, ritual?.label || cadence, { prayer: altar.prayer?.title, inquiry: rq ? { id: rq.id, q: rq.q } : undefined });
   const answers: Record<string, string> = {};
   for (const s of spec.steps) answers[s.id] = str(f, `a_${s.id}`);
   const body = composeRitualBody(spec, answers);

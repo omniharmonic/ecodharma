@@ -41,7 +41,7 @@ The v4 transition turns a one-time reading into an ongoing practice of aligning 
   - The camera moves by route: home, altar, inquiry, journey, depths.
   - The world falls back to a still night on reduced motion, without WebGL, or in automated browsers. Set `localStorage eco-dream=live` to force the live world.
 - **The glyph compass** (top-right) replaces the masthead. Pages float as veils over the world.
-- **`/inquiry`: the Dharma Inquiry.** Seven chambers after Daniel Schmachtenberger's structure (Values, Propensities, Capacities, Karma, Issues & Gifts, Opportunities, Devotion), one question at a time. Answers are sealed at rest. Each chamber has a mirror and proposes seeds for the altar.
+- **`/inquiry`: the Dharma Inquiry.** Six chambers following Daniel Schmachtenberger's Dharma Inquiry (Values, Propensities, Capacities, Karma, Patterns, Guidance), one question at a time, with a why-ladder in Values and Capacities and an optional deeper set in every chamber. Answers are sealed at rest. Each chamber has a mirror and proposes seeds for the altar.
 - **`/inquiry/vow`**: the Prayer, drafted from the person's own words.
 - **`/journey`**: seven stages to develop the practice (Inquiry, Vow, Roots, Paths, Practice, Becoming, Witness), with altar elements sorted by being, doing, and becoming.
 - Screens: `screens/dream-*.png`.

@@ -4,6 +4,7 @@ import { getUser } from "@/lib/auth";
 import { canUseAltar } from "@/lib/altar/access";
 import { journey } from "@/lib/altar/inquiry-repo";
 import { MODE_META, MODES, modeOf, altarElements } from "@/lib/altar/model";
+import { MODE_QUESTIONS } from "@/lib/altar/inquiry";
 
 export const dynamic = "force-dynamic";
 
@@ -45,8 +46,10 @@ export default async function JourneyPage({ searchParams }: { searchParams: { vo
           <div key={m} className="veil p-4">
             <p className="whisper">{MODE_META[m].glyph} {MODE_META[m].label}</p>
             <p className="mt-1 text-2xs text-[#9fb4c8]">{MODE_META[m].meaning}</p>
+            {MODE_QUESTIONS[m].map((mq) => <p key={mq} className="mt-1.5 text-2xs italic text-[#d6e0ee]">{mq}</p>)}
             <ul className="mt-3 space-y-1 text-sm text-fg">
-              {byMode[m].slice(0, 6).map((e) => <li key={e.id}>· {e.title}</li>)}
+              {byMode[m].slice(0, 12).map((e) => <li key={e.id}>· {e.title}</li>)}
+              {byMode[m].length > 12 && <li className="opacity-70">+ {byMode[m].length - 12} more on your altar</li>}
               {byMode[m].length === 0 && <li className="text-[#9fb4c8]">— nothing yet</li>}
             </ul>
           </div>

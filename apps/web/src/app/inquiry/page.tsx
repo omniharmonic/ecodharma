@@ -7,7 +7,7 @@ import { chamberStatus, getAnswers } from "@/lib/altar/inquiry-repo";
 
 export const dynamic = "force-dynamic";
 
-// The threshold of the Inquiry: seven chambers arranged as portals in the dark.
+// The threshold of the Inquiry: six chambers (after Schmachtenberger) arranged as portals in the dark.
 export default async function InquiryPage() {
   const user = await getUser();
   if (!user) redirect("/login");
@@ -21,10 +21,15 @@ export default async function InquiryPage() {
       <h1 className="invocation mt-5 max-w-3xl text-[2.4rem] leading-tight md:text-[3.6rem]">What is your life for?</h1>
       <p className="mx-auto mt-5 max-w-2xl text-[#c9d6e8]">
         Dharma: <em>right relationship with Life</em>. There is what is right for anyone — and what is right for <em>you</em>,
-        given how you are made and what you have lived. Seven chambers. One question at a time. Your answers are sealed.
+        given how you are made and what you have lived. Six chambers. One question at a time. Your answers are sealed.
       </p>
+      <div className="veil mx-auto mt-6 max-w-2xl space-y-2 p-5 text-left text-sm leading-relaxed text-[#c9d6e8]" data-testid="inquiry-frame">
+        <p>{DHARMA_FRAME.free}</p>
+        <p>{DHARMA_FRAME.shadow}</p>
+        <p>{DHARMA_FRAME.unfolding}</p>
+      </div>
       <div className="relative mt-12 w-full max-w-4xl">
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 md:grid-cols-7">
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-6">
           {CHAMBERS.map((c) => {
             const s = status.find((x) => x.id === c.id)!;
             const lit = s.answered > 0;
@@ -34,7 +39,7 @@ export default async function InquiryPage() {
                 <span className={`glyph text-3xl transition group-hover:scale-125 ${lit ? "text-[#ffd9a0]" : "text-[#7fd3e6]"}`}>{c.glyph}</span>
                 <span className="font-mono text-2xs text-[#9fb4c8]">{c.numeral}</span>
                 <span className="font-display text-base text-fg">{c.title}</span>
-                <span className="font-mono text-[0.6rem] text-[#9fb4c8]">{s.answered}/{s.total}</span>
+                <span className="font-mono text-[0.6rem] text-[#9fb4c8]">{Math.min(s.answered, s.total)}/{s.total}{s.answered > s.total ? " + deeper" : ""}</span>
               </Link>
             );
           })}

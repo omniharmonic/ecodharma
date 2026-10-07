@@ -5,7 +5,7 @@ import { decOpt, encOpt, encrypt } from "../crypto";
 import { claudeMode } from "../config";
 import { loadFramework } from "../framework";
 import { normalizeReading } from "../normalize-reading";
-import { CHAMBERS, DHARMA_FRAME, chamberOf, mirrorChamber } from "./inquiry";
+import { CHAMBERS, DHARMA_FRAME, WHY, chamberOf, coreQuestions, mirrorChamber } from "./inquiry";
 import { getAltar } from "./repo";
 
 // The Dharma Inquiry & Journey, server side. Answers are sealed like the journal.
@@ -33,7 +33,7 @@ export async function saveAnswers(userId: string, chamber: string, answers: Reco
 }
 
 export function chamberStatus(answers: Record<string, string>) {
-  return CHAMBERS.map((ch) => ({ id: ch.id, answered: ch.questions.filter((q) => (answers[q.id] || "").trim()).length, total: ch.questions.length }));
+  return CHAMBERS.map((ch) => ({ id: ch.id, answered: ch.questions.filter((q) => (answers[q.id] || "").trim()).length, total: coreQuestions(ch).length }));
 }
 
 export async function readingHints(userId: string): Promise<{ gifts: string[]; hdType?: string; authority?: string }> {
@@ -52,14 +52,14 @@ export async function mirror(userId: string, chamber: string, answers: Record<st
   const det = mirrorChamber(chamber, answers, hints);
   const ch = chamberOf(chamber);
   if (!ch || !(await claudeMode()) || !process.env.ANTHROPIC_API_KEY) return det;
-  const qa = ch.questions.filter((q) => (answers[q.id] || "").trim()).map((q) => `Q: ${q.q}\nA: ${answers[q.id].trim()}`).join("\n\n");
+  const qa = ch.questions.filter((q) => (answers[q.id] || "").trim()).map((q) => `Q: ${q.q}\nA: ${answers[q.id].trim().split(WHY).join("\n  (and why?) ")}`).join("\n\n");
   if (!qa) return det;
   try {
     const anthropic = new Anthropic();
     const msg = await anthropic.messages.create({
       model: process.env.ECODHARMA_BOT_MODEL || "claude-sonnet-4-6",
       max_tokens: 350,
-      system: `You are a mirror in a Dharma Inquiry (after Daniel Schmachtenberger: dharma as right relationship with Life — lived in being, doing and becoming). Reflect back, in 3–5 sentences, what you hear in this person's answers to the "${ch.title}" chamber. Quote 1–3 of their exact phrases. Gently connect to their reading where it truly fits (gifts: ${hints.gifts.join(", ") || "unknown"}; Human Design type: ${hints.hdType || "unknown"}). No advice, no verdicts, no flattery, no questions back except at most one at the very end. Plain text.`,
+      system: `You are a mirror in a Dharma Inquiry (after Daniel Schmachtenberger: dharma as right relationship with Life — lived in being, doing and becoming). Reflect back, in 3–5 sentences, what you hear in this person's answers to the "${ch.title}" chamber. Quote 1–3 of their exact phrases. Where they asked "why?" beneath an answer, honour the deepest layer they reached — it is what felt fundamental. Hold gifts and shadows together. Gently connect to their reading where it truly fits (gifts: ${hints.gifts.join(", ") || "unknown"}; Human Design type: ${hints.hdType || "unknown"}). No advice, no verdicts, no flattery, no questions back except at most one at the very end. Plain text.`,
       messages: [{ role: "user", content: qa }],
     }, { signal: AbortSignal.timeout(25_000) });
     const out = msg.content.filter((b) => b.type === "text").map((b: any) => b.text).join("").trim();
@@ -73,7 +73,7 @@ export async function mirror(userId: string, chamber: string, answers: Record<st
 // ---------------------------------------------------------------- journey --
 
 export const STAGES = [
-  { id: "inquiry", numeral: "I", glyph: "◈", title: "The Inquiry", href: "/inquiry", essence: "Walk the seven chambers." },
+  { id: "inquiry", numeral: "I", glyph: "◈", title: "The Inquiry", href: "/inquiry", essence: "Walk the six chambers." },
   { id: "vow", numeral: "II", glyph: "☉", title: "The Vow", href: "/inquiry/vow", essence: "Write your prayer — the first ring." },
   { id: "roots", numeral: "III", glyph: "⟟", title: "The Roots", href: "/journey/roots", essence: "Name what you stand on; sort the universal from the unique; question one." },
   { id: "paths", numeral: "IV", glyph: "◈", title: "The Paths · Doing", href: "/journey/paths", essence: "Name your works. Choose one to release." },

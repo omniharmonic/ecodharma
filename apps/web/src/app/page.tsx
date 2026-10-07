@@ -50,9 +50,9 @@ export default async function Home() {
         ))}
         <div className="veil veil-gold p-6 md:col-span-3">
           <p className="whisper">The Dharma Inquiry</p>
-          <p className="mt-2 font-display text-2xl text-fg">Seven chambers to find what your life is for.</p>
+          <p className="mt-2 font-display text-2xl text-fg">Six chambers to find what your life is for.</p>
           <p className="mt-2 max-w-3xl text-sm leading-relaxed text-[#c9d6e8]">
-            Values · Propensities · Capacities · Karma · Issues &amp; Gifts · Opportunities · Devotion — after Daniel Schmachtenberger&apos;s
+            Values · Propensities · Capacities · Karma · Patterns · Guidance — after Daniel Schmachtenberger&apos;s
             Dharma Inquiry: dharma as <em>right relationship with Life</em>, lived in your being, your doing, and your becoming.
           </p>
           <p className="mt-4 font-mono text-2xs uppercase tracking-eyebrow text-muted">

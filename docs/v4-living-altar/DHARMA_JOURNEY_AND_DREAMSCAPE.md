@@ -13,28 +13,30 @@ Two moves:
 
 ### The frame (his)
 
-Source: [Dharma Inquiry, civilizationemerging.com](https://civilizationemerging.com/dharma-inquiry-2/). The structure below is reconstructed from secondary sources. Our question wording is original and credits his structure; it doesn't reproduce his text.
+Source: Daniel Schmachtenberger, [*Dharma Inquiry*](https://civilizationemerging.com/dharma-inquiry-2/) (Personal, August 3, 2024). Benjamin supplied the full text on 2026-10-07, and the inquiry now follows its structure, sequence and themes exactly. The question wording in the app is paraphrased in our own voice, with short attributed phrases, and every chamber links to his original. His full text is not copied into this repository.
 
-- **Dharma** means *right relationship with Life*. It is the path of greatest integrity: choices that don't create unnecessary suffering, that help heal its sources, and that move toward more wholeness, attunement, intimacy, aliveness, and love for all beings.
-- **Universal dharma** is the principles of right action true for anyone. **Unique dharma** is what is right action *for me*, given my particular capacities and experiences: my unique life path.
-- Dharma has three modes:
-  - **Being**: receiving the beauty of reality as it is. Presence, connection to one's own being, and the clarity of values informing every perception.
-  - **Doing**: adding to the beauty of reality, by protecting what is beautiful or creating what could be.
-  - **Becoming**: developing oneself in both being and doing.
-- **Issues and gifts are related.** What wounded us often sensitized us to exactly what we now have to give. Trauma remnants can also still limit the fullest expression of the gift.
-- The inquiry exists to *inform and empower sovereign choice*, not to reduce choice to rules.
+- **Dharma** means something like *right relationship with Life*: the path of greatest integrity; choices that don't create unnecessary suffering and help heal its sources; a life moving toward more wholeness, appreciation, intimacy, aliveness, clarity and love for all beings. Every definition falls short. Dharma can be felt more than described, and never prescribed.
+- **Universal and unique.** Some principles of dharma are generally true. There is also *unique dharma*: right action for me, in this situation, given my particular capabilities and experiences.
+- **Not deterministic.** No algorithm can compute the right choice ahead of time. The inquiry deepens choice rather than reducing it to rules. It won't tell you what to do. It deepens your relationship with yourself, and greater awareness, clarity and love move a path in unpredictable but profound ways. (This matches EcoDharma's stance: *mythopoetic, not predictive*.)
+- **Being, doing, becoming.** Who and how are you being, moment to moment? What are you doing, and what is it in service of? How are you growing, in your being and in your capacity to do?
+- **A continuous unfolding.** It is an ongoing, unending inquiry. It includes how you meet the little things, and it changes across the seasons of a life.
+- **Issues and gifts, together.** Trauma can limit the fullest expression of our dharma, and it can also sensitize us to what is ours to give. *"Every gift has a shadow, every shadow has a gift."* Deepening dharma and healing karma co-inform each other.
+- **The why-ladder.** For Values and Capacities: ask "why" of each answer until you reach something that feels fundamental.
 
 ### How it maps onto the Living Altar
 
-| Inquiry chamber (his domain) | What it surfaces | Becomes on the altar |
+His six sections, in his order. Each chamber shows its core questions; "go deeper" reveals the rest of his list (paraphrased).
+
+| Chamber (his section) | Core questions (paraphrased) | Becomes on the altar |
 |---|---|---|
-| **I. Values**: who inspires you and why, whom you respect, the beauty that moves you, what feels most deeply wrong in the world, the news you'd most love to read, who you'd be proudest to have been at your deathbed, what is sacred | What you are in service to | **Prayer** facets (*toward what*), **Devotions**, **Measures** ("who I'd be proud to have been") |
-| **II. Propensities**: what comes naturally, what fascinates you for its own sake, what replenishes you, what your attention keeps returning to | Your *constitution as lived* | Confirms the **reading** (gifts, HD strategy); seeds **Paths** and **Practices** |
-| **III. Capacities**: what you'd study, the skills you'd download, what you'd do if less afraid, what you'd do if money were no object | Your *becoming* | **Becoming** paths (capacities to grow), **Works** to begin |
-| **IV. Karma**: who helped you, the blessings without which you wouldn't be you, what you owe forward and how | Lineage and reciprocity | **Devotions** (lineage), **Roots** of gratitude, the **Reciprocity** lens |
-| **V. Issues & Gifts**: what wounded you and what it sensitized you to, where the wound still limits the gift | The shadow that holds the gift | **Roots** to examine, the *shadow → gift* thread (alongside Gene Keys) |
-| **VI. Opportunities**: where fear is choosing for you, where your values and actions don't line up, where past choices trap you | The edge of growth | **Inquiries**, **Roots** set to *questioning*, the first thing to **release** |
-| **VII. Meaning & Devotion**: what you'd sacrifice personal benefit for, what is more important than your own life, what devotion means to you | The heart of it | The **Prayer** itself, written by you |
+| **I. Values** (why-ladder) | who inspires you and why · where you find beauty · what is most "off" in the world · who you'd be proudest to have been at your deathbed · what is sacred · what you're devoted to. *Deeper:* respect, virtues, what bothers you, news you'd love to read, work no one would know you did, sacrifice, meaning, loyalty, shame and regret, desires met, one year to live | **Roots** from the fundamental *why* (strongest seed), **Devotions**, a deathbed **Measure**, **Capacities** (virtues), Prayer *for whom* and *toward what* |
+| **II. Propensities** (gift and shadow) | natural aptitudes · what replenishes you · what you can't not pay attention to · most alive · the shadow of your strength · the gift inside your pain. *Deeper:* willing even when taxed, for its own sake, fascinations, deepest satisfaction | **Practices** (being), **Works**, **Inquiries** (calling, shadow), a *wound-as-medicine* **Root**, Prayer *through what* |
+| **III. Capacities** (why-ladder) | money no object · back to school · download skills · more confident · already fully loved and recognized. *Deeper:* vast wealth, smarter, disciplined, better with people, regulated, deficits resolved, right team, clean slate, vital to 200 | **Capacities** (becoming), **Works**, fundamental-*why* **Roots** |
+| **IV. Karma** | who helped you · blessings · what you owe forward · whom you've hurt and what amends · loved ones who died, and their traits living on through you. *Deeper:* success at others' expense, lineage gifts, lineage harms | **Devotions** (lineage), *pay it forward* and *amends* **Works**, *let it live through me* **Capacities**, gratitude and lineage **Roots** |
+| **V. Patterns** | compulsion vs dharma · fears and attachments · ego · rewarded but uncared-for · imbalance. *Deeper:* self-doubt, respect, honesty, success at others' expense | **Inquiries** (*is this compulsion or dharma?*), release candidates for the Paths stage, rebalancing **Practices** |
+| **VI. Guidance** | profound spiritual experiences · most at peace · the sacred and being most in love · deepest knowings. *Deeper:* epiphanies, being with the dying | **Roots** (knowings), **Devotions**, a *return to peace* **Practice**, the Prayer's raw material |
+
+The Vow gives your own words back as the Prayer's raw material, with the deepest *why* first. Deep rituals (quarterly, the solstices and equinoxes, solar return) each return to one inquiry question, with your previous answer beside it. That is the "ongoing and unending inquiry".
 
 The synthesis organizes everything along his three modes. Every altar element now carries a **mode**:
 
@@ -46,13 +48,13 @@ Roots also gain a **scope**: *universal* (a principle of right action I hold for
 
 ### The Inquiry experience
 
-Seven chambers, one question at a time, entered in sequence inside the dreamscape. You can stop and return; answers are sealed (encrypted) like the journal. Each chamber ends with a **reflection**: Claude, or the deterministic engine, mirrors back what it heard in your words and connects it to your reading (*"you named teaching as replenishing; your Life's Work key is the gift of Guidance"*). Then it **proposes** altar elements, which you keep, edit, or let go. The Prayer is never written for you. The final chamber gives you your own words back as raw material and asks you to write it.
+Six chambers, one question at a time (core first; "go deeper" for the rest; "↳ and why?" in Values and Capacities), entered in sequence inside the dreamscape. You can stop and return; answers are sealed (encrypted) like the journal. Each chamber ends with a **reflection**: Claude, or the deterministic engine, mirrors back what it heard in your words and connects it to your reading (*"you named teaching as replenishing; your Life's Work key is the gift of Guidance"*). Then it **proposes** altar elements, which you keep, edit, or let go. The Prayer is never written for you. After the last chamber, the Vow gives you your own words back as raw material and asks you to write it.
 
 ### The Dharma Journey (practice development, after kindling)
 
 A seven-stage journey, roughly one stage a week, each a place in the dreamscape:
 
-1. **The Inquiry**: the seven chambers; kindles the altar
+1. **The Inquiry**: the six chambers; kindles the altar
 2. **The Vow**: write the Prayer; first ring
 3. **The Roots**: excavate the a prioris; sort universal from unique; choose one to question
 4. **The Paths (Doing)**: name your works; choose one to release
@@ -97,7 +99,7 @@ It's Jung's map made walkable:
 
 1. A `Dreamscape` client canvas in the root layout: stars, prayer-star, constellation (from `/api/altar/snapshot`), the reflective lake, floating sacred geometry, bloom. Camera choreography by route.
 2. Restyle the app shell: remove the masthead, add the glyph compass, and turn page containers into veils.
-3. The **Dharma Inquiry** flow (`/inquiry`): seven chambers, sealed answers, a mirror per chamber, proposed elements, write-your-own Prayer. Kindling routes through it.
+3. The **Dharma Inquiry** flow (`/inquiry`): six chambers (seven in the first build; realigned to the source text), sealed answers, a mirror per chamber, proposed elements, write-your-own Prayer. Kindling routes through it.
 4. The **Dharma Journey** (`/journey`): stage tracking, a page per stage.
 5. Schema: `dharma_inquiry` (sealed answers), `journey_progress`, element `mode` and root `scope` facets, a new `capacity` element kind.
 
@@ -105,7 +107,7 @@ It's Jung's map made walkable:
 
 All five steps above shipped on `v4-living-altar`:
 - 40/40 Playwright end-to-end tests and every unit suite pass.
-- `e2e/inquiry.spec.ts` walks all seven chambers, seals the answers, takes the vow, and completes the journey.
+- `e2e/inquiry.spec.ts` walks all six chambers (with a why-ladder and a deeper set), seals the answers, takes the vow, and completes the journey.
 - Polish from reviewing the live renders:
   - The home page bloom and exposure are hushed.
   - Small chamber type sits on a pool of night so it reads over bright gift-stars.

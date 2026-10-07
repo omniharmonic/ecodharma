@@ -1,3 +1,5 @@
+import { returnQuestion } from "@/lib/altar/inquiry";
+import { getAnswers } from "@/lib/altar/inquiry-repo";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { getUser } from "@/lib/auth";
@@ -24,9 +26,11 @@ export default async function RitualPage({ params, searchParams }: { params: { c
   if (!altar.prayer) redirect("/inquiry");
   const ritual = searchParams.r ? await getRitual(user!.id, Number(searchParams.r)) : null;
   const hd = await withUser(user!.id, async (c) => (await c.query("select raw_json from charts where user_id=$1 and modality='human_design'", [user!.id])).rows[0]?.raw_json);
+  const inquiryQ = returnQuestion(await getAnswers(user!.id), Math.floor(Date.now() / 86_400_000));
   const spec = ritualSpec(params.cadence as any, ritual?.label || params.cadence, {
     prayer: altar.prayer.title, hdType: hd?.type, authority: hd?.authority,
     works: altar.works.map((w) => w.title), roots: altar.roots.map((r) => r.title), measures: altar.measures.map((m) => m.title),
+    inquiry: inquiryQ,
   });
 
   return (
@@ -49,6 +53,7 @@ export default async function RitualPage({ params, searchParams }: { params: { c
         <MessageForm action={ritualAction} submitLabel="Offer this reflection" pendingLabel="weaving…" className="btn-solar">
           <input type="hidden" name="ritual_id" value={ritual?.id ?? ""} />
           <input type="hidden" name="cadence" value={params.cadence} />
+          {spec.steps.some((s) => s.id === "return") && <input type="hidden" name="return_qid" value={inquiryQ.id} />}
           {spec.steps.map((s, i) => (
             <div key={s.id} className="mb-5">
               <label className="block font-display text-lg text-fg" htmlFor={`a_${s.id}`}>

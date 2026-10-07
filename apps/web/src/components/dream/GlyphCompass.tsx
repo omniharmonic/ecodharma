@@ -12,7 +12,7 @@ const SIGNED_IN: Dest[] = [
   { href: "/altar", glyph: "☉", label: "Altar", hint: "soul's becoming" },
   { href: "/journal", glyph: "☽", label: "Journal", hint: "reflections on the water" },
   { href: "/journey", glyph: "⟡", label: "Journey", hint: "the path of practice" },
-  { href: "/inquiry", glyph: "◈", label: "Inquiry", hint: "the seven chambers" },
+  { href: "/inquiry", glyph: "◈", label: "Inquiry", hint: "the six chambers" },
   { href: "/profile", glyph: "✶", label: "Reading", hint: "the sky you were born under" },
   { href: "/constellations", glyph: "⁂", label: "Constellations", hint: "those co-arising with you" },
   { href: "/settings", glyph: "⚙", label: "Settings", hint: "membership · consent · data" },
