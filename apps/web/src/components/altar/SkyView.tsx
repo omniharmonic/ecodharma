@@ -419,6 +419,22 @@ function Scene({ snap, onSelect, onHover }: { snap: Snapshot; onSelect: (id: num
         );
       })}
 
+      {/* Dharma Constellation — kin as neighbouring stars, threads of light to you */}
+      {snap.kin.map((k, i) => {
+        const a = (i / Math.max(1, snap.kin.length)) * Math.PI * 2 + 0.9;
+        const pos = new THREE.Vector3(44 * Math.cos(a), 6 + seeded(i + 99) * 10 - 5, 44 * Math.sin(a));
+        const thread = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0, 0, 0), pos]);
+        return (
+          <group key={k.id}>
+            <Line3 geometry={thread} color={p.live} opacity={0.22} />
+            <Selectable id={null} label={`${k.name}${k.gifts.length ? ` — ${k.gifts.join(", ")}` : ""}`} sub="kin · your Dharma Constellation" onHover={onHover} onSelect={onSelect}>
+              <Halo color={p.live} scale={7} opacity={0.8} position={pos.toArray() as [number, number, number]} />
+              <mesh position={pos}><sphereGeometry args={[0.55, 16, 16]} /><meshBasicMaterial color={p.live} /></mesh>
+            </Selectable>
+          </group>
+        );
+      })}
+
       {works.map((w, i) => (
         <Orbiter key={w.lineage_id} index={i} total={works.length} v={v.get(w.lineage_id)!} title={w.title} id={w.lineage_id} p={p} onHover={onHover} onSelect={onSelect} />
       ))}
@@ -435,7 +451,7 @@ export function SkyView({ snap, onSelect }: { snap: Snapshot; onSelect: (id: num
         <Scene snap={snap} onSelect={onSelect} onHover={setHover} />
       </Canvas>
       <div className="pointer-events-none absolute left-3 top-3 telemetry">
-        <div>☉ prayer · ✶ gifts · ◇ devotions · ○ practices · ● works in orbit</div>
+        <div>☉ prayer · ✶ gifts · ◇ devotions · ○ practices · ● works in orbit{snap.kin.length ? " · ✦ kin" : ""}</div>
         <div className="mt-1 opacity-70">drag to turn the heavens · scroll to approach</div>
       </div>
       {hover && (

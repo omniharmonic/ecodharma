@@ -357,3 +357,26 @@ export async function altarKeepers(): Promise<string[]> {
     return rows.map((r) => r.user_id as string);
   });
 }
+
+/** Persist newly noticed threads as PROPOSED thread elements (deduped by signature, incl. dismissed ones). */
+export async function refreshThreads(userId: string, proposals: { signature: string; title: string; why: string; lineages: number[] }[]): Promise<number> {
+  if (!proposals.length) return 0;
+  return withUser(userId, async (c) => {
+    const { rows } = await c.query("select facets->>'signature' as sig from altar_elements where user_id = auth.uid() and kind = 'thread'");
+    const seen = new Set(rows.map((r) => r.sig));
+    let added = 0;
+    for (const p of proposals) {
+      if (seen.has(p.signature)) continue;
+      const { rows: ins } = await c.query(
+        `insert into altar_elements (user_id, kind, title, facets, status) values ($1,'thread',$2,$3,'proposed') returning id`,
+        [userId, p.title.slice(0, 500), { signature: p.signature, why: p.why }]);
+      const id = Number(ins[0].id);
+      await c.query("update altar_elements set lineage_id = $1 where id = $1", [id]);
+      for (const l of p.lineages) {
+        await c.query("insert into element_links (user_id, from_lineage, to_lineage, relation) values ($1,$2,$3,'notices') on conflict do nothing", [userId, id, l]);
+      }
+      added++;
+    }
+    return added;
+  });
+}

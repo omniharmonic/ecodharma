@@ -258,3 +258,19 @@ export async function ritualAction(_prev: State, f: FormData): Promise<State> {
   revalidatePath("/journal");
   redirect(`/journal?r=${id}`);
 }
+
+/** Root under strain → open an inquiry about it and mark the root as questioning. */
+export async function inquireRootAction(_prev: State, f: FormData): Promise<State> {
+  const userId = await requireKeeper();
+  const root = Number(str(f, "lineage_id"));
+  const title = str(f, "title");
+  try {
+    const q = await createElement(userId, { kind: "inquiry", title: `Is “${title}” still true for me?` });
+    await linkElements(userId, q.lineage_id, root, "questions");
+    await setStatus(userId, root, "questioning", "opened an inquiry after repeated strain");
+  } catch (e) {
+    return { error: (e as Error).message };
+  }
+  revalidatePath("/altar");
+  return { ok: "An inquiry is open. Live with the question." };
+}

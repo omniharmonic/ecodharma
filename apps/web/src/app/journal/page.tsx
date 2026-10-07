@@ -8,6 +8,8 @@ import { MessageForm } from "@/components/MessageForm";
 import { StrandChip } from "@/components/altar/StrandChip";
 import { PageTransition } from "@/components/PageTransition";
 import { reflectAction, reviewStrandsAction } from "../actions/altar";
+import { offerAction } from "../actions/dharma";
+import { myConstellations } from "@/lib/altar/constellations";
 
 export const dynamic = "force-dynamic";
 
@@ -23,6 +25,7 @@ export default async function JournalPage({ searchParams }: { searchParams: { r?
   const reflections = await listReflections(user!.id, { limit: 60, lineageId: filterEl });
   const focus = searchParams.r ? reflections.find((r) => r.id === Number(searchParams.r)) : null;
   const pending = focus?.strands.filter((s) => s.status === "proposed") || [];
+  const circles = await myConstellations(user!.id);
 
   return (
     <PageTransition>
@@ -137,6 +140,17 @@ export default async function JournalPage({ searchParams }: { searchParams: { r?
                   <span key={i} className="strand-chip charge-zero">{a.lens} {"●".repeat(a.value || 0)}{"○".repeat(5 - (a.value || 0))}</span>
                 ))}
               </div>
+              {circles.length > 0 && (
+                <details className="mt-2" data-testid="offer">
+                  <summary className="cursor-pointer telemetry hover:text-accent">◉ offer to a constellation</summary>
+                  <MessageForm action={offerAction} submitLabel="Offer these words" className="btn-line text-2xs">
+                    <input type="hidden" name="reflection_id" value={r.id} />
+                    <select name="constellation_id" className="input">{circles.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}</select>
+                    <textarea name="excerpt" rows={3} className="input" defaultValue={r.body} />
+                    <p className="text-2xs text-muted">Only these words are shared (a copy) — trim them as you like. You can withdraw them any time.</p>
+                  </MessageForm>
+                </details>
+              )}
             </li>
           ))}
           {reflections.length === 0 && <li className="py-4 text-sm text-muted">No reflections yet.</li>}

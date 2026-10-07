@@ -11,7 +11,9 @@ import { SoulConsole } from "@/components/altar/SoulConsole";
 import { StrandChip } from "@/components/altar/StrandChip";
 import { MessageForm } from "@/components/MessageForm";
 import { PageTransition } from "@/components/PageTransition";
-import { decideProposalAction } from "../actions/altar";
+import { decideProposalAction, inquireRootAction, setStatusAction } from "../actions/altar";
+import { refreshThreads } from "@/lib/altar/repo";
+import { detectThreads } from "@/lib/altar/threads";
 import { dueRitualFor } from "@/lib/altar/rituals";
 
 export const dynamic = "force-dynamic";
@@ -30,6 +32,12 @@ export default async function AltarPage({ searchParams }: { searchParams: { kind
     latestInvitation(user!.id),
     dueRitualFor(user!.id),
   ]);
+  // Notice patterns across reflections → proposed threads (the person decides).
+  if (await refreshThreads(user!.id, detectThreads(snap.elements, snap.strands, Date.parse(snap.now)))) {
+    const fresh = await getAltar(user!.id);
+    altar.threads = fresh.threads;
+  }
+  const proposedThreads = altar.threads.filter((t) => t.status === "proposed");
   const titleOf = new Map(altarElements(altar).map((e) => [e.lineage_id, e.title]));
   const strained = strainedRoots(snap.elements, snap.strands, Date.parse(snap.now)).map((id) => altar.roots.find((r) => r.lineage_id === id)).filter(Boolean);
   const questioning = altar.roots.filter((r) => r.status === "questioning");
@@ -109,11 +117,42 @@ export default async function AltarPage({ searchParams }: { searchParams: { kind
                 {questioning.map((r) => <li key={r.id} className="text-[color:rgb(var(--root-questioning))]">⟟ in question: {r.title}</li>)}
                 {strained.map((r) => (
                   <li key={r!.id} className="text-[color:rgb(var(--root-questioning))]" data-testid="strained-root">
-                    ⟟ under strain: {r!.title} — <Link href={`/altar/edit#e${r!.lineage_id}`} className="underline">open an inquiry?</Link>
+                    ⟟ under strain: {r!.title}
+                    <MessageForm action={inquireRootAction} submitLabel="open an inquiry" className="btn-line mt-1 text-2xs">
+                      <input type="hidden" name="lineage_id" value={r!.lineage_id} /><input type="hidden" name="title" value={r!.title} />
+                    </MessageForm>
                   </li>
                 ))}
               </ul>
             )}
+          </div>
+
+          {proposedThreads.length > 0 && (
+            <div className="border border-rule/20 p-4" data-testid="threads">
+              <p className="telemetry">≋ Threads noticed — true for you?</p>
+              <ul className="mt-2 space-y-3">
+                {proposedThreads.map((t) => (
+                  <li key={t.id} className="text-sm">
+                    <p className="text-fg">{t.title}</p>
+                    {t.facets?.why && <p className="text-2xs text-muted">{t.facets.why}</p>}
+                    <div className="mt-1 flex gap-2">
+                      <MessageForm action={setStatusAction} submitLabel="yes, a thread" className="btn-line text-2xs">
+                        <input type="hidden" name="lineage_id" value={t.lineage_id} /><input type="hidden" name="status" value="accepted" />
+                      </MessageForm>
+                      <MessageForm action={setStatusAction} submitLabel="not quite" className="btn-line text-2xs">
+                        <input type="hidden" name="lineage_id" value={t.lineage_id} /><input type="hidden" name="status" value="dismissed" />
+                      </MessageForm>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          <div className="border border-rule/20 p-4">
+            <p className="telemetry">❦ The story so far</p>
+            <p className="mt-1 text-2xs text-muted">Your season, your year — in your own words.</p>
+            <Link href="/altar/story" className="mt-2 inline-block telemetry text-accent hover:underline" data-testid="story-link">read your story →</Link>
           </div>
 
           {invitation && (

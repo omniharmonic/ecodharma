@@ -27,17 +27,18 @@ alter table constellations add column if not exists kind text not null default '
 
 -- A member sets their OWN role (RLS on constellation_members is owner-write in
 -- 0002), so expose a narrow definer function instead of widening the policy.
-create or replace function public.set_my_dharma_role(cid bigint, role text)
+drop function if exists public.set_my_dharma_role(bigint, text);
+create or replace function public.set_my_dharma_role(cid bigint, new_role text)
 returns void
 language plpgsql
 security definer
 set search_path = public
 as $$
 begin
-  if role not in ('kin','witness','accountability','mentor','collaborator') then
-    raise exception 'invalid role %', role;
+  if new_role not in ('kin','witness','accountability','mentor','collaborator') then
+    raise exception 'invalid role %', new_role;
   end if;
-  update constellation_members set dharma_role = role
+  update constellation_members set dharma_role = new_role
    where constellation_id = cid and user_id = auth.uid();
 end $$;
 

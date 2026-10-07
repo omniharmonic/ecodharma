@@ -8,6 +8,8 @@ import { ConstellationRelational } from "@/components/ConstellationRelational";
 import { InviteLink } from "@/components/InviteLink";
 import { generateReadAction, inviteMemberAction, renameConstellationAction } from "../../actions/constellation";
 import type { ConstellationRead } from "@/lib/types";
+import { DharmaSection } from "@/components/altar/DharmaSection";
+import { canUseAltar } from "@/lib/altar/access";
 
 export default async function ConstellationDetail({ params }: { params: { id: string } }) {
   const user = await getUser();
@@ -37,6 +39,7 @@ export default async function ConstellationDetail({ params }: { params: { id: st
   const isOwner = data.cs.owner_id === user!.id;
   const consentedCount = data.members.filter((m: any) => m.consent_id || m.is_self).length;
   const read = data.read?.content_json as ConstellationRead | undefined;
+  const dharma = await canUseAltar(user!.id);
 
   return (
     <div className="max-w-measure pt-10">
@@ -47,6 +50,8 @@ export default async function ConstellationDetail({ params }: { params: { id: st
         </div>
         <Link href="/constellations" className="btn-line">all</Link>
       </div>
+
+      {dharma && <DharmaSection userId={user!.id} cid={id} />}
 
       <section className="mt-16">
         <p className="eyebrow mb-4">Members</p>
