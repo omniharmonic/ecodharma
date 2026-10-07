@@ -11,6 +11,10 @@ This repo is a **runnable, end-to-end-tested v1 prototype** built to the
 [PRD](.claude/ecodharma-prd.md), [architecture](.claude/ecodharma-technical-architecture.md),
 and [implementation plan](.claude/ecodharma-implementation-plan.md).
 
+## v4 — The Living Altar (2026-10)
+
+The reading now grounds an ongoing reflection practice: Prayer, Roots, Paths, and Measures; a sealed journal; a ritual calendar running weekly through the solstices; Soul's Becoming visualizations (Sky / Soil / Becoming); Claude via MCP; Telegram reply-to-reflect; and Dharma Constellations. Chart accuracy is verified against an independent engine. Start at **[docs/v4-living-altar/](docs/v4-living-altar/README.md)**.
+
 ## What's built (M0–M5)
 
 | Phase | Deliverable | Status |

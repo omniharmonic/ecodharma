@@ -112,13 +112,22 @@ Branch: `v4-living-altar`. Every step ends with tests green and a pushed commit.
 
 - [x] Vision & taxonomy
 - [x] PRD · Technical architecture · Implementation plan
-- [x] 0.1 Ephemeris fixes
-- [x] 0.2 Oracle harness
-- [x] 0.3 Web-layer accuracy + guard
-- [x] 0.4 Invitations
-- [x] 0.5 Recompute script
-- [ ] 1 Altar + Journal
-- [ ] 2 Cycles
-- [ ] 3 Soul's Becoming
-- [ ] 4 Constellations v2
-- [ ] 5 Evolution intelligence
+- [x] 0.1 Ephemeris fixes (midnight, GK map, authority, Vedic/nakshatras, DST, sensitivity, SE switch, `/cycles`)
+- [x] 0.2 Oracle harness (`oracle/`: HD/GK + Vedic differential tests; 0 unexplained mismatches)
+- [x] 0.3 Web-layer accuracy + interpretation guard + verified fact sheet
+- [x] 0.4 Invitations (grounding contract; rejects the shipped failures verbatim)
+- [x] 0.5 Recompute script + honest correction banner + free corrective re-draft
+- [x] 1 Altar + Journal (kindling, editor, sealed journal, strands, five lenses)
+- [x] 1 MCP v2 (13 altar tools + 4 reading tools; proposals-only for core changes)
+- [x] 2 Cycles (TZ/DST-correct ritual engine, hourly cron, guided rituals, Telegram reply-to-reflect + commands)
+- [x] 3 Soul's Becoming (Orrery, Sky, Soil, Becoming; telemetry; reduced-motion fallbacks)
+- [x] 4 Dharma Constellations (roles, shared prayer/works, offerings, witness, accountability, kin in Sky)
+- [x] 5 Evolution intelligence (threads, root-strain → inquiry, story)
+- [ ] P1 Voice-note transcription on Telegram (needs a transcription provider key)
+- [ ] P2 Transit context in seasonal rituals
+- [ ] P2 Opt-in resonance discovery across constellations
+
+### What shipped differently from the plan
+- Migrations are `0020_living_altar.sql` (altar, journal, cycles, invitations in one) and `0021_dharma_constellations.sql`.
+- Inline strand **buttons** on Telegram became a confirm link to `/journal?r=…` (simpler, works everywhere).
+- Threads are detected deterministically (no model cost) and proposed on dashboard load; Claude can reflect on them via `get_becoming`.

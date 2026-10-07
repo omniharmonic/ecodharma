@@ -80,7 +80,7 @@ oracle/                     (node, offline/CI)
 - *GK spheres:* exact (same exception).
 - Any other mismatch fails CI and is investigated. A mismatch can mean either engine is wrong, so each one gets a written explanation in `oracle/FINDINGS.md`.
 
-## 3. Data model (Postgres, migrations 0020+)
+## 3. Data model (Postgres — as built: `0020_living_altar.sql`, `0021_dharma_constellations.sql`)
 
 All tables: `user_id uuid references auth.users on delete cascade`, RLS enabled, **owner-only** policies (`user_id = auth.uid()`), plus explicit consent-gated policies where noted.
 
