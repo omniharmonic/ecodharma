@@ -1,16 +1,28 @@
 """Astronomy core — tropical & sidereal positions, houses, aspects, synastry.
 
-Uses pyswisseph with the Moshier ephemeris (FLG_MOSEPH) so no Swiss Ephemeris
-data files are needed — keeps the container self-contained and fully auditable.
+Backend: Swiss Ephemeris data files (FLG_SWIEPH) when SE_EPHE_PATH points at a
+directory holding them; otherwise the built-in Moshier ephemeris (FLG_MOSEPH),
+which needs no files and agrees with SE to arc-seconds for 1800–2200.
 """
 from __future__ import annotations
 
-from datetime import datetime
+import os
+from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 
 import swisseph as swe
 
-FLAGS = swe.FLG_MOSEPH | swe.FLG_SPEED
+
+def _select_backend() -> tuple[int, str]:
+    path = os.environ.get("SE_EPHE_PATH")
+    if path and os.path.isdir(path) and any(f.startswith("sepl") for f in os.listdir(path)):
+        swe.set_ephe_path(path)
+        return swe.FLG_SWIEPH, "swisseph-files"
+    return swe.FLG_MOSEPH, "moshier"
+
+
+_BACKEND_FLAG, BACKEND = _select_backend()
+FLAGS = _BACKEND_FLAG | swe.FLG_SPEED
 
 # Bodies we compute. (Earth and South Node are derived as opposites downstream.)
 PLANETS: dict[str, int] = {
@@ -45,10 +57,38 @@ ASPECTS = {
 }
 
 
+def resolve_time(year: int, month: int, day: int, hour: int, minute: int, tz_str: str) -> dict:
+    """Local civil time -> UTC, with honest warnings about clock anomalies.
+
+    - "dst_gap": the local time never existed (clocks sprang forward over it).
+      We interpret it with the pre-transition offset (fold=0) and say so.
+    - "dst_fold": the local time happened twice (clocks fell back). We take the
+      FIRST occurrence (fold=0) and say so — the person may need to confirm.
+    """
+    tz = ZoneInfo(tz_str)
+    local0 = datetime(year, month, day, hour, minute, tzinfo=tz, fold=0)
+    local1 = local0.replace(fold=1)
+    warnings: list[str] = []
+    if local0.utcoffset() != local1.utcoffset():
+        # Ambiguous or non-existent: distinguish by round-tripping through UTC.
+        roundtrip = local0.astimezone(ZoneInfo("UTC")).astimezone(tz)
+        if (roundtrip.hour, roundtrip.minute) != (hour, minute):
+            warnings.append("dst_gap")
+        else:
+            warnings.append("dst_fold")
+    utc = local0.astimezone(ZoneInfo("UTC"))
+    offset = local0.utcoffset() or timedelta(0)
+    return {
+        "utc": utc.strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "utc_offset_hours": round(offset.total_seconds() / 3600.0, 4),
+        "warnings": warnings,
+        "_utc": utc,
+    }
+
+
 def julday_ut(year: int, month: int, day: int, hour: int, minute: int, tz_str: str) -> float:
     """Local civil time -> Julian Day (UT)."""
-    local = datetime(year, month, day, hour, minute, tzinfo=ZoneInfo(tz_str))
-    utc = local.astimezone(ZoneInfo("UTC"))
+    utc = resolve_time(year, month, day, hour, minute, tz_str)["_utc"]
     ut_hours = utc.hour + utc.minute / 60.0 + utc.second / 3600.0
     return swe.julday(utc.year, utc.month, utc.day, ut_hours)
 
@@ -61,8 +101,18 @@ def sign_of(lon: float) -> tuple[str, float]:
 
 def _calc(jd: float, body: int, sidereal: bool) -> float:
     flags = FLAGS | (swe.FLG_SIDEREAL if sidereal else 0)
+    if sidereal:
+        swe.set_sid_mode(swe.SIDM_LAHIRI, 0, 0)
     res, _ = swe.calc_ut(jd, body, flags)
     return res[0] % 360.0
+
+
+def sun_longitude(jd: float) -> float:
+    return _calc(jd, swe.SUN, False)
+
+
+def moon_longitude(jd: float) -> float:
+    return _calc(jd, swe.MOON, False)
 
 
 def planet_longitudes(jd: float, sidereal: bool = False) -> dict[str, float]:
@@ -88,7 +138,13 @@ def houses(jd: float, lat: float, lng: float, sidereal: bool = False) -> dict:
     flag = swe.FLG_SIDEREAL if sidereal else 0
     if sidereal:
         swe.set_sid_mode(swe.SIDM_LAHIRI, 0, 0)
-    cusps, ascmc = swe.houses_ex(jd, lat, lng, b"P", flag)
+    system = "placidus"
+    try:
+        cusps, ascmc = swe.houses_ex(jd, lat, lng, b"P", flag)
+    except swe.Error:
+        # Placidus is undefined inside the polar circles — fall back honestly.
+        cusps, ascmc = swe.houses_ex(jd, lat, lng, b"O", flag)
+        system = "porphyry"
     asc, mc = ascmc[0] % 360.0, ascmc[1] % 360.0
     asc_sign, asc_deg = sign_of(asc)
     mc_sign, mc_deg = sign_of(mc)
@@ -96,6 +152,7 @@ def houses(jd: float, lat: float, lng: float, sidereal: bool = False) -> dict:
         "ascendant": {"lon": round(asc, 4), "sign": asc_sign, "deg_in_sign": asc_deg},
         "midheaven": {"lon": round(mc, 4), "sign": mc_sign, "deg_in_sign": mc_deg},
         "cusps": [round(c % 360.0, 4) for c in cusps[:12]],
+        "system": system,
     }
 
 

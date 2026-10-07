@@ -1,0 +1,8 @@
+{
+  "name": "ecodharma-oracle",
+  "private": true,
+  "type": "module",
+  "description": "Differential accuracy oracle: compares the EcoDharma ephemeris service against an independent engine (natalengine on astronomy-engine).",
+  "scripts": { "compare": "node compare.mjs" },
+  "dependencies": { "natalengine": "1.6.0" }
+}

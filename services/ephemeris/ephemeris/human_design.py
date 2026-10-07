@@ -55,6 +55,17 @@ HD_BODIES = [
 ]
 
 
+def boundary_distance_arcmin(lon: float) -> float:
+    """Arc-minutes from this longitude to the nearest LINE edge (lines are the
+    finest unit we report). Small values mean a few minutes of birth-time error,
+    or ephemeris differences, could flip the line — or the gate, at a gate edge."""
+    within = ((lon - WHEEL_START) % 360.0) % LINE_SIZE
+    return round(min(within, LINE_SIZE - within) * 60.0, 3)
+
+
+SENSITIVE_ARCMIN = 5.0
+
+
 def gate_line(lon: float) -> tuple[int, int]:
     offset = (lon - WHEEL_START) % 360.0
     idx = int(offset // GATE_SIZE)
@@ -71,7 +82,11 @@ def _activations(lons: dict[str, float]) -> dict[str, dict]:
         if body not in lons:
             continue
         g, l = gate_line(lons[body])
-        out[body] = {"gate": g, "line": l}
+        edge = boundary_distance_arcmin(lons[body])
+        out[body] = {
+            "gate": g, "line": l, "lon": round(lons[body] % 360.0, 6),
+            "edge_arcmin": edge, "sensitive": edge < SENSITIVE_ARCMIN,
+        }
     return out
 
 
@@ -129,20 +144,31 @@ def _determine_type(defined, adj) -> str:
     return "Projector"
 
 
-def _determine_authority(defined, hd_type) -> str:
+def _determine_authority(defined, hd_type, adj) -> tuple[str, str]:
+    """(authority, authority_detail). `authority` keeps the stable v3 vocabulary
+    (Emotional | Sacral | Splenic | Ego | Self-Projected | Lunar | Mental);
+    `authority_detail` carries the canonical sub-type.
+
+    Hierarchy: Solar Plexus > Sacral > Spleen > Heart(Ego) > G(Self-Projected,
+    only when the G is wired to the Throat) > none (Mental/Environmental).
+    """
+    if not defined:
+        return "Lunar", "Lunar"
     if "SolarPlexus" in defined:
-        return "Emotional"
+        return "Emotional", "Emotional (Solar Plexus)"
     if "Sacral" in defined:
-        return "Sacral"
+        return "Sacral", "Sacral"
     if "Spleen" in defined:
-        return "Splenic"
+        return "Splenic", "Splenic"
     if "Heart" in defined:
-        return "Ego" if hd_type in ("Manifestor", "Projector") else "Sacral"
-    if hd_type == "Reflector":
-        return "Lunar"
-    if "G" in defined:
-        return "Self-Projected"
-    return "Mental"  # Projector/Manifestor sounding-board, no inner authority
+        # Ego-Manifested: Heart wired to the Throat (Manifestor).
+        # Ego-Projected: Heart wired to the G (Projector).
+        if _connected(adj, "Heart", "Throat"):
+            return "Ego", "Ego-Manifested"
+        return "Ego", "Ego-Projected"
+    if "G" in defined and _connected(adj, "G", "Throat"):
+        return "Self-Projected", "Self-Projected"
+    return "Mental", "Mental / Environmental (no inner authority)"
 
 
 def _definition(defined, channels) -> str:
@@ -177,8 +203,12 @@ def human_design_chart(p_lons: dict[str, float], d_lons: dict[str, float], unkno
     adj = _center_graph(channels)
 
     hd_type = _determine_type(defined, adj)
-    authority = _determine_authority(defined, hd_type)
+    authority, authority_detail = _determine_authority(defined, hd_type, adj)
     profile = f"{personality['Sun']['line']}/{design['Sun']['line']}"
+    sensitive = sorted(
+        f"{side}.{body}" for side, acts in (("personality", personality), ("design", design))
+        for body, a in acts.items() if a["sensitive"]
+    )
 
     all_centers = ["Head", "Ajna", "Throat", "G", "Heart", "Sacral", "SolarPlexus", "Spleen", "Root"]
 
@@ -186,6 +216,7 @@ def human_design_chart(p_lons: dict[str, float], d_lons: dict[str, float], unkno
         "type": hd_type,
         "profile": profile,
         "authority": authority,
+        "authority_detail": authority_detail,
         "definition": _definition(defined, channels),
         "defined_centers": [c for c in all_centers if c in defined],
         "open_centers": [c for c in all_centers if c not in defined],
@@ -198,4 +229,5 @@ def human_design_chart(p_lons: dict[str, float], d_lons: dict[str, float], unkno
             "design_earth": design["Earth"]["gate"],
         },
         "low_confidence": unknown_time,  # gate/line is highly time-sensitive
+        "sensitive_activations": sensitive,
     }

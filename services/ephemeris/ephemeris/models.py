@@ -26,6 +26,12 @@ class ChartResponse(BaseModel):
     data: dict
 
 
+class CyclesRequest(BaseModel):
+    year: int
+    lat: float = 0.0
+    natal_sun_lon: Optional[float] = None
+
+
 class SynastryRequest(BaseModel):
     a: BirthData
     b: BirthData
