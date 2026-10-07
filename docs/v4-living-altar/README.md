@@ -64,10 +64,12 @@ node --test supabase/tests/*.test.mjs                      # RLS: consent matrix
 
 ## Deploy runbook (Benjamin)
 
-1. **Journal key (required):** `node -e "console.log('1:'+require('crypto').randomBytes(32).toString('base64'))"` → set `JOURNAL_KEYS` in Vercel. Keep a copy somewhere safe: losing it makes journals unreadable.
-2. **Migrations:** apply `supabase/migrations/0020_living_altar.sql` and `0021_dharma_constellations.sql` to production.
-3. **Ephemeris:** redeploy `services/ephemeris` (v0.2). Optional: upload Swiss Ephemeris data files and set `SE_EPHE_PATH`.
-4. **Recompute:** `DATABASE_URL=… EPHEMERIS_URL=… node scripts/recompute-charts.mjs` (dry run), read `recompute-report.json`, then run again with `--apply`. Affected people see a correction banner and get a free re-draft.
-5. **Access:** leave `ALTAR_ACCESS` unset (`invite`): friends and family get access when comped premium via `/curate`. Set `ALTAR_ACCESS=open` to open it to everyone.
-6. **Cron:** `vercel.json` schedules `/api/cron/rituals` hourly (Pro). On Hobby, change it to daily. `CRON_SECRET` must be set.
-7. **Telegram:** existing bot; nothing new to configure. Invitations go to whoever chose Telegram as a channel.
+Production deploys from `main`. The ephemeris service (`ecodharma-ephemeris`) is deployed separately; v0.2.0 is live as of 2026-10-07.
+
+1. **Database (one paste):** open the Supabase SQL editor, paste `supabase/deploy/v4-living-altar.sql`, and run it. It bundles migrations 0020–0022, runs in a transaction, and is safe to re-run.
+2. **Journal key:** in Vercel → ecodharma → Settings → Environment Variables, add `JOURNAL_KEYS` (Production and Preview). Generate the value with `node -e "console.log('1:'+require('crypto').randomBytes(32).toString('base64'))"`. Keep a copy somewhere safe: losing it makes journals unreadable.
+3. **Access (optional):** set `ALTAR_ACCESS=open` to let everyone in. Unset means friends and family get access when comped premium via `/curate`.
+4. **Redeploy** the latest production deployment so the new variables take effect.
+5. **Verify:** open `/api/health/v4`. `ready` should be `true`, with `migrations`, `journal_key`, and `ephemeris_v2` all `true`.
+6. **Recompute (optional, recommended):** `DATABASE_URL=… EPHEMERIS_URL=… node scripts/recompute-charts.mjs` (dry run), read `recompute-report.json`, then run again with `--apply`. Affected people see a correction banner and get a free re-draft.
+7. **Cron:** `vercel.json` schedules `/api/cron/rituals` hourly (Pro). `CRON_SECRET` must be set.
