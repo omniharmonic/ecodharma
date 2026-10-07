@@ -44,7 +44,7 @@ These are confirmed by reading `services/ephemeris`, not guessed. Each one alone
 | # | Bug | Who it affects | Severity |
 |---|---|---|---|
 | A1 | **Midnight births computed as noon.** `main.py`: `b.hour or 12`. In Python `0 or 12 == 12`, so anyone born 00:00–00:59 gets a chart for 12:00–12:59. The Moon is off by about 6°, the ascendant is wrong, and HD gates/lines, type, and authority can all change. | Everyone born in the midnight hour (~4% of people) | **Critical** |
-| A2 | **Gene Keys Venus & Pearl sequences use the wrong planets.** The code maps EQ→P.Venus, SQ→D.Mars, Vocation→P.Jupiter, Brand→P.Mars, and omits Core and Pearl. The published Hologenetic Profile structure is: Attraction=D.Moon, IQ=D.Venus, **EQ=P.Mars**, **SQ=P.Venus**, **Core=D.Mars**, **Vocation=D.Mars**, Culture=D.Jupiter, **Brand=P.Sun**, **Pearl=P.Jupiter**. *(Verify against genekeys.com with the golden set before shipping. I'm confident but want it proven.)* | **Every** Gene Keys reading past the Activation Sequence | **Critical** |
+| A2 | **Gene Keys Venus & Pearl sequences use the wrong planets.** The code maps IQ→D.Venus, EQ→P.Venus, SQ→D.Mars, Vocation→P.Jupiter, Brand→P.Mars, and omits Core and Pearl. The published Hologenetic Profile structure (confirmed against published sphere↔planet tables) is: Attraction=D.Moon, **IQ=P.Venus**, **EQ=P.Mars**, **SQ=D.Venus**, **Core=D.Mars**, **Vocation=D.Mars**, Culture=D.Jupiter, **Brand=P.Sun**, **Pearl=P.Jupiter**. | **Every** Gene Keys reading past the Activation Sequence | **Critical** |
 | A3 | **Nakshatras are invented.** `interpret.ts` tells Claude to "name real placements (… nakshatras …)", but the ephemeris never computes nakshatras, so Claude makes them up. | Every Vedic lens reading | **High** |
 | A4 | **The interpretation layer can contradict the chart.** Nothing checks that a placement named in the prose ("your Venus in Libra", "your 4th house Moon") exists in the computed chart. | Every Claude-written reading | **High** |
 | A5 | **Vedic conventions aren't followed.** It uses Placidus houses on a sidereal chart (Jyotish uses whole-sign houses from the lagna) and the true node (Rahu/Ketu are usually the mean node). There are no D9/navamsa, dashas, or nakshatra padas. | Vedic readings | Medium |
@@ -61,7 +61,7 @@ These are confirmed by reading `services/ephemeris`, not guessed. Each one alone
 |---|---|---|
 | Western tropical | Astro.com (Swiss Ephemeris) / Astro-Databank AA-rated births | Golden fixtures: positions within 1′, signs/houses exact |
 | Vedic sidereal | Jagannatha Hora / VedAstro (open source) / Prokerala API | Lahiri ayanamsa, whole-sign houses, nakshatra + pada, Rahu/Ketu, D9 |
-| Human Design | Jovian Archive / myBodyGraph; **OpenHumanDesign MCP** (already connected but needs authorization in your claude.ai connector settings) | Type, authority, profile, definition, channels, all 26 activations exact |
+| Human Design | Jovian Archive / myBodyGraph (manual spot checks); **`natalengine`** (open-source, built on the independent `astronomy-engine` ephemeris) as an automated differential oracle. The OpenHumanDesign MCP can't be re-registered, so it is no longer an option. | Type, authority, profile, definition, channels, all 26 activations exact |
 | Gene Keys | genekeys.com free Hologenetic Profile | All 11 spheres, gate.line exact |
 | Ikigai | Not computed, so N/A | — |
 
@@ -370,7 +370,7 @@ Phase 0 is fully specified above and can start immediately. Phases 1–2 are whe
 2. **Scores.** Should the five alignment lenses offer an optional 1–5 felt scale (it powers trend lines), or stay purely qualitative? I recommend optional and hidden by default.
 3. **Privacy depth.** Is server-side encryption at rest enough, or do you want an E2E "sealed journal" mode where Claude can only read entries on surfaces the person runs (their own Claude via MCP)?
 4. **Free vs. premium.** My suggestion: reading + weekly ritual free; Claude-powered strands, MCP, Telegram, seasonal story, and constellation features premium.
-5. **OpenHumanDesign MCP.** It needs authorization in your claude.ai connector settings before I can use it as a test oracle for the golden set.
+5. ~~OpenHumanDesign MCP~~ — resolved: replaced by an independent-engine differential oracle (`natalengine`/`astronomy-engine`) plus manual spot checks.
 6. **Friend reports.** I need the specific friends' birth data and what they said was wrong, with their consent, as golden cases. If those reports are in Parachute or Telegram, point me at them and I'll pull them.
 
 ---
