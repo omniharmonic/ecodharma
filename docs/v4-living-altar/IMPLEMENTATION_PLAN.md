@@ -112,11 +112,11 @@ Branch: `v4-living-altar`. Every step ends with tests green and a pushed commit.
 
 - [x] Vision & taxonomy
 - [x] PRD · Technical architecture · Implementation plan
-- [ ] 0.1 Ephemeris fixes
-- [ ] 0.2 Oracle harness
-- [ ] 0.3 Web-layer accuracy + guard
-- [ ] 0.4 Invitations
-- [ ] 0.5 Recompute script
+- [x] 0.1 Ephemeris fixes
+- [x] 0.2 Oracle harness
+- [x] 0.3 Web-layer accuracy + guard
+- [x] 0.4 Invitations
+- [x] 0.5 Recompute script
 - [ ] 1 Altar + Journal
 - [ ] 2 Cycles
 - [ ] 3 Soul's Becoming

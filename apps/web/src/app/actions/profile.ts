@@ -16,7 +16,13 @@ export async function regenerateProfileAction(_prev?: unknown, _formData?: FormD
 
   // Re-drafting re-runs the full AI interpretation — premium-only, so free users
   // can't spend unbounded compute. The first reading (createReadingAction) stays free.
-  if (!(await isPremium(user!.id))) {
+  // A pending chart CORRECTION (our error, fixed) earns one free re-draft.
+  const correctionPending = await withUser(user!.id, async (c) => {
+    const { rows } = await c.query("select settings->'chart_correction' as cc from profiles where id=$1", [user!.id]);
+    const cc = rows[0]?.cc;
+    return !!cc && !cc.redrafted;
+  });
+  if (!correctionPending && !(await isPremium(user!.id))) {
     return { error: "Re-drafting your profile is a premium feature. Upgrade in Settings to run it again." };
   }
 
@@ -37,6 +43,10 @@ export async function regenerateProfileAction(_prev?: unknown, _formData?: FormD
       [user!.id, frameworkVersion(), VOICE_VERSION, JSON.stringify(profile)],
     ),
   );
+  if (correctionPending) {
+    await withUser(user!.id, (c) =>
+      c.query("update profiles set settings = jsonb_set(settings, '{chart_correction,redrafted}', 'true'::jsonb) where id=$1", [user!.id]));
+  }
   revalidatePath("/profile");
   return { ok: "Your profile has been regenerated." };
 }

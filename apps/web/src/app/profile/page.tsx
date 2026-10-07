@@ -17,6 +17,14 @@ import { regenerateProfileAction } from "../actions/profile";
 import { healStoredReading } from "@/lib/interpret";
 import type { ChartLens, ChartThread, Ikigai } from "@/lib/types";
 
+type ChartCorrection = {
+  at: string;
+  engine?: string;
+  redrafted?: boolean;
+  changes: { lens: string; field: string; from: string; to: string }[];
+};
+const LENS_LABEL: Record<string, string> = { western: "Astrology", vedic: "Vedic", human_design: "Human Design", gene_keys: "Gene Keys" };
+
 // re-draft's server action calls Claude — give it the full function budget.
 export const maxDuration = 300;
 
@@ -27,7 +35,7 @@ export default async function ProfilePage() {
   const domainName = (id: string) => fw.domains.find((d) => d.id === id)?.name || id;
   const giftName = (id: string) => fw.gifts.find((g) => g.id === id)?.name || id;
 
-  const { profile, charts, birth, shareToken, ikigai } = await withUser(user!.id, async (c) => {
+  const { profile, charts, birth, shareToken, ikigai, correction } = await withUser(user!.id, async (c) => {
     const p = await c.query(
       "select id, content_json, framework_version, voice_version, generated_at from gift_profiles where user_id=$1 order by generated_at desc limit 1",
       [user!.id],
@@ -43,6 +51,7 @@ export default async function ProfilePage() {
       birth: bd.rows[0],
       shareToken: (pr.rows[0]?.share_token as string | null) ?? null,
       ikigai: (pr.rows[0]?.settings?.ikigai || {}) as Ikigai,
+      correction: (pr.rows[0]?.settings?.chart_correction || null) as ChartCorrection | null,
     };
   });
   const premium = await isPremium(user!.id);
@@ -90,6 +99,31 @@ export default async function ProfilePage() {
         </p>
       </section>
 
+      {/* CHART CORRECTION — we found and fixed errors in how part of this chart was computed. Say so plainly. */}
+      {correction && !correction.redrafted && (
+        <section className="mt-8 max-w-measure border border-accent/40 bg-accent/5 p-5" data-testid="chart-correction">
+          <p className="eyebrow text-accent">A correction to your chart</p>
+          <p className="mt-2 text-sm text-fg">
+            We found and fixed errors in how part of your chart was computed, verified against an independent engine.
+            Here is exactly what changed:
+          </p>
+          <ul className="mt-3 space-y-1 font-mono text-2xs text-muted">
+            {correction.changes.slice(0, 12).map((c, i) => (
+              <li key={i}>
+                <span className="text-fg">{LENS_LABEL[c.lens] || c.lens} · {c.field}</span>: {c.from} → <span className="text-accent">{c.to}</span>
+              </li>
+            ))}
+            {correction.changes.length > 12 && <li>…and {correction.changes.length - 12} more.</li>}
+          </ul>
+          <p className="mt-3 text-sm text-muted">
+            The charts below are already corrected. Your written reading was drawn from the old chart — re-draft it free:
+          </p>
+          <div className="mt-3">
+            <MessageForm action={regenerateProfileAction} submitLabel="re-draft from the corrected chart" pendingLabel="re-drafting…" className="btn-solar" />
+          </div>
+        </section>
+      )}
+
       {/* SHARE — surfaced high to encourage sharing; collapsible for those who'd rather not. */}
       <section className="mt-8 max-w-measure">
         <ShareCard token={shareToken} collapsible />
@@ -113,6 +147,7 @@ export default async function ProfilePage() {
           <p className="mt-1.5 text-2xs text-muted/70">
             If the city or time is wrong, correct it — the ascendant, Human Design, and Gene Keys all depend on it.
           </p>
+          <TimeNotes hd={charts.human_design} western={charts.western} />
         </section>
       )}
 
@@ -398,5 +433,32 @@ function Disclosure({ label, children }: { label: string; children: React.ReactN
       </summary>
       <div className="pt-3">{children}</div>
     </details>
+  );
+}
+
+/** Honest precision notes: resolved UTC, DST anomalies, and placements a few minutes of birth-time error could flip. */
+function TimeNotes({ hd, western }: { hd?: any; western?: any }) {
+  const t = hd?.time || western?.time;
+  if (!t) return null;
+  const sens: string[] = [...(hd?.time_sensitive_fields || []), ...(western?.time_sensitive_fields || [])];
+  const near: string[] = hd?.sensitive_activations || [];
+  const dst: Record<string, string> = {
+    dst_gap: "That clock time never existed locally (clocks sprang forward) — we read it with the earlier offset. Double-check your birth time.",
+    dst_fold: "That clock time happened twice locally (clocks fell back) — we used the first occurrence. If you were born in the second, tell us.",
+  };
+  return (
+    <div className="mt-2 space-y-1 text-2xs text-muted/80" data-testid="time-notes">
+      <p className="font-mono">
+        Resolved as {t.utc?.replace("T", " ").replace("Z", " UTC")} (UTC{t.utc_offset_hours >= 0 ? "+" : ""}{t.utc_offset_hours})
+        {t.assumed_noon ? " · birth time unknown, noon assumed" : ""}
+      </p>
+      {(t.warnings || []).map((w: string) => <p key={w} className="text-accent">{dst[w] || w}</p>)}
+      {sens.length > 0 && (
+        <p>Hold lightly — these would change if your birth time were off by ten minutes: {[...new Set(sens)].slice(0, 8).join(", ")}.</p>
+      )}
+      {near.length > 0 && sens.length === 0 && (
+        <p>Near a boundary (within 5′): {near.slice(0, 6).join(", ")} — read these lightly.</p>
+      )}
+    </div>
   );
 }
